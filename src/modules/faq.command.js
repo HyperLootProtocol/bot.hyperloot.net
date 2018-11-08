@@ -1,8 +1,11 @@
+const route = require('./route');
+const CMD = 'faq';
 
-module.exports = async function(response, { input, i18n }) {
+faqCmd = async function(response, { input, i18n }) {
     response.output = i18n('faq');
 
     return response;
-}
+};
 
-module.exports.command = 'faq';
+module.exports = [route(CMD), faqCmd];
+module.exports.command = CMD;

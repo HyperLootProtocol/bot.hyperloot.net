@@ -1,6 +1,7 @@
 empty,"Ooof, not sure what you're looking for! Use /help to get the full list of commands."
 otherError,"Error"
 noLogged,"You're not logged in yet."
+badSubchain,"Unexpected subchain element type"
 balance,"You've earned ${balance} HLT, but there's more! Check out available missions by typing in /list."
 missionInfo,"${PREFIX}${command} ${help} reward: ${reward} HLT. ${completed}"
 eth,"Your ETH address is ${ethAdress}. To set new address use: /eth ETH_ADDRESS."

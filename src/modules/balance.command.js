@@ -1,15 +1,15 @@
-const isEmpty = require('lodash/isEmpty');
+const needUser = require('./needUser');
+const route = require('./route');
 
-module.exports = async function(response, { input, i18n }) {
+const CMD = 'balance';
+
+const balanceCmd = async function(response, { i18n }) {
     const {user} = response;
-
-    if (isEmpty(user)) {
-        throw(i18n('noLogged'));
-    }
 
     response.output = i18n('balance', { balance: user.balance });
 
     return response;
-}
+};
 
-module.exports.command = 'balance';
+module.exports = [route(CMD), needUser, balanceCmd];
+module.exports.command = CMD;

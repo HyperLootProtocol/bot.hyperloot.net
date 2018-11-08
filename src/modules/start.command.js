@@ -22,7 +22,7 @@ module.exports = async function(response, { input, username, id, db, commands, i
         const help = commands
             .filter(command => command.help)
             .map(command => i18n('help', { PREFIX, ...command }))
-            .join('\n')
+            .join('\n');
 
         response.user = newUser;
         response.output = `${i18n('startHey', { username })} \n\n ${i18n('start')} \n\n ${help}`;

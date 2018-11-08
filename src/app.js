@@ -1,5 +1,6 @@
 // Inner kitchen our bot service
 
+const _ = require('lodash');
 const {db} = require('./db');
 const {PREFIX} = require('./config');
 const {i18nFactory} = require('./i18n');
@@ -29,12 +30,13 @@ module.exports = function() {
             };
 
             for (const executor of modules) {
-                if (executor.command && !input.startsWith(`${PREFIX}${executor.command}`)) {
-                    continue;
-                }
+                // TODO: replace with isCommand
+                // if (executor.command && !input.startsWith(`${PREFIX}${executor.command}`)) {
+                //     continue;
+                // }
 
                 try {
-                    response = await executor(response, {
+                    await executeSubchain(executor, response, {
                         ...options,
                         i18n,
                         input,
@@ -55,3 +57,24 @@ module.exports = function() {
 
     return self;
 };
+
+async function executeSubchain(executor, response, options) {
+    if (_.isArray(executor)) {
+        response.skipChain = false;
+
+        for (let i = 0; i < executor.length; i++) {
+            await executeSubchain(executor[i], response, options);
+
+            if (response.skipChain)
+                break;
+        }
+
+        return response;
+    }
+
+    if (_.isFunction(executor)) {
+        return await executor(response, options)
+    }
+
+    throw(options.i18n('badSubchain'));
+}

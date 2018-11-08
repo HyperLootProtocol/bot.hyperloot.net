@@ -14,4 +14,6 @@ module.exports = {
         webhookEndpoint: process.env.DISCORD_WEBHOOKENDPOINT,
         guildId: process.env.GUILD_ID || '450987902667718656',
     },
+    // see: https://github.com/yagop/node-telegram-bot-api/issues/319#issuecomment-324963294
+    NTBA_FIX_319: true,
 };

@@ -10,6 +10,7 @@ const error = require('./modules/error');
 const empty = require('./modules/empty');
 const pending = require('./modules/pending');
 
+const parseCommand = require('./modules/parseCommand');
 const start = require('./modules/start.command');
 const pong = require('./modules/pong.command');
 const help = require('./modules/help.command');
@@ -28,17 +29,20 @@ const appInstance = botApp().register([
     // KEEP IN MIND, ORDER IMPORTANT!!!
     user,
 
-    start,
-    pong,
-    help,
-    eth,
+    parseCommand,
+
+    // TODO rollback
+    // start,
+    // pong,
+    // help,
+    // eth,
     balance,
     faq,
-    support,
-    terms,
-
-    ...missions,
-    ...moderation,
+    // support,
+    // terms,
+    //
+    // ...missions,
+    // ...moderation,
 
     // ITS LIKE ERROR HANDLER? NOCOMAND HANDLER OR SOMETHING LIKE
     // PLACE LAST, THEN ALL OTHER MODULES EXECUTE
