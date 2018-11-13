@@ -29,15 +29,19 @@ const appInstance = botApp().register([
     // KEEP IN MIND, ORDER IMPORTANT!!!
     user,
 
-    parseCommand,
-    start,
-    pong,
-    help,
-    eth,
-    balance,
-    faq,
-    support,
-    terms,
+    // simple commands
+    [
+        parseCommand,
+
+        start,
+        pong,
+        help,
+        eth,
+        balance,
+        faq,
+        support,
+        terms,
+    ],
 
     // TODO: refactor missions
     // ...missions,

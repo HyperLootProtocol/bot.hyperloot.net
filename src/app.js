@@ -56,13 +56,13 @@ module.exports = function() {
 
 async function executeSubchain(executor, response, options) {
     if (isArray(executor)) {
-        response.skipChain = false;
-
         for (let i = 0; i < executor.length; i++) {
             await executeSubchain(executor[i], response, options);
 
-            if (response.skipChain)
+            if (response.skipChain) {
+                response.skipChain = false;
                 break;
+            }
         }
 
         return response;
