@@ -1,6 +1,6 @@
-const {PREFIX} = require('../config');
+const command = require('./command');
 
-module.exports = async function(response, { input, username, id, db, commands, i18n }) {
+const start = async function(response, { input, username, id, db, i18n }) {
     if (response.user) {
         response.output = i18n('startHey', { username });
         console.log('debug', response.user)
@@ -19,10 +19,12 @@ module.exports = async function(response, { input, username, id, db, commands, i
         };
         db.users.insert(newUser);
 
-        const help = commands
-            .filter(command => command.help)
-            .map(command => i18n('help', { PREFIX, ...command }))
-            .join('\n');
+        // TODO: help message
+        // const help = commands
+        //     .filter(command => command.help)
+        //     .map(command => i18n('help', { PREFIX, ...command }))
+        //     .join('\n');
+        const help = 'Never fear, I\'m here';
 
         response.user = newUser;
         response.output = `${i18n('startHey', { username })} \n\n ${i18n('start')} \n\n ${help}`;
@@ -31,4 +33,4 @@ module.exports = async function(response, { input, username, id, db, commands, i
     return response;
 };
 
-module.exports.command = 'start';
+module.exports = [command('start'), start];

@@ -1,10 +1,9 @@
+const command = require('../command');
+const needUser = require('../needUser');
 const {missions}= require('../missions');
 
-module.exports = async function(response, { input, id, db, i18n, telegramClient }) {
-    const {user, isModerator} = response;
-    if (!user) {
-        throw(i18n('noLogged'));
-    }
+const complete = async function(response, { input, id, db, i18n, telegramClient }) {
+    const {isModerator} = response;
 
     if (!isModerator) {
         throw(i18n('notmoderator'));
@@ -43,5 +42,5 @@ module.exports = async function(response, { input, id, db, i18n, telegramClient 
     });
 };
 
-module.exports.command = 'complete';
+module.exports = [command('complete'), needUser, complete];
 module.exports.moderator = true;

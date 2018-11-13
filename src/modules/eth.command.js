@@ -1,9 +1,11 @@
 const WAValidator = require('wallet-address-validator');
 
-module.exports = async function(response, { input, db, id, i18n }) {
-    const {user} = response;
+const needUser = require('./needUser');
+const command = require('./command');
 
-    const [, ethAdress] = input.split(' ');
+const balanceCmd = async function(response, { input, db, id, i18n }) {
+    const { user, args } = response;
+    const { ethAdress } = args;
 
     if (!ethAdress) {
         response.output = i18n('eth', { ethAdress: user.eth });
@@ -28,4 +30,4 @@ module.exports = async function(response, { input, db, id, i18n }) {
     return response;
 };
 
-module.exports.command = 'eth';
+module.exports = [command('eth'), needUser, balanceCmd];

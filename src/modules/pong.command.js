@@ -1,8 +1,9 @@
+const command = require('./command');
 
-module.exports = async function(response, { input }) {
+const ping = async function(response, { input }) {
     response.output = 'PONG';
 
     return response;
-}
+};
 
-module.exports.command = 'ping';
+module.exports = [command('ping'), ping];

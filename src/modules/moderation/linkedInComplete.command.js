@@ -1,6 +1,8 @@
+const command = require('../command');
+const needUser = require('../needUser');
 const {reward} = require('../missions/linkedin');
 
-module.exports = async function(response, { db, i18n, handle }) {
+const linkedinComplete = async function(response, { db, i18n, handle }) {
     const {user, isModerator} = response;
 
     if (!user) {
@@ -31,5 +33,5 @@ module.exports = async function(response, { db, i18n, handle }) {
     return response;
 };
 
-module.exports.command = 'linkedin-complete';
+module.exports = [command('linkedin-complete'), needUser, linkedinComplete];
 module.exports.moderator = true;

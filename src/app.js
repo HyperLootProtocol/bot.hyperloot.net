@@ -16,13 +16,14 @@ module.exports = function() {
             return self;
         },
         async process({ input = '', ...options }) {
-            const commands = modules
-                .filter(module => module.command)
-                .map(({ command, moderator }) => ({
-                    command,
-                    moderator,
-                    help: i18n(`command.${command}`, { strict: true })
-                }));
+            // TODO: remove
+            // const commands = modules
+            //     .filter(module => module.command)
+            //     .map(({ command, moderator }) => ({
+            //         command,
+            //         moderator,
+            //         help: i18n(`command.${command}`, { strict: true })
+            //     }));
 
 
             let response = {
@@ -37,7 +38,6 @@ module.exports = function() {
                         i18n,
                         input,
                         db,
-                        commands,
                     });
                 } catch (error) {
                     response.error = error;

@@ -1,8 +1,9 @@
+const command = require('./command');
 
-module.exports = async function(response, { input, i18n }) {
+const support = async function(response, { input, i18n }) {
     response.output = i18n('support');
 
     return response;
-}
+};
 
-module.exports.command = 'support';
+module.exports = [command('support'), support];

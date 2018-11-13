@@ -1,9 +1,7 @@
 const needUser = require('./needUser');
 const command = require('./command');
 
-const CMD = 'balance';
-
-const balanceCmd = async function(response, { i18n }) {
+const balance = async function(response, { i18n }) {
     const {user} = response;
 
     response.output = i18n('balance', { balance: user.balance });
@@ -11,4 +9,4 @@ const balanceCmd = async function(response, { i18n }) {
     return response;
 };
 
-module.exports = [command(CMD), needUser, balanceCmd];
+module.exports = [command('balance'), needUser, balance];

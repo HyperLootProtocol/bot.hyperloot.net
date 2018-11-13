@@ -74,7 +74,8 @@ const missionIniter = async function(response, context) {
 
 const missionChecker = async function(response, context) {
     const { user, pendingInited } = response;
-    const { input, db, id, i18n, username, commands } = context;
+    // TODO: take a look at commands
+    const { input, db, id, i18n, username } = context;
 
     // we init something mission
     if (pendingInited) {
@@ -93,7 +94,7 @@ const missionChecker = async function(response, context) {
     // any command reset checker
     const fullCommandsList = [
         ...missions.map(mission => mission.command),
-        ...commands.map(({command}) => command),
+        // ...commands.map(({command}) => command),
     ];
 
     const inputedCommand = fullCommandsList.filter(command => input.startsWith(`${PREFIX}${command}`))[0];
@@ -105,7 +106,7 @@ const missionChecker = async function(response, context) {
     const mission = missions.filter(({ command }) => user.pending === command)[0];
     if (!mission) {
         return response;
-    };
+    }
 
     const data = get(user, `data.${mission.command}`, {});
 
@@ -156,7 +157,7 @@ const missionChecker = async function(response, context) {
     }
 
     return response;
-}
+};
 
 const missionList = async function(response, { input, db, id, i18n }) {
     const {user} = response;

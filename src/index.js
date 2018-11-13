@@ -30,19 +30,18 @@ const appInstance = botApp().register([
     user,
 
     parseCommand,
-
-    // TODO rollback
-    // start,
-    // pong,
-    // help,
-    // eth,
+    start,
+    pong,
+    help,
+    eth,
     balance,
     faq,
-    // support,
-    // terms,
-    //
+    support,
+    terms,
+
+    // TODO: refactor missions
     // ...missions,
-    // ...moderation,
+    ...moderation,
 
     // ITS LIKE ERROR HANDLER? NOCOMAND HANDLER OR SOMETHING LIKE
     // PLACE LAST, THEN ALL OTHER MODULES EXECUTE

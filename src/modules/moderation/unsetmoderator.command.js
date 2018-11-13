@@ -1,11 +1,9 @@
+const command = require('../command');
+const needUser = require('../needUser');
 const {admin} = require('../../config');
 
-module.exports = async function(response, { input, id, db, i18n }) {
-    const {user, isModerator} = response;
-
-    if (!user) {
-        throw(i18n('noLogged'));
-    }
+const unsetmoderator = async function(response, { input, id, db, i18n }) {
+    const {isModerator} = response;
 
     if (!isModerator) {
         throw(i18n('notmoderator'));
@@ -35,5 +33,5 @@ module.exports = async function(response, { input, id, db, i18n }) {
     });
 };
 
-module.exports.command = 'unsetmoderator';
+module.exports = [command('unsetmoderator'), needUser, unsetmoderator];
 module.exports.moderator = true;
