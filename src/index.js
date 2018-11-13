@@ -45,7 +45,7 @@ const appInstance = botApp().register([
 
     // TODO: refactor missions
     // ...missions,
-    ...moderation,
+    moderation,
 
     // ITS LIKE ERROR HANDLER? NOCOMAND HANDLER OR SOMETHING LIKE
     // PLACE LAST, THEN ALL OTHER MODULES EXECUTE
