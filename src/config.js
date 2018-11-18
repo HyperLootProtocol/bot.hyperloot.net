@@ -10,14 +10,14 @@ module.exports = {
         allowedStatuses: ['creator', 'administrator', 'member'],
     },
     discord: {
-        authToken: process.env.DISCORD_AUTH_TOKEN || 'NDc5Njg4MTcwODM3OTAxMzcx.Dlyd6Q.dCvaAquznBiAQAaZSQXQFyAx9k8',
         webhookEndpoint: process.env.DISCORD_WEBHOOKENDPOINT,
-        guildId: process.env.GUILD_ID || '450987902667718656',
-        greetingsChannelId: process.env.GREETING_CHANNEL_ID || '510871958104309770',
+        // authToken: process.env.DISCORD_AUTH_TOKEN || 'NDc5Njg4MTcwODM3OTAxMzcx.Dlyd6Q.dCvaAquznBiAQAaZSQXQFyAx9k8',
+        // guildId: process.env.GUILD_ID || '450987902667718656',
+        // greetingsChannelId: process.env.GREETING_CHANNEL_ID || '510871958104309770',
         // test
-        // authToken: 'NDc5Njg4MTcwODM3OTAxMzcx.DspLDQ.1-Ve9-_Gqeih623USmwWxFwvz2w',
-        // guildId: '292411714069331969',
-        // greetingsChannelId: '511318565308071952',
+        authToken: 'NDc5Njg4MTcwODM3OTAxMzcx.DspLDQ.1-Ve9-_Gqeih623USmwWxFwvz2w',
+        guildId: '292411714069331969',
+        greetingsChannelId: '511318565308071952',
     },
     // see: https://github.com/yagop/node-telegram-bot-api/issues/319#issuecomment-324963294
     NTBA_FIX_319: true,

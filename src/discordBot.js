@@ -12,51 +12,56 @@ bot.on('ready', () => {
     console.log('Discord bot is ready to serve!');
 });
 
-bot.on('guildMemberAdd', (member) => {
-    console.log(`New guild member added: ${member.user.id}`);
-    const guild = member.guild;
-    const defaultChannel = guild.channels.find(channel => channel.id === discordCfg.greetingsChannelId);
+function initDiscordBot(appInstance) {
+    bot.on('message', (msg) => {
+        botProcessor('message', msg);
+        // const admins = ['fenruga', 'dcversus'];
 
-    if (defaultChannel) {
-        defaultChannel.send(i18n('guildMemberAdd', {id: member.user.id}));
+        // const match = guild.members.filter(member =>
+        //     admins.contains(member.user.username) &&
+        //     // member.user.discriminator === '3422' &&
+        //     !member.deleted
+        // );
+        // console.log('Bot received a message ' + msg.content);
+
+    });
+
+    bot.on('guildMemberAdd', (member) => {
+        botProcessor('guildMemberAdd', member);
+        // console.log(`New guild member added: ${member.user.id}`);
+        // const guild = member.guild;
+        // const defaultChannel = guild.channels.find(channel => channel.id === discordCfg.greetingsChannelId);
+        //
+        // if (defaultChannel) {
+        //     defaultChannel.send(i18n('guildMemberAdd', {id: member.user.id}));
+        // }
+    });
+
+    function sendMessage ({ data, output }) {
+        const { channel } = data;
+        if (!channel || !output) {
+            return;
+        }
+
+        incomingMessage.channel.send(output);
     }
-});
 
-// bot.on('channelCreate', async channel => {
-//     console.log('New channel opened!');
-//
-//     if (channel.type !== "dm") return;
-//
-//     channel.send('Hello, new one');
-// });
-//
-// bot.on('message', async msg => {
-//     // if (msg.author.id === bot.user.id ||
-//     //     msg.author.bot ||
-//     //     msg.channel.type !== "dm" ||
-//     //     !msg.content.startsWith(PREFIX)
-//     // ) return;
-//
-//     const guild = bot.guilds.get('292411714069331969');
-//
-//     const match = guild.members.filter(member =>
-//         member.user.username === 'dcversus' &&
-//         // member.user.discriminator === '3422' &&
-//         !member.deleted
-//     );
-//     if (!_.isEmpty(match)) {
-//         console.log('match!');
-//     }
-//     else {
-//         console.log('fail!');
-//     }
-//     console.log('Bot received a message ' + msg.content);
-//
-//     if (msg.content === '!hi') {
-//         msg.reply('hello there');
-//     }
-// });
+    function botProcessor (event, data) {
+        appInstance.process({
+            data,
+            from: 'discord',
+            event,
+            handle({ output }) {
+                sendMessage(data, output);
+            },
+            discordClient : bot,
+        });
+    };
 
-bot.login(token);
+    bot.login(token);
+}
 
-module.exports = bot;
+module.exports = {
+    client: bot,
+    init: initDiscordBot,
+}

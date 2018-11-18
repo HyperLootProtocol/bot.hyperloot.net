@@ -1,9 +1,13 @@
 const express = require('express');
 const TelegramBot = require('node-telegram-bot-api');
-const discordClient = require('./discordBot');
+const {
+    client: discordClient,
+    init: discordInit,
+} = require('./discordBot');
 
 const botApp = require('./app');
 const {telegram: telegramCfg, url} = require('./config');
+const {discord: discordCfg} = require('./config');
 
 const user = require('./modules/user');
 const error = require('./modules/error');
@@ -33,19 +37,19 @@ const appInstance = botApp().register([
     [
         parseCommand,
 
-        start,
+        // start,
         pong,
-        help,
-        eth,
-        balance,
-        faq,
-        support,
-        terms,
+        // help,
+        // eth,
+        // balance,
+        // faq,
+        // support,
+        // terms,
     ],
 
     // TODO: refactor missions
     // ...missions,
-    moderation,
+    // moderation,
 
     // ITS LIKE ERROR HANDLER? NOCOMAND HANDLER OR SOMETHING LIKE
     // PLACE LAST, THEN ALL OTHER MODULES EXECUTE
@@ -84,6 +88,11 @@ if (telegramCfg.authToken) { // for local dev purposes
 //             discordClient,
 //         });
     });
+}
+
+if (discordCfg.authToken) {
+    discordInit(appInstance);
+    
 }
 
 // web api, i use it for local testing
