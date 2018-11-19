@@ -10,11 +10,14 @@ const {telegram: telegramCfg, url} = require('./config');
 const {discord: discordCfg} = require('./config');
 
 const user = require('./modules/user');
+const discordUser = require('./modules/discordUser');
 const error = require('./modules/error');
 const empty = require('./modules/empty');
 const pending = require('./modules/pending');
 const event = require('./modules/event');
 const source = require('./modules/source');
+const addExp = require('./modules/addExp');
+const updateExp = require('./modules/updateExp');
 
 const parseCommand = require('./modules/parseCommand');
 const start = require('./modules/start.command');
@@ -33,39 +36,57 @@ const expressApp = express();
 
 const appInstance = botApp().register([
     // KEEP IN MIND, ORDER IMPORTANT!!!
-    // telegram commands
+
+    // telegram
     [
         source('telegram'),
 
         user,
-        parseCommand,
 
-        start,
-        pong,
-        help,
-        eth,
-        balance,
-        faq,
-        support,
-        terms,
+        [
+            parseCommand,
+
+            start,
+            pong,
+            help,
+            eth,
+            balance,
+            faq,
+            support,
+            terms,
+
+            // TODO: refactor missions
+            // ...missions,
+            // moderation,
+        ],
+
+        empty,
     ],
 
-    // discord commands
+    // discord
     [
         source('discord'),
+        discordUser,
 
-        parseCommand,
+        [
+            event('message'),
 
-        pong,
+            addExp(1),
+
+            [
+                parseCommand,
+
+                pong,
+
+                empty,
+            ],
+        ],
+
+        updateExp,
     ],
-
-    // TODO: refactor missions
-    // ...missions,
-    // moderation,
 
     // ITS LIKE ERROR HANDLER? NOCOMAND HANDLER OR SOMETHING LIKE
     // PLACE LAST, THEN ALL OTHER MODULES EXECUTE
-    empty,
     error,
 ]);
 

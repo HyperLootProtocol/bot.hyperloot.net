@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const extend = require('lodash/extend');
 const Discord = require("discord.js");
 const bot = new Discord.Client();
 const config = require('./config');
@@ -14,21 +14,12 @@ bot.on('ready', () => {
 
 function initDiscordBot(appInstance) {
     bot.on('message', (msg) => {
-        // anti-bot + anti-self
+        // anti-bot + anti-self-loop
         if (msg.author.bot) {
             return;
         }
 
-        discordProcessor('message', msg);
-        // const admins = ['fenruga', 'dcversus'];
-
-        // const match = guild.members.filter(member =>
-        //     admins.contains(member.user.username) &&
-        //     // member.user.discriminator === '3422' &&
-        //     !member.deleted
-        // );
-        // console.log('Bot received a message ' + msg.content);
-
+        discordProcessor('message', msg, {id: msg.author.id});
     });
 
     bot.on('guildMemberAdd', (member) => {
@@ -51,17 +42,20 @@ function initDiscordBot(appInstance) {
         channel.send(output);
     }
 
-    function discordProcessor (event, data) {
-        appInstance.process({
-            data,
-            input: data.content || '',
-            from: 'discord',
-            event,
-            handle({ output }, data) {
-                sendMessage(data, output);
+    function discordProcessor (event, data, options) {
+        appInstance.process(extend(
+            {
+                data,
+                input: data.content || '',
+                from: 'discord',
+                event,
+                handle({ output }, data) {
+                    sendMessage(data, output);
+                },
+                discordClient : bot,
             },
-            discordClient : bot,
-        });
+            options
+        ));
     }
 }
 
