@@ -13,6 +13,8 @@ const user = require('./modules/user');
 const error = require('./modules/error');
 const empty = require('./modules/empty');
 const pending = require('./modules/pending');
+const event = require('./modules/event');
+const source = require('./modules/source');
 
 const parseCommand = require('./modules/parseCommand');
 const start = require('./modules/start.command');
@@ -31,20 +33,30 @@ const expressApp = express();
 
 const appInstance = botApp().register([
     // KEEP IN MIND, ORDER IMPORTANT!!!
-    user,
-
-    // simple commands
+    // telegram commands
     [
+        source('telegram'),
+
+        user,
         parseCommand,
 
-        // start,
+        start,
         pong,
-        // help,
-        // eth,
-        // balance,
-        // faq,
-        // support,
-        // terms,
+        help,
+        eth,
+        balance,
+        faq,
+        support,
+        terms,
+    ],
+
+    // discord commands
+    [
+        source('discord'),
+
+        parseCommand,
+
+        pong,
     ],
 
     // TODO: refactor missions
@@ -92,7 +104,6 @@ if (telegramCfg.authToken) { // for local dev purposes
 
 if (discordCfg.authToken) {
     discordInit(appInstance);
-    
 }
 
 // web api, i use it for local testing

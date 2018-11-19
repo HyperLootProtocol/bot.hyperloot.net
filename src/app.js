@@ -45,7 +45,7 @@ module.exports = function() {
                 }
             }
 
-            options.handle(response);
+            options.handle(response, options.data);
 
             return self;
         }

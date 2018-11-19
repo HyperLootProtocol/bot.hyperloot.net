@@ -14,7 +14,12 @@ bot.on('ready', () => {
 
 function initDiscordBot(appInstance) {
     bot.on('message', (msg) => {
-        botProcessor('message', msg);
+        // anti-bot + anti-self
+        if (msg.author.bot) {
+            return;
+        }
+
+        discordProcessor('message', msg);
         // const admins = ['fenruga', 'dcversus'];
 
         // const match = guild.members.filter(member =>
@@ -27,7 +32,7 @@ function initDiscordBot(appInstance) {
     });
 
     bot.on('guildMemberAdd', (member) => {
-        botProcessor('guildMemberAdd', member);
+        discordProcessor('guildMemberAdd', member);
         // console.log(`New guild member added: ${member.user.id}`);
         // const guild = member.guild;
         // const defaultChannel = guild.channels.find(channel => channel.id === discordCfg.greetingsChannelId);
@@ -37,31 +42,32 @@ function initDiscordBot(appInstance) {
         // }
     });
 
-    function sendMessage ({ data, output }) {
+    function sendMessage (data, output) {
         const { channel } = data;
         if (!channel || !output) {
             return;
         }
 
-        incomingMessage.channel.send(output);
+        channel.send(output);
     }
 
-    function botProcessor (event, data) {
+    function discordProcessor (event, data) {
         appInstance.process({
             data,
+            input: data.content || '',
             from: 'discord',
             event,
-            handle({ output }) {
+            handle({ output }, data) {
                 sendMessage(data, output);
             },
             discordClient : bot,
         });
-    };
-
-    bot.login(token);
+    }
 }
+
+bot.login(token);
 
 module.exports = {
     client: bot,
     init: initDiscordBot,
-}
+};
