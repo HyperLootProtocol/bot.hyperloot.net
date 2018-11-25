@@ -1,9 +1,5 @@
 const checkEvent = async function(expectedEvent, response, {event}) {
-    if (event !== expectedEvent) {
-        response.skipChain = true;
-    }
-
-    return response;
+    return event === expectedEvent ? response : null;
 };
 
 module.exports = function(event) {

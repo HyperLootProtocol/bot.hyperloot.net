@@ -3,7 +3,7 @@ module.exports = function(response, { id, db }) {
     const { exp } = response;
 
     if (!exp) {
-        return Promise.resolve(response);
+        return response;
     }
 
     return new Promise((resolve, reject) => {

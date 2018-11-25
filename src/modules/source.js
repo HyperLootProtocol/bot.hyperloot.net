@@ -1,9 +1,5 @@
 const checkSource = async function(source, response, {from}) {
-    if (source !== from) {
-        response.skipChain = true;
-    }
-
-    return response;
+    return source === from ? response : null;
 };
 
 module.exports = function(source) {

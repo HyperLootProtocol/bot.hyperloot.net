@@ -3,8 +3,7 @@ const checkCommand = async function(command, response) {
     const {cmd, args} = response;
 
     if (cmd !== expectedCmd) {
-        response.skipChain = true;
-        return response;
+        return null;
     }
 
     let newArgs = {};
