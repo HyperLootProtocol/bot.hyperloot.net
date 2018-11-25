@@ -2,13 +2,13 @@ const parseCommand = require('../parseCommand');
 const {PREFIX} = require('../../config');
 
 describe('on non-command message', () => {
-    test('add skipChain field to response', async () => {
+    test('return null', async () => {
         const msg = 'foo';
         const response = {};
 
         await parseCommand(response, {input: msg});
 
-        return expect(response).toHaveProperty('skipChain', true);
+        return expect(response).toEqual(null);
     });
 });
 

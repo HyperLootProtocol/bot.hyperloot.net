@@ -16,11 +16,11 @@ describe('on command without args', () => {
     });
 
     describe('on incorrect command', () => {
-        test('add skipChain field to response', async () => {
+        test('returns null', async () => {
             const response = {cmd: expectedCmd + 'WrongCommand', args};
             const actualResponse = await command(expectedCmd)(cloneDeep(response));
 
-            return expect(actualResponse).toHaveProperty('skipChain', true);
+            return expect(actualResponse).toEqual(null);
         });
     });
 });
