@@ -20,7 +20,7 @@ module.exports = async function(response, { id, i18n, db }) {
     }
 
     return new Promise((resolve, reject) => {
-        db.users.findOne({discordId: id}, (err, user) => {
+        db.users.findOne({discordId: id}, async (err, user) => {
             const lvl = get(user, 'data.exp.lvl') + 1;
 
             const incQuery = {
@@ -29,7 +29,7 @@ module.exports = async function(response, { id, i18n, db }) {
             };
 
             // TODO one request/query, lf mongo man
-            db.users.update({
+            await db.users.update({
                 discordId: id,
             }, {
                 $inc: incQuery,

@@ -12,7 +12,7 @@ module.exports = async function(response, { id, db }) {
     }
 
     return new Promise((resolve, reject) => {
-        db.users.findOne({discordId: id}, (err, user) => {
+        db.users.findOne({discordId: id}, async (err, user) => {
             let setQuery = {};
             let incQuery;
 
@@ -48,13 +48,13 @@ module.exports = async function(response, { id, db }) {
                 };
 
             // TODO one request/query, lf mongo man
-            db.users.update({
+            await db.users.update({
                 discordId: id,
             }, {
                 $set: setQuery,
             });
 
-            db.users.update({
+            await db.users.update({
                 discordId: id,
             }, {
                 $inc: incQuery,

@@ -24,6 +24,7 @@ const updateLvl = require('./modules/updateLvl');
 const parseCommand = require('./modules/parseCommand');
 const start = require('./modules/start.command');
 const pong = require('./modules/pong.command');
+const status = require('./modules/status.command');
 const help = require('./modules/help.command');
 const eth = require('./modules/eth.command');
 const balance = require('./modules/balance.command');
@@ -79,6 +80,7 @@ const appInstance = botApp().register([
                 parseCommand,
 
                 pong,
+                status,
 
                 empty,
             ],
@@ -107,7 +109,7 @@ if (telegramCfg.authToken) { // for local dev purposes
 
     telegramClient.on('message', ({ from, text, chat }) => {
         const { id, username,  } = from;
-        
+
         telegramClient.sendMessage(id, 'Thank you for participating in HyperLoot bounty 1.0! We will calculate the end proceeding and airdrop them out on February 15th, 2019. Stay tuned for more missions in Bounty 2.0! I will contact everyone soon!');
         return;
 

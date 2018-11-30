@@ -15,6 +15,8 @@ start,"My name is Hyper and I'm an expert on all things Hyperloot!💰 It's dang
 terms,"https://github.com/HyperLootProtocol/Starter-Pack/wiki/Bounty-Terms-&-Conditions"
 help,"${PREFIX}${command} - ${help}"
 guildMemberAdd,"<@${id}>, welcome to our server!"
+status,"Ayo!\nLevel: ${curLvl}\nExp: ${exp}\nNext level on: ${expToNext}"
+statusError,"Something's wrong with your status, mate =\\"
 ,
 command.list, "A list fo all completed and incomplete bounties 👈❗"
 command.eth,"Use this to provide us your ETH wallet address or check your current ETH💰🔖 "
