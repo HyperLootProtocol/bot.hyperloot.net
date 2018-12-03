@@ -13,8 +13,10 @@ reader.on('row', ([key, value]) => {
     }
 });
 
+const newlines = (str) => str.replace(/\\n/g, '\n');
+
 function i18nFactory() {
-    reader.read('i18n.csv', rawData)
+    reader.read('i18n.csv', rawData);
 
     return (key, props = {}) => {
         const parsed = rawData[key] || [''];
@@ -27,6 +29,8 @@ function i18nFactory() {
         for(let prop in props) {
             string = string.replace(`\${${prop}}`, props[prop]);
         }
+
+        string = newlines(string);
 
         return string;
     }

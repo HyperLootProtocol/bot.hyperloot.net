@@ -12,7 +12,7 @@ const status = async function(response, { i18n }) {
     if (!curLvl || !exp || !expToNext) {
         output = i18n('statusError');
     } else{
-        output = i18n('status', {curLvl, exp, expToNext}).split('\\n').join('\n');
+        output = i18n('status', {curLvl, exp, expToNext});
     }
 
     response.output = output;
