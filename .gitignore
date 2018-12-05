@@ -8,3 +8,5 @@ npm-debug.log
 yarn-error.log
 .wwp-cache
 .DS_Store
+
+package-lock\.json
