@@ -11,10 +11,10 @@ module.exports = {
     },
     discord: {
         webhookEndpoint: process.env.DISCORD_WEBHOOKENDPOINT,
-        authToken: process.env.DISCORD_AUTH_TOKEN || 'NDc5Njg4MTcwODM3OTAxMzcx.Dlyd6Q.dCvaAquznBiAQAaZSQXQFyAx9k8',
-        botId: process.env.BOT_ID || '511203690544365609',
-        greetingsChannelId: process.env.GREETING_CHANNEL_ID || '510871958104309770',
-        guildId: process.env.GUILD_ID || '450987902667718656',
+        authToken: process.env.DISCORD_AUTH_TOKEN || 'NTE5ODgxNjk4NTQ1MjM4MDIw.Dul0LQ.P5fBXB5L9t76sFsWPPKPeE8Sb9c',
+        // botId: process.env.BOT_ID || '511203690544365609',
+        // greetingsChannelId: process.env.GREETING_CHANNEL_ID || '510871958104309770',
+        // guildId: process.env.GUILD_ID || '450987902667718656',
         // test
         // authToken: 'NDc5Njg4MTcwODM3OTAxMzcx.DspLDQ.1-Ve9-_Gqeih623USmwWxFwvz2w',
         // botId: '479688170837901371',

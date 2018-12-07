@@ -24,6 +24,7 @@ const updateLvl = require('./modules/updateLvl');
 const parseCommand = require('./modules/parseCommand');
 const start = require('./modules/start.command');
 const pong = require('./modules/pong.command');
+const ping = require('./modules/ping.command');
 const status = require('./modules/status.command');
 const help = require('./modules/help.command');
 const eth = require('./modules/eth.command');
@@ -41,32 +42,32 @@ const appInstance = botApp().register([
     // KEEP IN MIND, ORDER IMPORTANT!!!
 
     // telegram
-    [
-        source('telegram'),
+    // [
+    //     source('telegram'),
 
-        user,
+    //     user,
 
-        [
-            parseCommand,
+    //     [
+    //         parseCommand,
 
-            start,
-            pong,
-            help,
-            eth,
-            balance,
-            faq,
-            support,
-            terms,
+    //         start,
+    //         pong,
+    //         help,
+    //         eth,
+    //         balance,
+    //         faq,
+    //         support,
+    //         terms,
 
-            // TODO: refactor missions
-            // ...missions,
-            // moderation,
-        ],
+    //         // TODO: refactor missions
+    //         // ...missions,
+    //         // moderation,
+    //     ],
 
-        empty,
-    ],
+    //     empty,
+    // ],
 
-    // discord
+    // // discord
     [
         source('discord'),
         discordUser,
@@ -81,14 +82,15 @@ const appInstance = botApp().register([
 
                 pong,
                 status,
+                ping,
 
                 empty,
             ],
         ],
     ],
 
-    // ITS LIKE ERROR HANDLER? NOCOMAND HANDLER OR SOMETHING LIKE
-    // PLACE LAST, THEN ALL OTHER MODULES EXECUTE
+    // // ITS LIKE ERROR HANDLER? NOCOMAND HANDLER OR SOMETHING LIKE
+    // // PLACE LAST, THEN ALL OTHER MODULES EXECUTE
     updateExp,
     updateLvl,
     error,
