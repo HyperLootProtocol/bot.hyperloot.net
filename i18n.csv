@@ -17,6 +17,7 @@ help,"${PREFIX}${command} - ${help}"
 guildMemberAdd,"<@${id}>, welcome to our server!"
 status,"Ayo!\nLevel: ${curLvl}\nExp: ${exp}\nNext level on: ${expToNext}"
 statusError,"Something's wrong with your status, mate =\\"
+mock,"Hey <@${id}>, ${lastWord}"
 ,
 command.list, "A list fo all completed and incomplete bounties 👈❗"
 command.eth,"Use this to provide us your ETH wallet address or check your current ETH💰🔖 "

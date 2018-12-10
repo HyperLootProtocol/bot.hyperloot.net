@@ -24,6 +24,7 @@ const updateLvl = require('./modules/updateLvl');
 const parseCommand = require('./modules/parseCommand');
 const start = require('./modules/start.command');
 const pong = require('./modules/pong.command');
+const mock = require('./modules/mock.command');
 const status = require('./modules/status.command');
 const help = require('./modules/help.command');
 const eth = require('./modules/eth.command');
@@ -39,9 +40,9 @@ const expressApp = express();
 
 const appInstance = botApp().register([
     // KEEP IN MIND, ORDER IMPORTANT!!!
-
+    
     // telegram
-    [
+    /*[
         source('telegram'),
 
         user,
@@ -64,7 +65,7 @@ const appInstance = botApp().register([
         ],
 
         empty,
-    ],
+    ],*/
 
     // discord
     [
@@ -81,6 +82,8 @@ const appInstance = botApp().register([
 
                 pong,
                 status,
+                faq,
+                mock,
 
                 empty,
             ],
