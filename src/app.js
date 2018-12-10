@@ -1,75 +1,67 @@
-// Inner kitchen our bot service
-
 const isArray = require('lodash/isArray');
 const isFunction = require('lodash/isFunction');
+
 const {db} = require('./db');
 const {i18nFactory} = require('./i18n');
 
-module.exports = function() {
-    const i18n = i18nFactory();
-    let modules = [];
 
-    const self = {
-        register(executors) {
-            modules = [...executors];
+module.exports = class App {
+    constructor() {
+        this.modules = [];
 
-            return self;
-        },
-        async process({ input = '', ...options }) {
-            // TODO: remove
-            // const commands = modules
-            //     .filter(module => module.command)
-            //     .map(({ command, moderator }) => ({
-            //         command,
-            //         moderator,
-            //         help: i18n(`command.${command}`, { strict: true })
-            //     }));
+        // setup context here
+        this.context = {
+            i18n: i18nFactory(),
+            db,
+        };
+    }
 
+    use(module) {
+        this.modules.push(module);
 
-            let response = {
-                output: '',
-            };
+        return this;
+    }
 
-            for (const executor of modules) {
+    async process({ input = '', ...options }) {
+        let response = {
+            output: '',
+        };
 
-                try {
-                    await executeSubchain(executor, response, {
-                        ...options,
-                        i18n,
-                        input,
-                        db,
-                    });
-                } catch (error) {
-                    response.error = error;
-                    console.error(error);
+        for (const executor of this.modules) {
+            try {
+                await this._execute(executor, response, {
+                    ...this.context,
+                    ...options, // Dirty need some standard structure
+                    input,
+                });
+            } catch (error) {
+                response.error = error;
+                console.error(error);
+            }
+        }
+
+        options.handle(response, options.data);
+
+        return this;
+    }
+
+    async _execute(executor, response, options) {
+        if (isArray(executor)) {
+            for (let i = 0; i < executor.length; i++) {
+                const res = await this._execute(executor[i], response, options);
+
+                if (res === null) {
+                    break;
                 }
             }
 
-            options.handle(response, options.data);
-
-            return self;
-        }
-    };
-
-    return self;
-};
-
-async function executeSubchain(executor, response, options) {
-    if (isArray(executor)) {
-        for (let i = 0; i < executor.length; i++) {
-            const res = await executeSubchain(executor[i], response, options);
-
-            if (res === null) {
-                break;
-            }
+            return response;
         }
 
-        return response;
-    }
+        if (isFunction(executor)) {
+            return await executor(response, options)
+        }
 
-    if (isFunction(executor)) {
-        return await executor(response, options)
+        throw(this.context.i18n('badSubchain'));
     }
-
-    throw(options.i18n('badSubchain'));
 }
