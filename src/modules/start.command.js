@@ -2,7 +2,7 @@ const command = require('./command');
 
 const start = async function(response, { input, username, id, db, i18n }) {
     if (response.user) {
-        response.output = i18n('startHey', { username });
+        response.output = i18n('startHey', { id });
         console.log('debug', response.user)
     }
 
@@ -27,7 +27,7 @@ const start = async function(response, { input, username, id, db, i18n }) {
         const help = 'Never fear, I\'m here';
 
         response.user = newUser;
-        response.output = `${i18n('startHey', { username })} \n\n ${i18n('start')} \n\n ${help}`;
+        response.output = `${i18n('startHey', { id })} \n\n ${i18n('start')} \n\n ${help}`;
     }
 
     return response;

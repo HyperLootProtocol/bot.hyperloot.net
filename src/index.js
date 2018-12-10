@@ -25,6 +25,7 @@ const parseCommand = require('./modules/parseCommand');
 const start = require('./modules/start.command');
 const pong = require('./modules/pong.command');
 const ping = require('./modules/ping.command');
+const lick = require('./modules/lick.command');
 const status = require('./modules/status.command');
 const help = require('./modules/help.command');
 const eth = require('./modules/eth.command');
@@ -75,15 +76,16 @@ const appInstance = botApp().register([
         [
             event('message'),
             logText,
-            addExp(1),
+            addExp(2),
 
             [
                 parseCommand,
 
                 pong,
                 status,
-                ping,
-
+                ping,                
+                lick,
+                start,
                 empty,
             ],
         ],
