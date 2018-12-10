@@ -1,7 +1,7 @@
 const command = require('./command');
 
 const mock = async function(response, { input, i18n }) {
-	const {user} = response 
+	const {user} = response;
 	var lastWord = input.substring(input.lastIndexOf(" ")+1);
 	lastWord = lastWord != '/mock' ? lastWord : 'nothing to mock('
 	var id = user.discordId;
