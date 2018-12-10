@@ -1,5 +1,6 @@
 module.exports = {
     PREFIX: '/',
+    SOCIAL_PREFIX: '!',
     lang: process.env.BOT_LANG || 'en',
     port: process.env.PORT || process.env.VCAP_APP_PORT || 3000,
     mongoURI: process.env.MONGODB_URI,

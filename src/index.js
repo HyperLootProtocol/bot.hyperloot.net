@@ -21,6 +21,7 @@ const log = require('./modules/log');
 
 const pong = require('./modules/commands/pong');
 const status = require('./modules/commands/status');
+const emotion = require('./modules/emotion.social');
 
 const instance = new App();
 
@@ -45,6 +46,7 @@ instance.use([
     status,
     quiz,
     poll,
+    emotion,
 
     updateExp,
 
