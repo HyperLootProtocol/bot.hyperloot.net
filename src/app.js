@@ -44,18 +44,12 @@ module.exports = class App {
         //     handle: () => {}
         // }
 
-        for (const module of this.modules) {
-            try {
-                response = await this._execute(module, response, {
-                    ...this.context,
-                    ...context, // Dirty need some standard structure
-                    input,
-                });
-            } catch (error) {
-                response.error = error;
-                console.error(error);
-            }
-        }
+
+        response = await this._execute(this.modules, response, {
+            ...this.context,
+            ...context, // Dirty need some standard structure
+            input,
+        });
 
         // after all modules we call one
         context.handle(response, context.data);
@@ -68,7 +62,14 @@ module.exports = class App {
 
         if (isArray(module)) {
             for (let i = 0; i < module.length; i++) {
-                const _response = await this._execute(module[i], response, context);
+                let _response = response;
+
+                try {
+                    _response = await this._execute(module[i], response, context);
+                } catch (error) {
+                    response.error = error;
+                    console.error('error', error);
+                }
 
                 if (_response === null) {
                     break;

@@ -12,15 +12,39 @@ const instance = new App();
 // commands initializers
 const parseCommand = require('./modules/parseCommand');
 const pong = require('./modules/pong.command');
+const status = require('./modules/status.command');
+
+const user = require('./modules/user');
+const error = require('./modules/error');
+const empty = require('./modules/empty');
+// const event = require('./modules/event');
+const addExp = require('./modules/addExp');
+const logText = require('./modules/logText');
+const updateExp = require('./modules/updateExp');
+const updateLvl = require('./modules/updateLvl');
 
 instance.use([
     parseCommand,
+    user,
 
-    pong,
+    [
+        logText,
+        addExp(1),
+
+        pong,
+        status,
+
+        empty,
+    ],
+
+    updateExp,
+    updateLvl,
+
+    error,
 ]);
 
 // web api, i use it for local testing
-// http://localhost:3000/api?message=<message>&id=122657091
+// http://localhost:3000/api?message=/ping
 expressApp.use('/api', (req, res) => {
     instance.process({
         input: req.query.message,

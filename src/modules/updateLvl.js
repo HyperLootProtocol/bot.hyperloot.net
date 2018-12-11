@@ -36,6 +36,7 @@ module.exports = async function(response, { id, i18n, db }) {
             });
 
             const updLvlMsg = i18n('lvlUp', {lvl: lvl, id});
+            // TODO! send several messages
             response.output = output ? `${output}\n${updLvlMsg}` : updLvlMsg;
 
             resolve(response);

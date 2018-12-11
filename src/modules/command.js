@@ -10,6 +10,7 @@ const checkCommand = async function(command, response) {
     for (let i = 0; i < expectedArgs.length; i++) {
         newArgs[expectedArgs[i]] = args[i];
     }
+
     response.args = newArgs;
 
     return response;

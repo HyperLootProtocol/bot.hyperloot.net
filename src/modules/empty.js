@@ -7,7 +7,6 @@ module.exports = async function(response, { input, i18n }) {
         throw(i18n('empty')); // [2]
     }
 
-    // return Promise.reject(i18n('empty')); // [3]
     return response;
 };
 
