@@ -7,8 +7,9 @@ const echo = (response, context) => ({ ...response, output: context.input });
 const inccorrect = 'dont do it';
 // const breaker = (response) => {dont: 'do it'};
 
-const preventer = (response) => null;
+const preventer = () => null;
 const mutator2 = (response) => ({ ...response, test2: true });
+const errorer = () => { throw('error'); };
 
 describe('app with single executor', () => {
     test('without input should return empty string', async (done) => {
@@ -100,7 +101,7 @@ describe('app with module', () => {
         });
     });
 
-    test('should provide output mutatiion', async (done) => {
+    test('should provide output mutation', async (done) => {
         const instance = new App();
         const msg = 'lol';
 
@@ -125,6 +126,22 @@ describe('app with module', () => {
             input: msg,
             handle(response) {
                 expect(response).toEqual({output: ''});
+                done();
+            },
+        });
+    });
+
+    test('should provide throw error with skipping', async (done) => {
+        const instance = new App();
+
+        instance.use([errorer, mutator2]);
+
+        instance.process({
+            input: '',
+            handle(response) {
+                expect(response).toHaveProperty('error');
+                expect(response).not.toHaveProperty('test2', true);
+
                 done();
             },
         });

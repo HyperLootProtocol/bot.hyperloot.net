@@ -27,7 +27,9 @@ module.exports = class App {
         return this;
     }
 
-    async process({ input = '', ...context }) {
+    async process({ input = '', handle, ...context }) {
+        invariant(isFunction(handle), 'handle must be function');
+
         // reference for response object, in future need add here comments and additional universal (non-client-locked) fields
         let response = {
             output: '',
@@ -49,10 +51,11 @@ module.exports = class App {
             ...this.context,
             ...context, // Dirty need some standard structure
             input,
+            // handle,
         });
 
         // after all modules we call one
-        context.handle(response, context.data);
+        handle(response, context.data);
 
         return this;
     }
@@ -69,6 +72,8 @@ module.exports = class App {
                 } catch (error) {
                     response.error = error;
                     console.error('error', error);
+
+                    break;
                 }
 
                 if (_response === null) {
