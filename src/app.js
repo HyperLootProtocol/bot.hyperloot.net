@@ -35,7 +35,7 @@ module.exports = class App {
                     input,
                 });
             } catch (error) {
-                response.error = error;
+                response.output = error;
                 console.error(error);
             }
         }

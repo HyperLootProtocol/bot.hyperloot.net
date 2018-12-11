@@ -9,14 +9,44 @@ const discordBot = new Discord.Client();
 const App = require('./app');
 const instance = new App();
 
+const addExp = require('./modules/addExp');
+const discordUser = require('./modules/discordUser');
+const empty = require('./modules/empty');
+const error = require('./modules/error');
+const event = require('./modules/event');
+const source = require('./modules/source');
+const updateExp = require('./modules/updateExp');
+const updateLvl = require('./modules/updateLvl');
+
 // commands initializers
 const parseCommand = require('./modules/parseCommand');
 const pong = require('./modules/pong.command');
+const status = require('./modules/status.command');
 
 instance.use([
-    parseCommand,
+    [
+        source('discord'),
+        discordUser,
+    ],
 
-    pong,
+    [
+        event('message'),
+        addExp(1),
+    ],
+
+    [
+        parseCommand,
+
+        pong,
+        status,
+
+        empty,
+    ],
+
+    updateExp,
+    updateLvl,
+
+    error,
 ]);
 
 // web api, i use it for local testing
@@ -45,6 +75,7 @@ if (discordCfg.authToken) {
         }
 
         instance.process({
+            id: msg.author.id,
             input: msg.content || '',
             from: 'discord',
             event: 'message',
@@ -57,6 +88,8 @@ if (discordCfg.authToken) {
             },
         });
     });
+
+    discordBot.login(discordCfg.authToken);
 }
 
 module.exports = expressApp;
