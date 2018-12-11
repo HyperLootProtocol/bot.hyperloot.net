@@ -10,13 +10,13 @@ const App = require('./app');
 const instance = new App();
 
 const addExp = require('./modules/addExp');
-const discordUser = require('./modules/discordUser');
 const empty = require('./modules/empty');
 const error = require('./modules/error');
 const event = require('./modules/event');
-const source = require('./modules/source');
+const logText = require('./modules/logText');
 const updateExp = require('./modules/updateExp');
 const updateLvl = require('./modules/updateLvl');
+const user = require('./modules/user');
 
 // commands initializers
 const parseCommand = require('./modules/parseCommand');
@@ -24,14 +24,12 @@ const pong = require('./modules/pong.command');
 const status = require('./modules/status.command');
 
 instance.use([
-    [
-        source('discord'),
-        discordUser,
-    ],
+    user,
 
     [
         event('message'),
         addExp(1),
+        logText,
     ],
 
     [
@@ -50,7 +48,7 @@ instance.use([
 ]);
 
 // web api, i use it for local testing
-// http://localhost:3000/api?message=<message>&id=122657091
+// http://localhost:3000/api?message=/ping
 expressApp.use('/api', (req, res) => {
     instance.process({
         input: req.query.message,

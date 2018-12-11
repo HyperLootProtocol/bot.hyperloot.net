@@ -16,6 +16,7 @@
     "discord.js": "^11.4.2",
     "event-stream": "3.3.4",
     "express": "^4.16.1",
+    "invariant": "^2.2.4",
     "lodash": "^4.17.10",
     "mongodb": "^3.1.4",
     "mongojs": "^2.6.0",

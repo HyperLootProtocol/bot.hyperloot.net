@@ -8,7 +8,7 @@ describe('on non-command message', () => {
 
         await parseCommand(response, {input: msg});
 
-        return expect(response).toEqual(null);
+        return expect(response).toEqual({});
     });
 });
 

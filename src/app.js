@@ -1,11 +1,14 @@
 const isArray = require('lodash/isArray');
 const isFunction = require('lodash/isFunction');
+const invariant = require('invariant');
 
 const {db} = require('./db');
 const {i18nFactory} = require('./i18n');
 
 
 module.exports = class App {
+
+    // TODO: PASS context functions in constructor, dont inject itself here)
     constructor() {
         this.modules = [];
 
@@ -17,51 +20,75 @@ module.exports = class App {
     }
 
     use(module) {
+        // TODO: additional initialization, (support factory modules and modules with metadata)
         this.modules.push(module);
 
+        // for chaining :)
         return this;
     }
 
-    async process({ input = '', ...options }) {
+    async process({ input = '', handle, ...context }) {
+        invariant(isFunction(handle), 'handle must be function');
+
+        // reference for response object, in future need add here comments and additional universal (non-client-locked) fields
         let response = {
             output: '',
+            // attachments: [],
+            // stack: {
+            //   [moduleName]: { ... ??? }
+            //},
+            // ...
         };
 
-        for (const executor of this.modules) {
-            try {
-                await this._execute(executor, response, {
-                    ...this.context,
-                    ...options, // Dirty need some standard structure
-                    input,
-                });
-            } catch (error) {
-                response.output = error;
-                console.error(error);
-            }
-        }
+        // TODO: i prefer to check it before inject here!
+        // let context = {
+        //     input: '',
+        //     handle: () => {}
+        // }
 
-        options.handle(response, options.data);
+
+        response = await this._execute(this.modules, response, {
+            ...this.context,
+            ...context, // Dirty need some standard structure
+            input,
+            // handle,
+        });
+
+        // after all modules we call one
+        handle(response, context.data);
 
         return this;
     }
 
-    async _execute(executor, response, options) {
-        if (isArray(executor)) {
-            for (let i = 0; i < executor.length; i++) {
-                const res = await this._execute(executor[i], response, options);
+    async _execute(module, response, context) {
+        invariant(isArray(module) || isFunction(module), 'module should be array or function');
 
-                if (res === null) {
+        if (isArray(module)) {
+            for (let i = 0; i < module.length; i++) {
+                let _response = response;
+
+                try {
+                    _response = await this._execute(module[i], response, context);
+                } catch (error) {
+                    response.error = error;
+                    console.error('error', error);
+
                     break;
+                }
+
+                if (_response === null) {
+                    break;
+                } else {
+                    response = _response;
                 }
             }
 
             return response;
         }
 
-        if (isFunction(executor)) {
-            return await executor(response, options)
+        // if module is simple executor
+        if (isFunction(module)) {
+            return await module(response, context)
         }
-
-        throw(this.context.i18n('badSubchain'));
     }
 }
