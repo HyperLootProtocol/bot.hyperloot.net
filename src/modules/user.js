@@ -1,12 +1,10 @@
 
 module.exports = async function(response, { db, id, from }) {
 
-    const clientId = `${from}Id`;
-
     return new Promise((resolve, reject) => {
-        db.users.findOne({[clientId]: id}, (err, user) => {
+        db.users.findOne({discordId: id}, (err, user) => {
             if (!user) {
-                user = {[clientId]: id};
+                user = {discordId: id};
 
                 db.users.insert(user);
             }

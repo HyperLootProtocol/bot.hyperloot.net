@@ -4,7 +4,7 @@ const simple = (response) => response;
 const mutator = (response) => ({ ...response, test: true });
 const echo = (response, context) => ({ ...response, output: context.input });
 
-// const inccorrect = 'dont do it';
+const inccorrect = 'dont do it';
 // const breaker = (response) => {dont: 'do it'};
 
 const preventer = (response) => null;
@@ -53,6 +53,20 @@ describe('app with single executor', () => {
             },
         });
     });
+
+    test('can pass only func or array', async (done) => {
+        const instance = new App();
+
+        instance.use(inccorrect);
+
+        expect(() => {
+            instance.process({
+                input: '',
+                handle() { done(); },
+            });
+        }).toThrow();
+    })
+
 });
 
 
