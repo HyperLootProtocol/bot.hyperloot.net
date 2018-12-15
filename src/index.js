@@ -17,6 +17,7 @@ const logText = require('./modules/logText');
 const updateExp = require('./modules/updateExp');
 const updateLvl = require('./modules/updateLvl');
 const user = require('./modules/user');
+const reactions = require('./modules/reactions')
 
 // commands initializers
 const parseCommand = require('./modules/parseCommand');
@@ -37,7 +38,8 @@ instance.use([
 
         pong,
         status,
-
+        reactions,
+        errReactions,
         empty,
     ],
 

@@ -1,11 +1,16 @@
 empty, "Ooof, not sure what you're looking for!"
 otherError, "Error"
 ,
-ping, "pong1"
-ping, "pong2"
-ping, "pong3"
-ping, "pong4"
+ping, "pong1",
+ping, "pong2",
+ping, "pong3",
+ping, "pong4",
+
 ,
 status, "Ayo!\nLevel: ${curLvl}\nExp: ${exp}\nNext level on: ${expToNext}"
 statusError, "Something's wrong with your status, mate =\\"
 lvlUp, "Hey, congratulations, <@${id}>! Level up! Your new level is ${lvl}, keep it up!"
+
+,
+errReactions, "Sorry, but something`s wrong with your reactions",
+reactions_lick, "@${userId} is lick @${userId2} https://media1.giphy.com/media/3oEduFodl3UbrrHCfe/giphy.gif?cid=3640f6095c13c9064844686655ac9085",
