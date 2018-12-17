@@ -10,16 +10,20 @@ module.exports = {
     'plugins': ['jest'],
 
     'rules': {
+        'func-names': 'off',
         'indent': [
             'error',
             4
         ],
-        'max-len': 'warn',
+        'max-len': [
+            'warn',
+            120
+        ],
         'no-await-in-loop': 'warn',
+        'no-console': 'off',
         'no-plusplus': 'off',
         'no-throw-literal': 'off',
         'no-underscore-dangle': 'off',
-
 
         // jest
         'jest/no-disabled-tests': 'warn',
