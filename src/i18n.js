@@ -28,7 +28,7 @@ function i18nFactory() {
 
         Object
             .entries(props)
-            .forEach((k, v) => {
+            .forEach(([k, v]) => {
                 string = string.replace(`\${${k}}`, v);
             });
 
