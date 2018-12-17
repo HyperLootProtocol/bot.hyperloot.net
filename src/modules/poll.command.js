@@ -14,12 +14,12 @@ const poll = async function(response, { input, i18n }) {
 
     // the rest of string in split into answers, spaces inside quotes are ignored
     // TODO strip the quotes ('/") from the answers
-    poll_obj.answers = input.substring(input.indexOf('?') + 1).replace(/\s+(?=([^"]*"[^"]*")*[^"]*$)/g, '|').split('|')
+    poll_obj.answers = input.substring(input.indexOf('?') + 1).replace(/\s+(?=([^"]*"[^"]*")*[^"]*$)/g, '|').split('|');
    
     // getting rid ot the empty string elements, if there are any
     poll_obj.answers = poll_obj.answers.filter(function (el){
         return el != '';
-    });;
+    });
     
     // TODO connect to the database and get real generated ID
     poll_obj.pollId = Math.floor(Math.random() * 100);
