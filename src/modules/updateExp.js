@@ -1,20 +1,20 @@
 const get = require('lodash/get');
 const extend = require('lodash/extend');
 
-const DAY = 1000*60*60*24; // 5000;
+const DAY = 1000 * 60 * 60 * 24; // 5000;
 const MAX_CAP = 100; // 5;
 
-module.exports = async function(response, { id, db }) {
+module.exports = async function (response, { id, db }) {
     const { exp } = response;
 
     if (!exp) {
         return response;
     }
 
-    return new Promise((resolve, reject) => {
-        db.users.findOne({discordId: id}, async (err, user) => {
-            let setQuery = {};
-            let incQuery;
+    return new Promise((resolve) => {
+        db.users.findOne({ discordId: id }, async (err, user) => {
+            const setQuery = {};
+            let incQuery = {};
 
             const curDate = new Date();
             const curLvl = get(user, 'data.exp.lvl');
@@ -35,14 +35,14 @@ module.exports = async function(response, { id, db }) {
             }
 
             if (!curLvl) {
-                extend(setQuery, {'data.exp.lvl': 0});
+                extend(setQuery, { 'data.exp.lvl': 0 });
             }
 
-            incQuery = isCapReached && !isCapTimeoutReached ?
-                {
-                    'data.exp.outOfCap': exp
-                } :
-                {
+            incQuery = isCapReached && !isCapTimeoutReached
+                ? {
+                    'data.exp.outOfCap': exp,
+                }
+                : {
                     'data.exp.cap': exp,
                     'data.exp.value': exp,
                 };

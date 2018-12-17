@@ -9,18 +9,18 @@ const get = require('lodash/get');
 5 - 111
  */
 function amountTillNextLevel(lvl) {
-    return Math.floor(10*(Math.pow(lvl, 1.5)));
+    return Math.floor(10 * (lvl ** 1.5));
 }
 
-module.exports = async function(response, { id, i18n, db }) {
+module.exports = async function (response, { id, i18n, db }) {
     const { lvlUp, output } = response;
 
     if (!lvlUp) {
         return response;
     }
 
-    return new Promise((resolve, reject) => {
-        db.users.findOne({discordId: id}, async (err, user) => {
+    return new Promise((resolve) => {
+        db.users.findOne({ discordId: id }, async (err, user) => {
             const lvl = get(user, 'data.exp.lvl') + 1;
 
             const incQuery = {
@@ -35,7 +35,7 @@ module.exports = async function(response, { id, i18n, db }) {
                 $inc: incQuery,
             });
 
-            const updLvlMsg = i18n('lvlUp', {lvl: lvl, id});
+            const updLvlMsg = i18n('lvlUp', { lvl, id });
             // TODO! send several messages
             response.output = output ? `${output}\n${updLvlMsg}` : updLvlMsg;
 

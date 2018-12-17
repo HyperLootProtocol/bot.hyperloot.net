@@ -1,7 +1,7 @@
 const trimStart = require('lodash/trimStart');
-const {PREFIX} = require('../config');
+const { PREFIX } = require('../config');
 
-module.exports = async function(response, {input}) {
+module.exports = async function (response, { input }) {
     // TODO: limit length of msg?
     if (!input.startsWith(`${PREFIX}`)) {
         return null;

@@ -7,11 +7,11 @@ const conditions = [
     msg => msg.includes(' '),
 ];
 
-module.exports = async function(response, { input, db, id }) {
+module.exports = async function (response, { input, db, id }) {
     const msgFit = reduce(
         conditions,
         (acc, condition) => condition(input),
-        true
+        true,
     );
 
     // TODO one request/query
@@ -28,12 +28,11 @@ module.exports = async function(response, { input, db, id }) {
     };
 
     if (msgFit) {
-        extend(updateQuery['$inc'], {'data.log.fitCounter': 1})
+        extend(updateQuery.$inc, { 'data.log.fitCounter': 1 });
     }
 
-    db.users.update({discordId: id}, updateQuery);
-    db.users.update({discordId: id}, setQuery);
+    db.users.update({ discordId: id }, updateQuery);
+    db.users.update({ discordId: id }, setQuery);
 
     return response;
 };
-

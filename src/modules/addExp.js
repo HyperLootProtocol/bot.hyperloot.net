@@ -1,4 +1,4 @@
-const checkEvent = async function(expAmount, response) {
+const checkEvent = async function (expAmount, response) {
     const { exp } = response;
 
     response.exp = exp ? exp + expAmount : expAmount;
@@ -6,8 +6,8 @@ const checkEvent = async function(expAmount, response) {
     return response;
 };
 
-module.exports = function(expAmount) {
-    return async function(response, options) {
-        return await checkEvent(expAmount, response, options);
-    }
+module.exports = function (expAmount) {
+    return async function (response, options) {
+        return checkEvent(expAmount, response, options);
+    };
 };
