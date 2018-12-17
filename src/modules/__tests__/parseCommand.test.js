@@ -1,12 +1,12 @@
 const parseCommand = require('../parseCommand');
-const {PREFIX} = require('../../config');
+const { PREFIX } = require('../../config');
 
 describe('on non-command message', () => {
     test('return null', async () => {
         const msg = 'foo';
         const response = {};
 
-        await parseCommand(response, {input: msg});
+        await parseCommand(response, { input: msg });
 
         return expect(response).toEqual({});
     });
@@ -18,16 +18,12 @@ describe('on command message without arguments', () => {
     const msg = `${PREFIX}${command}`;
 
     beforeEach(async () => {
-        await parseCommand(response, {input: msg});
+        await parseCommand(response, { input: msg });
     });
 
-    test('add command to response', () => {
-        return expect(response).toHaveProperty('cmd', command);
-    });
+    test('add command to response', () => expect(response).toHaveProperty('cmd', command));
 
-    test('add empty array as arguments to response', () => {
-        return expect(response).toHaveProperty('args', []);
-    });
+    test('add empty array as arguments to response', () => expect(response).toHaveProperty('args', []));
 });
 
 describe('on command message with arguments', () => {
@@ -37,14 +33,10 @@ describe('on command message with arguments', () => {
     const msg = `${PREFIX}${command} ${arg1} ${arg2}`;
 
     beforeEach(async () => {
-        await parseCommand(response, {input: msg});
+        await parseCommand(response, { input: msg });
     });
 
-    test('add command to response', () => {
-        return expect(response).toHaveProperty('cmd', command);
-    });
+    test('add command to response', () => expect(response).toHaveProperty('cmd', command));
 
-    test('add arguments to response as array', () => {
-        return expect(response).toHaveProperty('args', [arg1, arg2]);
-    });
+    test('add arguments to response as array', () => expect(response).toHaveProperty('args', [arg1, arg2]));
 });

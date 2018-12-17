@@ -26,9 +26,11 @@ function i18nFactory() {
             string = key;
         }
 
-        for (const prop in props) {
-            string = string.replace(`\${${prop}}`, props[prop]);
-        }
+        Object
+            .entries(props)
+            .forEach((k, v) => {
+                string = string.replace(`\${${k}}`, v);
+            });
 
         string = newlines(string);
 

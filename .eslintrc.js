@@ -14,8 +14,12 @@ module.exports = {
             'error',
             4
         ],
+        'max-len': 'warn',
+        'no-await-in-loop': 'warn',
         'no-plusplus': 'off',
         'no-throw-literal': 'off',
+        'no-underscore-dangle': 'off',
+
 
         // jest
         'jest/no-disabled-tests': 'warn',

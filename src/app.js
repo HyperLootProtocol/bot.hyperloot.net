@@ -29,8 +29,8 @@ module.exports = class App {
     async process({ input = '', handle, ...context }) {
         invariant(isFunction(handle), 'handle must be function');
 
-        // reference for response object, in future need add here comments and additional universal (non-client-locked)
-        // fields
+        // reference for response object, in future need add here comments
+        // and additional universal (non-client-locked) fields
         let response = {
             output: '',
             // attachments: [],
@@ -79,6 +79,7 @@ module.exports = class App {
                 if (_response === null) {
                     break;
                 } else {
+                    // eslint-disable-next-line no-param-reassign
                     response = _response;
                 }
             }
@@ -87,8 +88,6 @@ module.exports = class App {
         }
 
         // if module is simple executor
-        if (isFunction(module)) {
-            return module(response, context);
-        }
+        return module(response, context);
     }
 };
