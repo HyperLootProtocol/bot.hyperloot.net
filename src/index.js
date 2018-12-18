@@ -1,12 +1,15 @@
-const {discord: discordCfg} = require('./config');
 
 const express = require('express');
+
 const expressApp = express();
 
-const Discord = require("discord.js");
+const Discord = require('discord.js');
+const { discord: discordCfg } = require('./config');
+
 const discordBot = new Discord.Client();
 
 const App = require('./app');
+
 const instance = new App();
 
 const addExp = require('./modules/addExp');

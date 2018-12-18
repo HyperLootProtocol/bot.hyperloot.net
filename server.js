@@ -1,6 +1,4 @@
-'use strict';
 
-const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
@@ -13,5 +11,5 @@ server.use(bodyParser.urlencoded({ extended: false }));
 server.use(bodyParser.json());
 
 server.listen(port, () => {
-  console.log(`Express server listnening port: ${port}`);
+    console.log(`Express server listnening port: ${port}`);
 });

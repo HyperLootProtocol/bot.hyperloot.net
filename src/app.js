@@ -2,12 +2,11 @@ const isArray = require('lodash/isArray');
 const isFunction = require('lodash/isFunction');
 const invariant = require('invariant');
 
-const {db} = require('./db');
-const {i18nFactory} = require('./i18n');
+const { db } = require('./db');
+const { i18nFactory } = require('./i18n');
 
 
 module.exports = class App {
-
     // TODO: PASS context functions in constructor, dont inject itself here)
     constructor() {
         this.modules = [];
@@ -30,13 +29,14 @@ module.exports = class App {
     async process({ input = '', handle, ...context }) {
         invariant(isFunction(handle), 'handle must be function');
 
-        // reference for response object, in future need add here comments and additional universal (non-client-locked) fields
+        // reference for response object, in future need add here comments
+        // and additional universal (non-client-locked) fields
         let response = {
             output: '',
             // attachments: [],
             // stack: {
             //   [moduleName]: { ... ??? }
-            //},
+            // },
             // ...
         };
 
@@ -79,6 +79,7 @@ module.exports = class App {
                 if (_response === null) {
                     break;
                 } else {
+                    // eslint-disable-next-line no-param-reassign
                     response = _response;
                 }
             }
@@ -87,8 +88,6 @@ module.exports = class App {
         }
 
         // if module is simple executor
-        if (isFunction(module)) {
-            return await module(response, context)
-        }
+        return module(response, context);
     }
-}
+};

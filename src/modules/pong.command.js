@@ -1,6 +1,6 @@
 const command = require('./command');
 
-const ping = async function(response, { input, i18n }) {
+const ping = async function (response, { i18n }) {
     response.output = i18n('ping');
 
     return response;

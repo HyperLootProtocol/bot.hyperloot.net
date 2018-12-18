@@ -1,14 +1,13 @@
 const mongo = require('mongojs');
 
-const {mongoURI} = require('./config');
+const { mongoURI } = require('./config');
 
-const DB = 'hyperloot';
 const USERS = 'users';
 const MODERATION = 'moderation';
 
 const db = mongo(mongoURI, [USERS, MODERATION]);
 
-db.on('error', err => {
+db.on('error', (err) => {
     console.log('database error', err);
 });
 

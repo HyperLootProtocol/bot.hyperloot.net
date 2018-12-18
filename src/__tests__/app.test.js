@@ -1,15 +1,15 @@
 const App = require('../app');
 
-const simple = (response) => response;
-const mutator = (response) => ({ ...response, test: true });
+const simple = response => response;
+const mutator = response => ({ ...response, test: true });
 const echo = (response, context) => ({ ...response, output: context.input });
 
 const inccorrect = 'dont do it';
 // const breaker = (response) => {dont: 'do it'};
 
 const preventer = () => null;
-const mutator2 = (response) => ({ ...response, test2: true });
-const errorer = () => { throw('error'); };
+const mutator2 = response => ({ ...response, test2: true });
+const errorer = () => { throw ('error'); };
 
 describe('app with single executor', () => {
     test('without input should return empty string', async (done) => {
@@ -66,8 +66,7 @@ describe('app with single executor', () => {
                 handle() { done(); },
             });
         }).toThrow();
-    })
-
+    });
 });
 
 
@@ -125,7 +124,7 @@ describe('app with module', () => {
         instance.process({
             input: msg,
             handle(response) {
-                expect(response).toEqual({output: ''});
+                expect(response).toEqual({ output: '' });
                 done();
             },
         });
@@ -146,4 +145,4 @@ describe('app with module', () => {
             },
         });
     });
-})
+});

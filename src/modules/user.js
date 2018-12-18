@@ -1,15 +1,16 @@
 
-module.exports = async function(response, { db, id, from }) {
+module.exports = async function (response, { db, id }) {
+    return new Promise((resolve) => {
+        db.users.findOne({ discordId: id }, (err, user) => {
+            let actualUser = user;
 
-    return new Promise((resolve, reject) => {
-        db.users.findOne({discordId: id}, (err, user) => {
-            if (!user) {
-                user = {discordId: id};
+            if (!actualUser) {
+                actualUser = { discordId: id };
 
-                db.users.insert(user);
+                db.users.insert(actualUser);
             }
 
-            response.user = user;
+            response.user = actualUser;
 
             resolve(response);
         });
