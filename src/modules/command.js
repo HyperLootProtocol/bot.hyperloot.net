@@ -3,7 +3,7 @@ const { PREFIX } = require('../config');
 
 module.exports = rawCommand => (response, { input }) => {
     const [command, ...argData] = rawCommand.split(' ');
-    const [cmd, ...rawArgs] = input.split(' ');
+    const [cmd, ...rawArgs] = input.trim().replace(/\s+(?=([^"]*"[^"]*")*[^"]*$)/g, '|').replace(/['"]/g, '').split('|');
 
     if (!cmd.startsWith(`${PREFIX}`)) {
         return null;
