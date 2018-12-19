@@ -46,6 +46,7 @@ instance.use([
     updateLvl,
 
     error,
+    ]
 ]);
 
 // web api, i use it for local testing
