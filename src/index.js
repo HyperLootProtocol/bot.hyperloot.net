@@ -13,7 +13,7 @@ const App = require('./app');
 const instance = new App();
 
 const addExp = require('./modules/addExp');
-const empty = require('./modules/empty');
+// const empty = require('./modules/empty');
 const error = require('./modules/error');
 const event = require('./modules/event');
 const logText = require('./modules/logText');
@@ -40,8 +40,7 @@ instance.use([
         status,
         poll,
 
-        empty,
-    ],
+    // empty,
 
     updateExp,
     updateLvl,
