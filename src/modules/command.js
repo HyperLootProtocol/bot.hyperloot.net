@@ -1,23 +1,38 @@
-const checkCommand = async function (command, response) {
-    const [expectedCmd, ...expectedArgs] = command.split(' ');
-    const { cmd, args } = response;
+// const trimStart = require('lodash/trimStart');
+const { PREFIX } = require('../config');
 
-    if (cmd !== expectedCmd) {
+module.exports = rawCommand => (response, { input }) => {
+    const [command, ...argData] = rawCommand.split(' ');
+    const [cmd, ...rawArgs] = input.split(' ');
+
+    if (!cmd.startsWith(`${PREFIX}`)) {
         return null;
     }
 
-    const newArgs = {};
-    for (let i = 0; i < expectedArgs.length; i++) {
-        newArgs[expectedArgs[i]] = args[i];
+    if (cmd.substring(1) !== command) {
+        return null;
     }
 
-    response.parcedArgs = newArgs;
+    const parsedArgs = argData.reduce((result, item, index) => {
+        const _result = {
+            ...result,
+            [item]: rawArgs[index],
+        };
+
+        if (item.startsWith('...')) {
+            delete _result[item];
+            const restName = item.substring(3);
+
+            _result[restName] = rawArgs.slice(index);
+        }
+
+        return _result;
+    }, {});
+
+
+    response.rawArgs = rawArgs || [];
+    response.cmd = command;
+    response.args = parsedArgs;
 
     return response;
-};
-
-module.exports = function (command) {
-    return async function (response, options) {
-        return checkCommand(command, response, options);
-    };
 };
