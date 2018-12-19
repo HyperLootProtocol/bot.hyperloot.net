@@ -1,30 +1,70 @@
 
 const command = require('./command');
 
+let polls = {
+    1: {
+        "question": "what's up?",
+        "answers": [
+            "not much",
+            "ceiling",
+            "Hammond",
+        ],
+        "creator": "258702341140774912",
+        "pollId": 1
+    },
+    2: {
+        "question": "Are you playing games tonight?",
+        "answers": [
+            "Yes",
+            "No",
+            "Dunno",
+        ],
+        "creator": "258702341140774912",
+        "pollId": 2
+    }
+};
+
+const getPolls = function ( id ) {
+    if (id in polls){
+        return polls[id];
+    } else {
+        return polls;
+    };
+};
+
 /**
  * poll() implements the polls logic
- * input line for creating a poll should look like /poll <question sentence>? <answer1> <"answer 2"> ...
- * quotes are used to ignore spaces inside the answers
+ * input line for creating a poll should look like /poll "question sentence" answer1 "answer 2" ...
+ * quotes are used to ignore spaces inside the arguments
  */
-const poll = async function (response, { input }) {
-    const pollObj = {};
+const poll = async function (response, { id }) {
+    if (response.rawArgs.length > 1) {
+        // creating a new poll object
+        const pollObj = {};
 
-    // separating the question by question mark
-    pollObj.question = input.substring(input.indexOf(' ') + 1, input.indexOf('?'));
+        // raw arguments include question and an unknown ammount of answers, which are read into variables
+        [pollObj.question, ...pollObj.answers] = response.rawArgs;
 
-    // the rest of string in split into answers, spaces inside quotes are ignored, quotes are then stripped
-    pollObj.answers = input.substring(input.indexOf('?') + 1).replace(/\s+(?=([^"]*"[^"]*")*[^"]*$)/g, '|').replace(/['"]/g, '').split('|');
+        // creator id is stored to ensure only he/she has permission to modify the poll
+        pollObj.creator = id;
 
-    // getting rid ot the empty string elements, if there are any
-    pollObj.answers = pollObj.answers.filter(el => el !== '');
+        // newly created poll is active (not closed)
+        pollObj.active = 1;
 
-    // TODO connect to the database and get real generated ID
-    pollObj.pollId = Math.floor(Math.random() * 100);
+        // TODO connect to the database and get real generated ID
+        pollObj.pollId = Math.floor(Math.random() * 100);
+        response.output = JSON.stringify(pollObj, null, 2);
 
-    // TODO add status open/closed (accepting votes), maybe need to store creator id to only let him/her close poll?
-    // create in memory objects to test votes and other operations with polls
+    } else if (response.rawArgs.length == 1) {
+        let pollId = response.rawArgs[0];
+        response.output = JSON.stringify(getPolls(pollId), null, 2);
+    }  else {
+        console.log(getPolls());
+        response.output = JSON.stringify(getPolls(), null, 2);
+    }
 
-    response.output = JSON.stringify(pollObj, null, 2);
+
+    
     return response;
 };
 
