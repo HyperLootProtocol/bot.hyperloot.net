@@ -11,7 +11,7 @@ const checkCommand = async function (command, response) {
         newArgs[expectedArgs[i]] = args[i];
     }
 
-    response.args = newArgs;
+    response.parcedArgs = newArgs;
 
     return response;
 };

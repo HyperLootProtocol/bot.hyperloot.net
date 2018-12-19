@@ -10,7 +10,7 @@ module.exports = async function (response, { input }) {
     const [cmd, ...args] = input.split(' ');
 
     response.cmd = trimStart(cmd, '/');
-    response.args = args;
+    response.rawArgs = args;
 
     return response;
 };
