@@ -1,40 +1,40 @@
 
 const command = require('./command');
 
-let polls = {
+// in memory object for tests
+const polls = {
     1: {
-        "question": "what's up?",
-        "answers": [
-            "not much",
-            "ceiling",
-            "Hammond",
+        question: 'what\'s up?',
+        answers: [
+            'not much',
+            'ceiling',
+            'Hammond',
         ],
-        "creator": "258702341140774912",
-        "pollId": 1
+        creator: '258702341140774912',
+        pollId: 1,
     },
     2: {
-        "question": "Are you playing games tonight?",
-        "answers": [
-            "Yes",
-            "No",
-            "Dunno",
+        question: 'Are you playing games tonight?',
+        answers: [
+            'Yes',
+            'No',
+            'Dunno',
         ],
-        "creator": "258702341140774912",
-        "pollId": 2
-    }
+        creator: '258702341140774912',
+        pollId: 2,
+    },
 };
 
-const getPolls = function ( id ) {
-    if (id in polls){
+const getPolls = function (id) {
+    if (id in polls) {
         return polls[id];
-    } else {
-        return polls;
-    };
+    }
+    return polls;
 };
 
 /**
  * poll() implements the polls logic
- * input line for creating a poll should look like /poll "question sentence" answer1 "answer 2" ...
+ * input line for creating a poll should look like /poll 'question sentence' answer1 'answer 2' ...
  * quotes are used to ignore spaces inside the arguments
  */
 const poll = async function (response, { id }) {
@@ -54,17 +54,14 @@ const poll = async function (response, { id }) {
         // TODO connect to the database and get real generated ID
         pollObj.pollId = Math.floor(Math.random() * 100);
         response.output = JSON.stringify(pollObj, null, 2);
-
-    } else if (response.rawArgs.length == 1) {
-        let pollId = response.rawArgs[0];
+    } else if (response.rawArgs.length === 1) {
+        const pollId = response.rawArgs[0];
         response.output = JSON.stringify(getPolls(pollId), null, 2);
-    }  else {
+    } else {
         console.log(getPolls());
         response.output = JSON.stringify(getPolls(), null, 2);
     }
 
-
-    
     return response;
 };
 
