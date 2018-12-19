@@ -40,13 +40,13 @@ instance.use([
         status,
         poll,
 
-    // empty,
+        // empty,
 
-    updateExp,
-    updateLvl,
+        updateExp,
+        updateLvl,
 
-    error,
-    ]
+        error,
+    ],
 ]);
 
 // web api, i use it for local testing
