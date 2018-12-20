@@ -44,7 +44,6 @@ instance.use([
 // http://localhost:3000/api?message=/ping
 expressApp.use('/api', (req, res) => {
     instance.process({
-        debug: true,
         input: req.query.message,
         from: 'json',
         handle(response, context) {
