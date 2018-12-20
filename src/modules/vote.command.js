@@ -1,9 +1,7 @@
 
 const command = require('./command');
 
-const vote = async function (response, { id }) {
-
-
+const vote = async function (response) {
     return response;
 };
 

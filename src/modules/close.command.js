@@ -1,9 +1,7 @@
 
 const command = require('./command');
 
-const close = async function (response, { id }) {
-
-
+const close = async function (response) {
     return response;
 };
 

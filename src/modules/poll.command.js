@@ -70,7 +70,7 @@ const poll = async function (response, { id, i18n }) {
         pollObj.dateCreated = new Date();
 
         // TODO connect to the database and get real generated ID
-        pollId = Math.floor(Math.random() * 100);
+        const pollId = Math.floor(Math.random() * 100);
         pollObj.pollId = pollId;
         // test data: create new obj in memory storage
         polls[pollId] = pollObj;
