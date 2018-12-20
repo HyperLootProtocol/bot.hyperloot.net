@@ -49,11 +49,16 @@ module.exports = class App {
         //     handle: () => {}
         // }
 
+        let user = {};
+
+        if (context.id) {
+            user = await db.getUser(context.id);
+        }
 
         response = await this._execute(this.modules, response, {
             ...this.context,
             ...context, // Dirty need some standard structure
-            user: await db.getUser(context.id),
+            user,
             input,
             // handle,
         });
