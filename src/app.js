@@ -52,7 +52,7 @@ module.exports = class App {
         response = await this._execute(this.modules, response, {
             ...this.context,
             ...context, // Dirty need some standard structure
-            user: db.getUser(context.id),
+            user: db.getUser(context),
             input,
             // handle,
         });
