@@ -7,32 +7,28 @@ const conditions = [
     msg => msg.includes(' '),
 ];
 
-module.exports = async function (response, { input, db, id }) {
+module.exports = async function logText(response, context) {
+    const { input, setModuleData, getModuleData } = context;
     const msgFit = reduce(
         conditions,
         (acc, condition) => condition(input),
         true,
     );
 
-    // TODO one request/query
-    const updateQuery = {
-        $inc: {
-            'data.log.allCounter': 1,
-        },
-    };
+    const { allCounter, fitCounter } = await getModuleData('log', context);
 
-    const setQuery = {
-        $set: {
-            'data.log.lastMsgData': new Date(),
-        },
+    const query = {
+        allCounter: allCounter + 1,
+        lastMsgData: new Date(),
     };
 
     if (msgFit) {
-        extend(updateQuery.$inc, { 'data.log.fitCounter': 1 });
+        extend(query, {
+            fitCounter: fitCounter + 1,
+        });
     }
 
-    db.users.update({ discordId: id }, updateQuery);
-    db.users.update({ discordId: id }, setQuery);
+    await setModuleData('log', context, query);
 
     return response;
 };
