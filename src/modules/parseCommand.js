@@ -8,7 +8,7 @@ module.exports = async function (response, { input }) {
     }
 
     const [cmd, ...args] = input.split(' ');
-
+    // TODO: get prefix from config
     response.cmd = trimStart(cmd, '/');
     response.args = args;
 

@@ -9,3 +9,5 @@ ping, "pong4"
 status, "Ayo!\nLevel: ${curLvl}\nExp: ${exp}\nNext level on: ${expToNext}"
 statusError, "Something's wrong with your status, mate =\\"
 lvlUp, "Hey, congratulations, <@${id}>! Level up! Your new level is ${lvl}, keep it up!"
+,
+lick, "Lick me! \gif1.gif" 
