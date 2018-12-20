@@ -27,7 +27,7 @@ const polls = {
     },
 };
 
-const getPolls = function (id) {
+const getPoll = function (id) {
     if (id in polls) {
         return polls[id];
     }
@@ -76,16 +76,17 @@ const poll = async function (response, { id }) {
     } else if (response.rawArgs.length === 1) {
         // the first and only arg is the polls id
         const pollId = response.rawArgs[0];
-        const _poll = getPolls(pollId);
+        const _poll = getPoll(pollId);
 
         // output poll info
         response.output = getPollStringInfo(_poll);
     } else {
         // getting info on all the existing polls
-        const _polls = getPolls();
-        for (let i = 0; i < Object.keys(getPolls()); i++) {
-            response.output += `${getPollStringInfo(_polls[i])}\n\n`;
-        }
+        Object
+            .values(getPoll())
+            .forEach((v) => {
+                response.output += `${getPollStringInfo(v)} \n\n`;
+            });
     }
 
     return response;
