@@ -24,6 +24,8 @@ const user = require('./modules/user');
 // commands initializers
 const pong = require('./modules/pong.command');
 const poll = require('./modules/poll.command');
+const vote = require('./modules/vote.command');
+// const close = require('./modules/close.command');
 const status = require('./modules/status.command');
 
 instance.use([
@@ -39,6 +41,8 @@ instance.use([
         pong,
         status,
         poll,
+        vote,
+        close,
 
         // empty,
 
