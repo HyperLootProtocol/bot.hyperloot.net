@@ -25,7 +25,7 @@ const user = require('./modules/user');
 const pong = require('./modules/pong.command');
 const poll = require('./modules/poll.command');
 const vote = require('./modules/vote.command');
-// const close = require('./modules/close.command');
+const close = require('./modules/close.command');
 const status = require('./modules/status.command');
 
 instance.use([
