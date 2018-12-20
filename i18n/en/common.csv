@@ -6,6 +6,6 @@ ping, "pong2"
 ping, "pong3"
 ping, "pong4"
 ,
-status, "Ayo!\nLevel: ${curLvl}\nExp: ${exp}\nNext level on: ${expToNext}"
+status, "Ayo!\nLevel: ${lvl}\nExp: ${value}\nNext level on: ${nextLvl}"
 statusError, "Something's wrong with your status, mate =\\"
 lvlUp, "Hey, congratulations, <@${id}>! Level up! Your new level is ${lvl}, keep it up!"
