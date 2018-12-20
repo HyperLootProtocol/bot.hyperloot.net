@@ -44,6 +44,7 @@ module.exports = class App {
 
         // TODO: i prefer to check it before inject here!
         // let context = {
+        //     id: '',
         //     input: '',
         //     handle: () => {}
         // }
@@ -52,7 +53,7 @@ module.exports = class App {
         response = await this._execute(this.modules, response, {
             ...this.context,
             ...context, // Dirty need some standard structure
-            user: db.getUser({ ...context, ...this.context }),
+            user: await db.getUser(context.id),
             input,
             // handle,
         });
