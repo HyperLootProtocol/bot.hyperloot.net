@@ -23,7 +23,7 @@ const user = require('./modules/user');
 
 // commands initializers
 const parseCommand = require('./modules/parseCommand');
-const reaction = require('./modules/reaction');
+const parseCommandSoc = require('./modules/parseCommandSoc');
 const pong = require('./modules/pong.command');
 const status = require('./modules/status.command');
 const lick = require('./modules/soc.reaction');
@@ -39,7 +39,7 @@ instance.use([
 
     [
         parseCommand,
-        reaction,
+        parseCommandSoc,
 
         pong,
         status,
