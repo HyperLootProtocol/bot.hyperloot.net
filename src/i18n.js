@@ -18,9 +18,7 @@ const newlines = str => str.replace(/\\n/g, '\n');
 
 function i18nFactory(lang) {
     fs.readdirSync(`./i18n/${lang}/`).forEach((file) => {
-        console.log('file', file)
         if (file.split('.')[1] === 'csv') {
-            console.log('ok')
             reader.read(`./i18n/${lang}/${file}`, rawData);
         }
     });
