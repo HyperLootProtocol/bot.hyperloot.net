@@ -57,8 +57,8 @@ async function insert(collection, query) {
 }
 
 // high lvl methods
-function getUser(userId) {
-    let user = get('users', { discordId: userId });
+async function getUser(userId) {
+    let user = await get('users', { discordId: userId });
 
     if (!user) {
         user = { discordId: userId };
