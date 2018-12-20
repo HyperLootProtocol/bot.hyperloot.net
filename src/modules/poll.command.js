@@ -12,6 +12,7 @@ const polls = {
         ],
         creator: '258702341140774912',
         pollId: 1,
+        dateCreated: new Date(),
     },
     2: {
         question: 'Are you playing games tonight?',
@@ -22,6 +23,7 @@ const polls = {
         ],
         creator: '258702341140774912',
         pollId: 2,
+        dateCreated: new Date(),
     },
 };
 
@@ -33,13 +35,15 @@ const getPolls = function (id) {
 };
 
 const getPollStringInfo = function (_poll) {
-    let _output = `${_poll.question} | ${'?'} votes | ID${_poll.pollId}\n`;
-    for (let i = 0; i<_poll.answers.length; i++) {
+    let _output = `${_poll.dateCreated.getDate()}/${_poll.dateCreated.getMonth() + 1} ${_poll.question} | ${'?'} votes | ID${_poll.pollId}\n`;
+
+    for (let i = 0; i < _poll.answers.length; i++) {
         _output += `${_poll.answers[i]} (??%)`;
-        if (i< _poll.answers.length - 1){
-            _output += ' | '
-        };
-    };
+        if (i < _poll.answers.length - 1) {
+            _output += ' | ';
+        }
+    }
+
     return _output;
 };
 
@@ -77,10 +81,12 @@ const poll = async function (response, { id }) {
         // output poll info
         response.output = getPollStringInfo(_poll);
     } else {
-        for (let value of Object.keys(getPolls())) {
-            response.output += getPollStringInfo(getPolls(value)) + '\n\n';
-        };
-    };
+        // getting info on all the existing polls
+        const _polls = getPolls();
+        for (let i = 0; i < Object.keys(getPolls()); i++) {
+            response.output += `${getPollStringInfo(_polls[i])}\n\n`;
+        }
+    }
 
     return response;
 };
