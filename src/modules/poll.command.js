@@ -52,7 +52,7 @@ const getPollStringInfo = function (_poll) {
  * input line for creating a poll should look like /poll 'question sentence' answer1 'answer 2' ...
  * quotes are used to ignore spaces inside the arguments
  */
-const poll = async function (response, { id }) {
+const poll = async function (response, { id, i18n }) {
     if (response.rawArgs.length > 1) {
         // creating a new poll object
         const pollObj = {};
@@ -70,9 +70,13 @@ const poll = async function (response, { id }) {
         pollObj.dateCreated = new Date();
 
         // TODO connect to the database and get real generated ID
-        pollObj.pollId = Math.floor(Math.random() * 100);
+        pollId = Math.floor(Math.random() * 100);
+        pollObj.pollId = pollId;
+        // test data: create new obj in memory storage
+        polls[pollId] = pollObj;
 
-        response.output = `Poll created successfully, vote by typing: /vote ${pollObj.pollId} your_answer`;
+        response.output = i18n('pollCreated', { pollId });
+        // response.output = `Poll created successfully, vote by typing: /vote ${pollObj.pollId} your_answer`;
     } else if (response.rawArgs.length === 1) {
         // the first and only arg is the polls id
         const pollId = response.rawArgs[0];
