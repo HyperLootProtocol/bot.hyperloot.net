@@ -12,34 +12,29 @@ function amountTillNextLevel(lvl) {
     return Math.floor(10 * (lvl ** 1.5));
 }
 
-module.exports = async function (response, { id, i18n, db }) {
+module.exports = async function (response, { id, i18n, DB }) {
     const { lvlUp, output } = response;
 
     if (!lvlUp) {
         return response;
     }
 
-    return new Promise((resolve) => {
-        db.users.findOne({ discordId: id }, async (err, user) => {
-            const lvl = get(user, 'data.exp.lvl') + 1;
+    const users = new DB('users');
+    const selector = { discordId: id };
+    const user = await users.get(selector);
 
-            const incQuery = {
-                'data.exp.lvl': 1,
-                'data.exp.nextLvl': amountTillNextLevel(lvl),
-            };
+    const lvl = await get(user, 'data.exp.lvl') + 1;
 
-            // TODO one request/query, lf mongo man
-            await db.users.update({
-                discordId: id,
-            }, {
-                $inc: incQuery,
-            });
+    const incQuery = {
+        'data.exp.lvl': 1,
+        'data.exp.nextLvl': amountTillNextLevel(lvl),
+    };
 
-            const updLvlMsg = i18n('lvlUp', { lvl, id });
-            // TODO! send several messages
-            response.output = output ? `${output}\n${updLvlMsg}` : updLvlMsg;
+    await users.inc(selector, incQuery);
 
-            resolve(response);
-        });
-    });
+    const updLvlMsg = i18n('lvlUp', { lvl, id });
+    // TODO! send several messages
+    response.output = output ? `${output}\n${updLvlMsg}` : updLvlMsg;
+
+    return response;
 };

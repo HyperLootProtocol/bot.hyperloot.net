@@ -2,7 +2,7 @@ const isArray = require('lodash/isArray');
 const isFunction = require('lodash/isFunction');
 const invariant = require('invariant');
 
-const { db } = require('./db');
+const DB = require('./dbAdapter');
 const { i18nFactory } = require('./i18n');
 
 
@@ -14,7 +14,7 @@ module.exports = class App {
         // setup context here
         this.context = {
             i18n: i18nFactory(),
-            db,
+            DB,
         };
     }
 

@@ -7,7 +7,10 @@ const conditions = [
     msg => msg.includes(' '),
 ];
 
-module.exports = async function (response, { input, db, id }) {
+module.exports = async function (response, { input, DB, id }) {
+    const users = new DB('users');
+    const selector = { discordId: id };
+
     const msgFit = reduce(
         conditions,
         (acc, condition) => condition(input),
@@ -15,24 +18,20 @@ module.exports = async function (response, { input, db, id }) {
     );
 
     // TODO one request/query
-    const updateQuery = {
-        $inc: {
-            'data.log.allCounter': 1,
-        },
+    const incQuery = {
+        'data.log.allCounter': 1,
     };
 
     const setQuery = {
-        $set: {
-            'data.log.lastMsgData': new Date(),
-        },
+        'data.log.lastMsgData': new Date(),
     };
 
     if (msgFit) {
-        extend(updateQuery.$inc, { 'data.log.fitCounter': 1 });
+        extend(incQuery, { 'data.log.fitCounter': 1 });
     }
 
-    db.users.update({ discordId: id }, updateQuery);
-    db.users.update({ discordId: id }, setQuery);
+    await users.inc(selector, incQuery);
+    await users.set(selector, setQuery);
 
     return response;
 };
