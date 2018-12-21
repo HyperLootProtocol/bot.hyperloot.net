@@ -5,15 +5,15 @@ module.exports = rawCommand => (response, { input }) => {
     const [command, ...argData] = rawCommand.split(' ');
     const [cmd, ...rawArgs] = input.trim().replace(/\s+(?=([^"]*"[^"]*")*[^"]*$)/g, '|').replace(/['"]/g, '').split('|');
 
-    if (!cmd.startsWith(`${PREFIX}`)) {
+    if (!rawCommand.startsWith(`${PREFIX}`)) {
         return null;
     }
 
-    if (cmd.substring(1) !== command) {
+    if (rawCommand.substring(1) !== definedCommand) {
         return null;
     }
 
-    const parsedArgs = argData.reduce((result, item, index) => {
+    const parsedArgs = definedArgs.reduce((result, item, index) => {
         const _result = {
             ...result,
             [item]: rawArgs[index],
@@ -31,7 +31,7 @@ module.exports = rawCommand => (response, { input }) => {
 
 
     response.rawArgs = rawArgs || [];
-    response.cmd = command;
+    response.cmd = definedCommand;
     response.args = parsedArgs;
 
     return response;

@@ -1,16 +1,13 @@
-const get = require('lodash/get');
 const command = require('./command');
 
-const status = async function (response, { i18n }) {
-    const { user } = response;
-    const curLvl = get(user, 'data.exp.lvl');
-    const exp = get(user, 'data.exp.value');
-    const expToNext = get(user, 'data.exp.nextLvl');
+const status = async function (response, context) {
+    const { i18n, getModuleData } = context;
+    const { lvl, value, nextLvl } = await getModuleData('exp', context);
 
-    if (!curLvl || !exp || !expToNext) {
+    if (!lvl || !value || !nextLvl) {
         throw (i18n('statusError'));
     } else {
-        response.output = i18n('status', { curLvl, exp, expToNext });
+        response.output = i18n('status', { lvl, value, nextLvl });
     }
 
     return response;

@@ -124,7 +124,7 @@ describe('app with module', () => {
         instance.process({
             input: msg,
             handle(response) {
-                expect(response).toEqual({ output: '' });
+                expect(response).toHaveProperty('output', '');
                 done();
             },
         });

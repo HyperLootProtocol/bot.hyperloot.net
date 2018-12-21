@@ -1,68 +1,75 @@
-const get = require('lodash/get');
 const extend = require('lodash/extend');
+const defaults = require('lodash/defaults');
 
 const DAY = 1000 * 60 * 60 * 24; // 5000;
 const MAX_CAP = 100; // 5;
 
-module.exports = async function (response, { id, db }) {
-    const { exp } = response;
+function amountTillNextLevel(lvl) {
+    return Math.floor(10 * (lvl ** 1.5));
+}
+
+module.exports = async function updateExp(response, context) {
+    const { exp, output } = response;
+    const {
+        id,
+        i18n,
+        getModuleData,
+        setModuleData,
+    } = context;
 
     if (!exp) {
         return response;
     }
 
-    return new Promise((resolve) => {
-        db.users.findOne({ discordId: id }, async (err, user) => {
-            const setQuery = {};
-            let incQuery = {};
+    let data = await getModuleData('exp', context);
+    const curDate = new Date();
+    const query = {};
 
-            const curDate = new Date();
-            const curLvl = get(user, 'data.exp.lvl');
-            const expValue = get(user, 'data.exp.value') || 0;
-            const nextLvl = get(user, 'data.exp.nextLvl') || 0;
-
-            const cap = get(user, 'data.exp.cap') || 0;
-            const capTimer = get(user, 'data.exp.capTimer') || new Date(0);
-
-            const isCapReached = cap >= MAX_CAP;
-            const isCapTimeoutReached = curDate - capTimer > DAY;
-
-            if (isCapTimeoutReached) {
-                extend(setQuery, {
-                    'data.exp.capTimer': curDate,
-                    'data.exp.cap': exp,
-                });
-            }
-
-            if (!curLvl) {
-                extend(setQuery, { 'data.exp.lvl': 0 });
-            }
-
-            incQuery = isCapReached && !isCapTimeoutReached
-                ? {
-                    'data.exp.outOfCap': exp,
-                }
-                : {
-                    'data.exp.cap': exp,
-                    'data.exp.value': exp,
-                };
-
-            // TODO one request/query, lf mongo man
-            await db.users.update({
-                discordId: id,
-            }, {
-                $set: setQuery,
-            });
-
-            await db.users.update({
-                discordId: id,
-            }, {
-                $inc: incQuery,
-            });
-
-            response.lvlUp = expValue + exp >= nextLvl;
-
-            resolve(response);
-        });
+    data = defaults(data, {
+        lvl: 0,
+        value: 0,
+        nextLvl: amountTillNextLevel(0),
+        cap: 0,
+        capTimer: new Date(0),
     });
+
+    const isCapReached = data.cap >= MAX_CAP;
+    const isCapTimeoutReached = curDate - data.capTimer > DAY;
+
+    if (isCapTimeoutReached) {
+        extend(query, {
+            capTimer: curDate,
+            cap: exp,
+        });
+    }
+
+    if (isCapReached && !isCapTimeoutReached) {
+        extend(query, {
+            outOfCap: data.outOfCap + exp,
+        });
+    } else {
+        extend(query, {
+            cap: data.cap + exp,
+            value: data.value + exp,
+        });
+    }
+
+    // New lvl reached?
+    const isLvlUp = data.value + exp >= data.nextLvl;
+
+    if (isLvlUp) {
+        const newLvl = data.lvl + 1;
+
+        extend(query, {
+            lvl: newLvl,
+            nextLvl: amountTillNextLevel(newLvl),
+        });
+
+        const updLvlMsg = i18n('lvlUp', { lvl: newLvl, id });
+        response.output = output ? `${output}\n${updLvlMsg}` : updLvlMsg;
+    }
+
+    await setModuleData('exp', context, query);
+
+    return response;
 };

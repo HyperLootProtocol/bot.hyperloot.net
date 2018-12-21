@@ -2,7 +2,8 @@ const isArray = require('lodash/isArray');
 const isFunction = require('lodash/isFunction');
 const invariant = require('invariant');
 
-const { db } = require('./db');
+const db = require('./db');
+const { lang } = require('./config');
 const { i18nFactory } = require('./i18n');
 
 
@@ -13,8 +14,8 @@ module.exports = class App {
 
         // setup context here
         this.context = {
-            i18n: i18nFactory(),
-            db,
+            i18n: i18nFactory(lang),
+            ...db,
         };
     }
 
@@ -33,6 +34,7 @@ module.exports = class App {
         // and additional universal (non-client-locked) fields
         let response = {
             output: '',
+            stack: [],
             // attachments: [],
             // stack: {
             //   [moduleName]: { ... ??? }
@@ -42,20 +44,27 @@ module.exports = class App {
 
         // TODO: i prefer to check it before inject here!
         // let context = {
+        //     id: '',
         //     input: '',
         //     handle: () => {}
         // }
 
+        let user = {};
+
+        if (context.id) {
+            user = await db.getUser(context.id);
+        }
 
         response = await this._execute(this.modules, response, {
             ...this.context,
             ...context, // Dirty need some standard structure
+            user,
             input,
             // handle,
         });
 
         // after all modules we call one
-        handle(response, context.data);
+        handle(response, context);
 
         return this;
     }
@@ -88,6 +97,7 @@ module.exports = class App {
         }
 
         // if module is simple executor
+        response.stack.push(module.name);
         return module(response, context);
     }
 };
