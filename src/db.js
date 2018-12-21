@@ -70,16 +70,14 @@ async function getUser(userId) {
 }
 
 async function getModuleData(moduleName, { user }) {
-    return user.data[moduleName];
+    return user.data[moduleName] || {};
 }
 
 async function setModuleData(moduleName, { user }, query) {
     return set('users', {
         discordId: user.discordId,
     }, {
-        data: {
-            [moduleName]: query,
-        },
+        [`data.${moduleName}`]: query,
     });
 }
 
