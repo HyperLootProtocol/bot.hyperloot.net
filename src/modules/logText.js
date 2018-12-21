@@ -1,5 +1,6 @@
-const reduce = require('lodash/reduce');
+const defaults = require('lodash/defaults');
 const extend = require('lodash/extend');
+const reduce = require('lodash/reduce');
 
 const MIN_LENGTH = 10;
 const conditions = [
@@ -15,16 +16,20 @@ module.exports = async function logText(response, context) {
         true,
     );
 
-    const { allCounter, fitCounter } = await getModuleData('log', context);
+    let data = await getModuleData('log', context);
+    data = defaults(data, {
+        allCounter: 0,
+        fitCounter: 0,
+    });
 
     const query = {
-        allCounter: allCounter + 1,
+        allCounter: data.allCounter + 1,
         lastMsgData: new Date(),
     };
 
     if (msgFit) {
         extend(query, {
-            fitCounter: fitCounter + 1,
+            fitCounter: data.fitCounter + 1,
         });
     }
 

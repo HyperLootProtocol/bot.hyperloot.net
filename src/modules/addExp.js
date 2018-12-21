@@ -3,6 +3,8 @@ module.exports = amount => function addExp(response) {
 
     if (exp) {
         response.exp = exp + amount;
+    } else {
+        response.exp = amount;
     }
 
     return response;

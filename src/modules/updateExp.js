@@ -9,8 +9,13 @@ function amountTillNextLevel(lvl) {
 }
 
 module.exports = async function updateExp(response, context) {
-    const { exp, output, id } = response;
-    const { i18n, getModuleData, setModuleData } = context;
+    const { exp, output } = response;
+    const {
+        id,
+        i18n,
+        getModuleData,
+        setModuleData,
+    } = context;
 
     if (!exp) {
         return response;
@@ -21,9 +26,9 @@ module.exports = async function updateExp(response, context) {
     const query = {};
 
     data = defaults(data, {
-        lvl: 1,
+        lvl: 0,
         value: 0,
-        nextLvl: 1,
+        nextLvl: amountTillNextLevel(0),
         cap: 0,
         capTimer: new Date(0),
     });
@@ -35,13 +40,6 @@ module.exports = async function updateExp(response, context) {
         extend(query, {
             capTimer: curDate,
             cap: exp,
-        });
-    }
-
-    // WHAT IS IT ???
-    if (!data.lvl) {
-        extend(query, {
-            lvl: 1,
         });
     }
 
@@ -62,10 +60,10 @@ module.exports = async function updateExp(response, context) {
     if (isLvlUp) {
         extend(query, {
             lvl: data.lvl + 1,
-            nextLvl: amountTillNextLevel(data.lvl),
+            nextLvl: amountTillNextLevel(data.lvl + 1),
         });
 
-        const updLvlMsg = i18n('lvlUp', { lvl: data.lvl, id });
+        const updLvlMsg = i18n('lvlUp', { lvl: data.lvl + 1, id });
         response.output = output ? `${output}\n${updLvlMsg}` : updLvlMsg;
     }
 
