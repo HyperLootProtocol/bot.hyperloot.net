@@ -1,50 +1,41 @@
-const {discord: discordCfg} = require('./config');
 
 const express = require('express');
+
 const expressApp = express();
 
-const Discord = require("discord.js");
+const Discord = require('discord.js');
+const { discord: discordCfg } = require('./config');
+
 const discordBot = new Discord.Client();
 
 const App = require('./app');
+
 const instance = new App();
 
 const addExp = require('./modules/addExp');
-const empty = require('./modules/empty');
+// const empty = require('./modules/empty');
 const error = require('./modules/error');
 const event = require('./modules/event');
 const logText = require('./modules/logText');
 const updateExp = require('./modules/updateExp');
-const updateLvl = require('./modules/updateLvl');
-const user = require('./modules/user');
-const reactions = require('./modules/reactions')
 
 // commands initializers
-const parseCommand = require('./modules/parseCommand');
 const pong = require('./modules/pong.command');
 const status = require('./modules/status.command');
 
 instance.use([
-    user,
-
     [
         event('message'),
         addExp(1),
         logText,
     ],
 
-    [
-        parseCommand,
+    pong,
+    status,
 
-        pong,
-        status,
-        reactions,
-        errReactions,
-        empty,
-    ],
+    // empty,
 
     updateExp,
-    updateLvl,
 
     error,
 ]);
@@ -55,8 +46,8 @@ expressApp.use('/api', (req, res) => {
     instance.process({
         input: req.query.message,
         from: 'json',
-        handle(response) {
-            res.json(response);
+        handle(response, context) {
+            res.json({ response, context });
         },
         ...req.query,
     });

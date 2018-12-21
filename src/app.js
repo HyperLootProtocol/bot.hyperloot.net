@@ -2,20 +2,20 @@ const isArray = require('lodash/isArray');
 const isFunction = require('lodash/isFunction');
 const invariant = require('invariant');
 
-const {db} = require('./db');
-const {i18nFactory} = require('./i18n');
+const db = require('./db');
+const { lang } = require('./config');
+const { i18nFactory } = require('./i18n');
 
 
 module.exports = class App {
-
     // TODO: PASS context functions in constructor, dont inject itself here)
     constructor() {
         this.modules = [];
 
         // setup context here
         this.context = {
-            i18n: i18nFactory(),
-            db,
+            i18n: i18nFactory(lang),
+            ...db,
         };
     }
 
@@ -30,32 +30,41 @@ module.exports = class App {
     async process({ input = '', handle, ...context }) {
         invariant(isFunction(handle), 'handle must be function');
 
-        // reference for response object, in future need add here comments and additional universal (non-client-locked) fields
+        // reference for response object, in future need add here comments
+        // and additional universal (non-client-locked) fields
         let response = {
             output: '',
+            stack: [],
             // attachments: [],
             // stack: {
             //   [moduleName]: { ... ??? }
-            //},
+            // },
             // ...
         };
 
         // TODO: i prefer to check it before inject here!
         // let context = {
+        //     id: '',
         //     input: '',
         //     handle: () => {}
         // }
 
+        let user = {};
+
+        if (context.id) {
+            user = await db.getUser(context.id);
+        }
 
         response = await this._execute(this.modules, response, {
             ...this.context,
             ...context, // Dirty need some standard structure
+            user,
             input,
             // handle,
         });
 
         // after all modules we call one
-        handle(response, context.data);
+        handle(response, context);
 
         return this;
     }
@@ -79,6 +88,7 @@ module.exports = class App {
                 if (_response === null) {
                     break;
                 } else {
+                    // eslint-disable-next-line no-param-reassign
                     response = _response;
                 }
             }
@@ -87,8 +97,7 @@ module.exports = class App {
         }
 
         // if module is simple executor
-        if (isFunction(module)) {
-            return await module(response, context)
-        }
+        response.stack.push(module.name);
+        return module(response, context);
     }
-}
+};

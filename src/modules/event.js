@@ -1,9 +1,9 @@
-const checkEvent = async function(expectedEvent, response, {event}) {
+const checkEvent = async function (expectedEvent, response, { event }) {
     return event === expectedEvent ? response : null;
 };
 
-module.exports = function(event) {
-    return async function(response, options) {
-        return await checkEvent(event, response, options);
-    }
+module.exports = function (eventName) {
+    return async function event(response, options) {
+        return checkEvent(eventName, response, options);
+    };
 };
