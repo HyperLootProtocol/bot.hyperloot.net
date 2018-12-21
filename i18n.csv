@@ -11,3 +11,5 @@ statusError, "Something's wrong with your status, mate =\\"
 lvlUp, "Hey, congratulations, <@${id}>! Level up! Your new level is ${lvl}, keep it up!"
 ,
 pollCreated, "Poll created successfully, vote by typing: /vote ${pollId} your_answer"
+pollInfo, "${day}/${month} ${question} | ${votes} votes | ID${pollId}\n"
+answerInfo, "${_poll.answers[i]} (${percentage}%)"

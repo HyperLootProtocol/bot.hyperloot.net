@@ -34,11 +34,20 @@ const getPoll = function (id) {
     return polls;
 };
 
-const getPollStringInfo = function (_poll) {
-    let _output = `${_poll.dateCreated.getDate()}/${_poll.dateCreated.getMonth() + 1} ${_poll.question} | ${'?'} votes | ID${_poll.pollId}\n`;
+const getPollStringInfo = function (_poll, { i18n }) {
+    const day = _poll.dateCreated.getDate();
+    const month = _poll.dateCreated.getMonth();
+    const question = _poll.question;
+    // TODO get real votes count from db
+    const votes = 15;
+    const pollId = _poll.pollId;
+    let _output = i18n('pollInfo', { day, month, question, votes, pollId });
 
     for (let i = 0; i < _poll.answers.length; i++) {
-        _output += `${_poll.answers[i]} (??%)`;
+        const answer = _poll.answers[i];
+        // TODO get real percentage from db
+        const percentage = 10;
+        _output += i18n('answerInfo', { answer, percentage });
         if (i < _poll.answers.length - 1) {
             _output += ' | ';
         }
@@ -83,13 +92,13 @@ const poll = async function (response, { id, i18n }) {
         const _poll = getPoll(pollId);
 
         // output poll info
-        response.output = getPollStringInfo(_poll);
+        response.output = getPollStringInfo(_poll, { i18n });
     } else {
         // getting info on all the existing polls
         Object
             .values(getPoll())
             .forEach((v) => {
-                response.output += `${getPollStringInfo(v)} \n\n`;
+                response.output += `${getPollStringInfo(v, { i18n })} \n\n`;
             });
     }
 
