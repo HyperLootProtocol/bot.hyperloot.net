@@ -58,12 +58,14 @@ module.exports = async function updateExp(response, context) {
     const isLvlUp = data.value + exp >= data.nextLvl;
 
     if (isLvlUp) {
+        const newLvl = data.lvl + 1;
+        
         extend(query, {
-            lvl: data.lvl + 1,
-            nextLvl: amountTillNextLevel(data.lvl + 1),
+            lvl: newLvl,
+            nextLvl: amountTillNextLevel(newLvl),
         });
 
-        const updLvlMsg = i18n('lvlUp', { lvl: data.lvl + 1, id });
+        const updLvlMsg = i18n('lvlUp', { lvl: newLvl, id });
         response.output = output ? `${output}\n${updLvlMsg}` : updLvlMsg;
     }
 
