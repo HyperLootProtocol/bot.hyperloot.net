@@ -59,7 +59,7 @@ module.exports = async function updateExp(response, context) {
 
     if (isLvlUp) {
         const newLvl = data.lvl + 1;
-        
+
         extend(query, {
             lvl: newLvl,
             nextLvl: amountTillNextLevel(newLvl),
