@@ -2,7 +2,9 @@ const command = require('./command');
 
 const status = async function (response, context) {
     const { i18n, getModuleData } = context;
-    const { lvl, value, nextLvl } = getModuleData('exp', context);
+    console.log('user', context.user)
+    console.log('data', getModuleData('exp', context))
+    const { lvl, value, nextLvl } = await getModuleData('exp', context);
 
     if (!lvl || !value || !nextLvl) {
         throw (i18n('statusError'));

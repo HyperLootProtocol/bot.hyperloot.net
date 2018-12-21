@@ -71,6 +71,7 @@ if (discordCfg.authToken) {
             from: 'discord',
             event: 'message',
             handle({ output }) {
+                console.log('output', output)
                 if (!msg.channel || !output) {
                     return;
                 }

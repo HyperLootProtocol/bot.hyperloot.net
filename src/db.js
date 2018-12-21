@@ -69,11 +69,11 @@ async function getUser(userId) {
     return user;
 }
 
-function getModuleData(moduleName, { user }) {
+async function getModuleData(moduleName, { user }) {
     return user.data[moduleName];
 }
 
-function setModuleData(moduleName, { user }, query) {
+async function setModuleData(moduleName, { user }, query) {
     return set('users', {
         discordId: user.discordId,
     }, {
@@ -91,5 +91,5 @@ module.exports = {
     // Unsafe be carefuly!
     get,
     set,
-    // insert,
+    insert,
 };
