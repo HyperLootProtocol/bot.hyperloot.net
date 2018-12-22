@@ -1,25 +1,37 @@
-// const command=require('./command');
-// const key=require()
+const { PREFIXsoc } = require('../config');
 
-// const key = async function( response, {input, i18n}){
-//     response.output = i18n( 'reaction_&{key}');
+module.exports = pattern => function reactions(response, { input }) {
+    const [definedReactions, ...definedArgs] = pattern.split(' ');
+    const [rawReactions, ...rawArgs] = input.split(' ');
 
-//     return response;
-// };
-
-// module.exports = [command('reaction_&{key}'), reactions];
-
-const command = require('./command');
-const {key} = response;
-
-const reactions = async function(response, { username, input, i18n }) {
-    if (input[0] !== {key}) {
-        response.output= [command('errReactions', errReactions)];
-        return response;
+    if (!rawReactions.startsWith(`${PREFIXsoc}`)) {
+        return null;
     }
-    else {
-        response.output = [command('reactions_${key}', reactions)];
-        return response;
-    };
+
+    if (rawReactions.substring(1) !== definedReactions) {
+        return null;
+    }
+
+    const parsedArgs = definedArgs.reduce((result, item, index) => {
+        const _result = {
+            ...result,
+            [item]: rawArgs[index],
+        };
+
+        if (item.startsWith('...')) {
+            delete _result[item];
+            const restName = item.substring(3);
+
+            _result[restName] = rawArgs.slice(index);
+        }
+
+        return _result;
+    }, {});
+
+
+    response.rawArgs = rawArgs || [];
+    response.cmd = definedReactions;
+    response.args = parsedArgs;
+
+    return response;
 };
-module.exports = reactions;
