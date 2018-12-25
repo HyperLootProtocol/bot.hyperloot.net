@@ -8,9 +8,10 @@ const { discord: discordCfg } = require('./config');
 
 const discordBot = new Discord.Client();
 
+const db = require('./db');
 const App = require('./app');
 
-const instance = new App();
+const instance = new App({ db });
 
 const addExp = require('./modules/addExp');
 // const empty = require('./modules/empty');
@@ -18,6 +19,7 @@ const error = require('./modules/error');
 const event = require('./modules/event');
 const logText = require('./modules/logText');
 const updateExp = require('./modules/updateExp');
+const autoReaction = require('./modules/autoReaction');
 
 // commands initializers
 const pong = require('./modules/pong.command');
@@ -30,6 +32,7 @@ instance.use([
     [
         event('message'),
         addExp(1),
+        autoReaction,
         logText,
     ],
 
@@ -78,12 +81,24 @@ if (discordCfg.authToken) {
             input: msg.content || '',
             from: 'discord',
             event: 'message',
-            handle({ output }) {
+            handle({ output, reactions }) {
+                if (reactions.length) {
+                    // TODO: need check permissions!
+                    reactions.forEach((reaction) => {
+                        msg
+                            .react(reaction)
+                            .catch(() => {});
+                    });
+                }
+
                 if (!msg.channel || !output) {
                     return;
                 }
 
-                msg.channel.send(output);
+                // TODO: need check permissions!
+                msg.channel
+                    .send(output)
+                    .catch(() => {});
             },
         });
     });

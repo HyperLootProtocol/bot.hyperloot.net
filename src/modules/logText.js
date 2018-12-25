@@ -9,14 +9,20 @@ const conditions = [
 ];
 
 module.exports = async function logText(response, context) {
-    const { input, setModuleData, getModuleData } = context;
+    const {
+        input,
+        setModuleData,
+        getModuleData,
+        user,
+    } = context;
+
     const msgFit = reduce(
         conditions,
         (acc, condition) => condition(input),
         true,
     );
 
-    let data = await getModuleData('log', context);
+    let data = await getModuleData('log', { user });
     data = defaults(data, {
         allCounter: 0,
         fitCounter: 0,
@@ -33,7 +39,7 @@ module.exports = async function logText(response, context) {
         });
     }
 
-    await setModuleData('log', context, query);
+    await setModuleData('log', query, { user });
 
     return response;
 };

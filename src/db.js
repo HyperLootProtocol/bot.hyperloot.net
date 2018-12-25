@@ -1,5 +1,6 @@
 const lodashGet = require('lodash/get');
 const extend = require('lodash/extend');
+const isEmpty = require('lodash/isEmpty');
 const mongo = require('mongojs');
 
 const { mongoURI } = require('./config');
@@ -71,14 +72,30 @@ async function getUser(userId) {
     return user;
 }
 
-async function getModuleData(moduleName, { user }) {
+async function getModuleData(moduleName, { user } = {}) {
+    if (!user) {
+        const res = await get('global', { moduleName });
+        return res || {};
+    }
+
     return lodashGet(user, `data.${moduleName}`, {});
 }
 
-async function setModuleData(moduleName, { user }, query) {
+async function setModuleData(moduleName, query, { user } = {}) {
     // todo remove get
     const currentData = await getModuleData(moduleName, { user });
     const actualQuery = extend(currentData, query);
+
+    if (!user) {
+        if (isEmpty(currentData)) {
+            return insert('global', {
+                moduleName,
+                ...actualQuery,
+            });
+        }
+
+        return set('global', { moduleName }, actualQuery);
+    }
 
     return set('users', {
         discordId: user.discordId,

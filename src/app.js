@@ -1,19 +1,19 @@
 const isArray = require('lodash/isArray');
 const isFunction = require('lodash/isFunction');
+const cloneDeep = require('lodash/cloneDeep');
 const invariant = require('invariant');
 
-const db = require('./db');
 const { lang } = require('./config');
 const { i18nFactory } = require('./i18n');
 
 
 module.exports = class App {
     // TODO: PASS context functions in constructor, dont inject itself here)
-    constructor() {
+    constructor({ db } = { db: { } }) {
         this.modules = [];
 
         // setup context here
-        this.context = {
+        this.commonContext = {
             i18n: i18nFactory(lang),
             ...db,
         };
@@ -27,7 +27,7 @@ module.exports = class App {
         return this;
     }
 
-    async process({ input = '', handle, ...context }) {
+    async process({ input = '', handle, ...processContext }) {
         invariant(isFunction(handle), 'handle must be function');
 
         // reference for response object, in future need add here comments
@@ -35,6 +35,7 @@ module.exports = class App {
         let response = {
             output: '',
             stack: [],
+            reactions: [],
             // attachments: [],
             // stack: {
             //   [moduleName]: { ... ??? }
@@ -51,17 +52,19 @@ module.exports = class App {
 
         let user = {};
 
-        if (context.id) {
-            user = await db.getUser(context.id);
+        if (processContext.id) {
+            user = await this.commonContext.getUser(processContext.id);
         }
 
-        response = await this._execute(this.modules, response, {
-            ...this.context,
-            ...context, // Dirty need some standard structure
+        const context = {
+            ...this.commonContext,
+            ...processContext, // Dirty need some standard structure
             user,
             input,
             // handle,
-        });
+        };
+
+        response = await this._execute(this.modules, response, context);
 
         // after all modules we call one
         handle(response, context);
@@ -74,7 +77,7 @@ module.exports = class App {
 
         if (isArray(module)) {
             for (let i = 0; i < module.length; i++) {
-                let _response = response;
+                let _response = cloneDeep(response);
 
                 try {
                     _response = await this._execute(module[i], response, context);

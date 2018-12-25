@@ -5,7 +5,7 @@ const DAY = 1000 * 60 * 60 * 24; // 5000;
 const MAX_CAP = 100; // 5;
 
 function amountTillNextLevel(lvl) {
-    return Math.floor(10 * (lvl ** 1.5));
+    return Math.floor(10 * (lvl ** 1.5)) + 10;
 }
 
 module.exports = async function updateExp(response, context) {
@@ -15,13 +15,14 @@ module.exports = async function updateExp(response, context) {
         i18n,
         getModuleData,
         setModuleData,
+        user,
     } = context;
 
     if (!exp) {
         return response;
     }
 
-    let data = await getModuleData('exp', context);
+    let data = await getModuleData('exp', { user });
     const curDate = new Date();
     const query = {};
 
@@ -69,7 +70,7 @@ module.exports = async function updateExp(response, context) {
         response.output = output ? `${output}\n${updLvlMsg}` : updLvlMsg;
     }
 
-    await setModuleData('exp', context, query);
+    await setModuleData('exp', query, { user });
 
     return response;
 };
