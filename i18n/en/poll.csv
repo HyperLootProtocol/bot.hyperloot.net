@@ -1,0 +1,4 @@
+pollCreated, "Poll created successfully, here's the id for results tracking and other stuff {pollId}"
+pollAlert, "Hey everyone @here, a new poll just popped up! vote by typing /vote your_answer"
+pollInfoHeader, "${day}/${month} ${question} | ${votes} votes | ID${pollId}\n"
+answerInfo, "${_poll.answers[i]} (${percentage}%)"
