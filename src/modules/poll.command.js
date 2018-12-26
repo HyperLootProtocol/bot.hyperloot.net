@@ -1,31 +1,6 @@
 
 const command = require('./command');
 const { discord: { broadcastChannelName } } = require('../config');
-// in memory object for tests
-// const polls = {
-//     1: {
-//         question: 'what\'s up?',
-//         answers: [
-//             'not much',
-//             'ceiling',
-//             'Hammond',
-//         ],
-//         creator: '258702341140774912',
-//         pollId: 1,
-//         dateCreated: new Date(),
-//     },
-//     2: {
-//         question: 'Are you playing games tonight?',
-//         answers: [
-//             'Yes',
-//             'No',
-//             'Dunno',
-//         ],
-//         creator: '258702341140774912',
-//         pollId: 2,
-//         dateCreated: new Date(),
-//     },
-// };
 
 const getPoll = function (id) {
     if (id in polls) {
