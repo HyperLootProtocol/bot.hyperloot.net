@@ -88,8 +88,25 @@ const pollsList = async function (response, { i18n }) {
     return response;
 };
 
+const closePoll = async function (response, {
+    i18n,
+    // getModuleData,
+    // updateModuleData,
+}) {
+    const { args: { _pollId } } = response;
+    // test data
+    let poll = {
+        isOpen: true,
+        pollId: _pollId,
+    };
+    poll.isOpen = false;
+    response.output = i18n('poll.closed', { pollId } );
+    return response;
+};
+
 module.exports = [
     [command('poll question ...answers'), addPoll],
     [command('poll pollId'), getPollById],
     [command('poll'), pollsList],
+    [command('close pollId'), closePoll],
 ];
