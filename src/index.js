@@ -36,7 +36,7 @@ instance.use([
     [
         event('message'),
         addExp(1),
-        // autoReaction,
+        autoReaction,
         logText,
     ],
 
@@ -45,11 +45,11 @@ instance.use([
     quiz,
     poll,
 
-        // empty,
+    // empty,
 
-        updateExp,
+    updateExp,
 
-        error,
+    error,
 ]);
 
 // web api, i use it for local testing
