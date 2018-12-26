@@ -59,7 +59,7 @@ const addPoll = async function (response, {
     updateModuleData('poll', {
         list: [...list, newPoll],
     });
-
+    // TODO create something like semantic id for easy access
     const pollId = 1;
     response.output = [
         i18n('poll.created', { pollId }),
