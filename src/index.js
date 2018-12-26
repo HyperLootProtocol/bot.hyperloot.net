@@ -43,13 +43,13 @@ instance.use([
     pong,
     status,
     quiz,
+    poll,
 
         // empty,
 
         updateExp,
 
         error,
-    ],
 ]);
 
 // web api, i use it for local testing
