@@ -93,14 +93,14 @@ const closePoll = async function (response, {
     // getModuleData,
     // updateModuleData,
 }) {
-    const { args: { _pollId } } = response;
+    const { args: { pollId } } = response;
     // test data
-    let poll = {
+    const poll = {
         isOpen: true,
-        pollId: _pollId,
+        id: pollId,
     };
     poll.isOpen = false;
-    response.output = i18n('poll.closed', { pollId } );
+    response.output = i18n('poll.close', { pollId });
     return response;
 };
 
