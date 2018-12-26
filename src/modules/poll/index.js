@@ -2,10 +2,11 @@
 const command = require('../command');
 const { discord: { broadcastChannelName } } = require('../../config');
 
-const getPollStringInfo = function (i18n, { 
+const getPollStringInfo = function (i18n, {
     dateCreated,
     question,
-    pollId, 
+    answers,
+    pollId,
 }) {
     const day = dateCreated.getDate();
     const month = dateCreated.getMonth();
@@ -20,12 +21,12 @@ const getPollStringInfo = function (i18n, {
         pollId,
     });
 
-    for (let i = 0; i < poll.answers.length; i++) {
-        const answer = poll.answers[i];
+    for (let i = 0; i < answers.length; i++) {
+        const answer = answers[i];
         // TODO get real percentage from db
         const percentage = 10;
         output += i18n('poll.answer', { answer, percentage });
-        if (i < poll.answers.length - 1) {
+        if (i < answers.length - 1) {
             output += ' | ';
         }
     }
@@ -72,10 +73,10 @@ const getPollById = async function (response, {
     // getModuleData,
     i18n,
 }) {
-    const { args: { pollId } } = response;
+    const { args: { _pollId } } = response;
     // get poll object from db by pollId
-    const poll = {};
-    response.output = getPollStringInfo({poll});
+    const poll = { pollId: _pollId };
+    response.output = getPollStringInfo(i18n, { poll });
     return response;
 };
 
