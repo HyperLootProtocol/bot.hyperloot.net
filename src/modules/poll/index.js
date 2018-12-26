@@ -2,33 +2,36 @@
 const command = require('../command');
 const { discord: { broadcastChannelName } } = require('../../config');
 
-// const getPollStringInfo = function (_poll, { i18n }) {
-//     const day = _poll.dateCreated.getDate();
-//     const month = _poll.dateCreated.getMonth();
-//     const question = _poll.question;
-//     // TODO get real votes count from db
-//     const votes = 15;
-//     const pollId = _poll.pollId;
-//     let _output = i18n('pollInfo', {
-//         day,
-//         month,
-//         question,
-//         votes,
-//         pollId,
-//     });
+const getPollStringInfo = function (i18n, { 
+    dateCreated,
+    question,
+    pollId, 
+}) {
+    const day = dateCreated.getDate();
+    const month = dateCreated.getMonth();
+    // TODO get real votes count from db
+    const votes = 15;
 
-//     for (let i = 0; i < _poll.answers.length; i++) {
-//         const answer = _poll.answers[i];
-//         // TODO get real percentage from db
-//         const percentage = 10;
-//         _output += i18n('answerInfo', { answer, percentage });
-//         if (i < _poll.answers.length - 1) {
-//             _output += ' | ';
-//         }
-//     }
+    let output = i18n('poll.header', {
+        day,
+        month,
+        question,
+        votes,
+        pollId,
+    });
 
-//     return _output;
-// };
+    for (let i = 0; i < poll.answers.length; i++) {
+        const answer = poll.answers[i];
+        // TODO get real percentage from db
+        const percentage = 10;
+        output += i18n('poll.answer', { answer, percentage });
+        if (i < poll.answers.length - 1) {
+            output += ' | ';
+        }
+    }
+
+    return output;
+};
 
 /**
  * poll() implements the polls logic
@@ -58,7 +61,7 @@ const addPoll = async function (response, {
 
     const pollId = 1;
     response.output = [
-        i18n('pollCreated', { pollId }),
+        i18n('poll.created', { pollId }),
         { channelName: broadcastChannelName, message: 'okay' },
     ];
 
@@ -70,15 +73,17 @@ const getPollById = async function (response, {
     i18n,
 }) {
     const { args: { pollId } } = response;
-    response.output = i18n('pollInfoHeader', { pollId });
+    // get poll object from db by pollId
+    const poll = {};
+    response.output = getPollStringInfo({poll});
     return response;
 };
 
 const pollsList = async function (response, { i18n }) {
-    response.output = [
-        i18n('list polls'),
-        { channelName: broadcastChannelName, message: 'all right!' },
-    ];
+    // get list of existing polls from db
+    // iterate through them applying getPollStringInfo
+
+    response.output = i18n('list polls');
     return response;
 };
 
