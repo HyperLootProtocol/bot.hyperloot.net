@@ -18,6 +18,7 @@ const App = require('./app');
 const instance = new App({ db });
 
 const quiz = require('./modules/quiz');
+const poll = require('./modules/poll');
 
 const addExp = require('./modules/addExp');
 // const empty = require('./modules/empty');
@@ -29,7 +30,6 @@ const autoReaction = require('./modules/autoReaction');
 
 // commands initializers
 const pong = require('./modules/pong.command');
-const poll = require('./modules/poll.command');
 const status = require('./modules/status.command');
 
 instance.use([
