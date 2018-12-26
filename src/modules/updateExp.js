@@ -14,7 +14,7 @@ module.exports = async function updateExp(response, context) {
         id,
         i18n,
         getModuleData,
-        setModuleData,
+        updateModuleData,
         user,
     } = context;
 
@@ -70,7 +70,7 @@ module.exports = async function updateExp(response, context) {
         response.output = output ? `${output}\n${updLvlMsg}` : updLvlMsg;
     }
 
-    await setModuleData('exp', query, { user });
+    await updateModuleData('exp', query, { user });
 
     return response;
 };

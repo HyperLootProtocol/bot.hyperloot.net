@@ -11,7 +11,7 @@ const conditions = [
 module.exports = async function logText(response, context) {
     const {
         input,
-        setModuleData,
+        updateModuleData,
         getModuleData,
         user,
     } = context;
@@ -39,7 +39,7 @@ module.exports = async function logText(response, context) {
         });
     }
 
-    await setModuleData('log', query, { user });
+    await updateModuleData('log', query, { user });
 
     return response;
 };

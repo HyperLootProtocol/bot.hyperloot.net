@@ -19,7 +19,7 @@ db.on('connect', () => {
 });
 
 // Basic operations
-async function _update(collection, selector, query) {
+async function update(collection, selector, query) {
     return new Promise((resolve, reject) => {
         db[collection].update(selector, query, (err, result) => {
             if (err) {
@@ -44,13 +44,13 @@ async function get(collection, selector) {
 }
 
 async function set(collection, selector, query) {
-    return _update(collection, selector, {
+    return update(collection, selector, {
         $set: query,
     });
 }
 
 // async function inc(collection, selector, query) {
-//     return _update(collection, selector, {
+//     return update(collection, selector, {
 //         $inc: query,
 //     });
 // }
@@ -81,13 +81,13 @@ async function getModuleData(moduleName, { user } = {}) {
     return lodashGet(user, `data.${moduleName}`, {});
 }
 
-async function setModuleData(moduleName, query, { user } = {}) {
-    // todo remove get
+async function updateModuleData(moduleName, query, { user } = {}) {
+    // TODO PLEASE STOP PLEASE REWORK IT PLEASE!
     const currentData = await getModuleData(moduleName, { user });
     const actualQuery = extend(currentData, query);
 
     if (!user) {
-        if (isEmpty(currentData)) {
+        if (isEmpty(currentData)) { // $setOrInsert???
             return insert('global', {
                 moduleName,
                 ...actualQuery,
@@ -107,10 +107,11 @@ async function setModuleData(moduleName, query, { user } = {}) {
 module.exports = {
     getUser,
     getModuleData,
-    setModuleData,
+    updateModuleData,
 
     // Unsafe be carefuly!
     get,
     set,
+    update,
     insert,
 };
