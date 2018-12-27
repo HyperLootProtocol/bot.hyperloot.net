@@ -110,17 +110,17 @@ const vote = async function (response, {
     // getModuleData,
     // updateModuleData,
 }) {
-    const { args: { _pollId, _option } } = response;
+    const { args: { pollId, option } } = response;
     const newVote = {
         voterId: id,
-        pollId: _pollId,
-        option: _option,
+        pollId,
+        option,
         dateVoted: new Date(),
     };
     // test code
     console.log(newVote);
 
-    response.output = i18n('vote', { id, _pollId, _option });
+    response.output = i18n('vote', { id, pollId, option });
     return response;
 };
 
