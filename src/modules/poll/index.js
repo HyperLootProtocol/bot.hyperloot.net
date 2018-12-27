@@ -1,6 +1,6 @@
 
 const command = require('../command');
-const { discord: { broadcastChannelName } } = require('../../config');
+// const { discord: { broadcastChannelName } } = require('../../config');
 
 /**
  * reusable function to form an output string, containing the info about a single poll
