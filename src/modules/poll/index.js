@@ -10,19 +10,24 @@ const getPollStringInfo = function (i18n, {
     question,
     options,
     pollId,
+    isOpen,
 }) {
+    let i18nOption = 'poll.header';
+    if (isOpen === false) i18nOption += '.wstatus';
+
     const day = dateCreated.getDate();
     const month = dateCreated.getMonth();
     // TODO get real votes count from db
     // all votes = filter(poll: pollId), maybe store? cause need it soon enough
     const votes = 15;
 
-    let output = i18n('poll.header', {
+    let output = i18n(i18nOption, {
         day,
         month,
         question,
         votes,
         pollId,
+        // status,
     });
 
     for (let i = 0; i < options.length; i++) {
