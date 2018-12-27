@@ -113,12 +113,15 @@ const vote = async function (response, {
     const { args: { _pollId, _option } } = response;
     const newVote = {
         voterId: id,
-        pollId: pollId,
+        pollId: _pollId,
         option: _option,
         dateVoted: new Date(),
-    }
-    return;
+    };
+    // test code
+    console.log(newVote);
+
     response.output = i18n('vote', { id, _pollId, _option });
+    return response;
 };
 
 module.exports = [
@@ -126,5 +129,5 @@ module.exports = [
     [command('poll pollId'), getPollById],
     [command('poll'), pollsList],
     [command('close pollId'), closePoll],
-    [command('vote pollId option')],
+    [command('vote pollId option'), vote],
 ];
