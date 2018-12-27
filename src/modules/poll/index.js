@@ -104,6 +104,22 @@ const closePoll = async function (response, {
     return response;
 };
 
+const vote = async function (response, {
+    i18n,
+    id,
+    // getModuleData,
+    // updateModuleData,
+}) {
+    const { args: { _pollId, _option } } = response;
+    const newVote = {
+        voterId: id,
+        pollId: pollId,
+        option: _option,
+        dateVoted: new Date(),
+    }
+    return;
+};
+
 module.exports = [
     [command('poll question ...options'), addPoll],
     [command('poll pollId'), getPollById],
