@@ -1,37 +1,13 @@
-const { PREFIXsoc } = require('../config');
+let inputRct = '!someshit';
 
-module.exports = pattern => function reactions(response, { input }) {
-    const [definedReactions, ...definedArgs] = pattern.split(' ');
-    const [rawReactions, ...rawArgs] = input.split(' ');
-
-    if (!rawReactions.startsWith(`${PREFIXsoc}`)) {
-        return null;
-    }
-
-    if (rawReactions.substring(1) !== definedReactions) {
-        return null;
-    }
-
-    const parsedArgs = definedArgs.reduce((result, item, index) => {
-        const _result = {
-            ...result,
-            [item]: rawArgs[index],
-        };
-
-        if (item.startsWith('...')) {
-            delete _result[item];
-            const restName = item.substring(3);
-
-            _result[restName] = rawArgs.slice(index);
-        }
-
-        return _result;
-    }, {});
-
-
-    response.rawArgs = rawArgs || [];
-    response.cmd = definedReactions;
-    response.args = parsedArgs;
-
-    return response;
-};
+const reaction = (inputFunc) => {
+  const err = 'Someshit at ur reaction!';
+  if (!inputFunc.startsWith('!')) {
+    return;
+  }
+  else if(inputFunc[1] === ' ') {
+    return err;
+  }
+  return inputFunc;
+}
+reaction(inputRct);
