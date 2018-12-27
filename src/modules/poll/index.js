@@ -2,6 +2,9 @@
 const command = require('../command');
 const { discord: { broadcastChannelName } } = require('../../config');
 
+/**
+ * reusable function to form an output string, containing the info about a single poll
+ */
 const getPollStringInfo = function (i18n, {
     dateCreated,
     question,
@@ -11,6 +14,7 @@ const getPollStringInfo = function (i18n, {
     const day = dateCreated.getDate();
     const month = dateCreated.getMonth();
     // TODO get real votes count from db
+    // all votes = filter(poll: pollId), maybe store? cause need it soon enough
     const votes = 15;
 
     let output = i18n('poll.header', {
@@ -24,6 +28,9 @@ const getPollStringInfo = function (i18n, {
     for (let i = 0; i < options.length; i++) {
         const option = options[i];
         // TODO get real percentage from db
+        // all votes = filter(poll: pollId)
+        // relevant votes = filter(poll: pollId, option = options[i])
+        // must keep in mind that percentage should round up in the way that sum is 100%
         const percentage = 10;
         output += i18n('poll.option', { option, percentage });
         if (i < options.length - 1) {
@@ -35,7 +42,7 @@ const getPollStringInfo = function (i18n, {
 };
 
 /**
- * poll() implements the polls logic
+ * addPoll() implements the polls creation logic
  * input line for creating a poll should look like /poll 'question sentence' option1 'option 2' ...
  * quotes are used to ignore spaces inside the arguments
  */
@@ -59,16 +66,18 @@ const addPoll = async function (response, {
     updateModuleData('poll', {
         list: [...list, newPoll],
     });
-    // TODO create something like semantic id for easy access
+    // TODO use human-readable-ids
     const pollId = 1;
-    response.output = [
-        i18n('poll.created', { pollId }),
-        { channelName: broadcastChannelName, message: 'okay' },
-    ];
+    response.output = i18n('poll.created', { pollId });
 
     return response;
 };
 
+/**
+ * getPollById() implements the poll info logic
+ * the function gets info about a poll by it's mneumonic id
+ * usage /poll ID
+ */
 const getPollById = async function (response, {
     // getModuleData,
     i18n,
@@ -80,6 +89,11 @@ const getPollById = async function (response, {
     return response;
 };
 
+/**
+ * pollsList() implements getting existing polls list feature
+ * used by simply typing /poll
+ * outputs only isOpen: true polls, for closed polls use getPollById
+ */
 const pollsList = async function (response, { i18n }) {
     // get list of existing polls from db
     // iterate through them applying getPollStringInfo
@@ -88,6 +102,12 @@ const pollsList = async function (response, { i18n }) {
     return response;
 };
 
+/**
+ * closePoll() is used to close poll by it's mneumonic id
+ * usage: /close ID
+ * the status is chaged to isOpen: false, poll stays in DB
+ * results are still visible by typing
+ */
 const closePoll = async function (response, {
     i18n,
     // getModuleData,
@@ -104,6 +124,10 @@ const closePoll = async function (response, {
     return response;
 };
 
+/**
+ * vote() is used to cast a new vote for an option in a poll
+ * usage /vote pollId option(text or optionId)
+ */
 const vote = async function (response, {
     i18n,
     id,
