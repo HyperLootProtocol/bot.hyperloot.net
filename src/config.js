@@ -11,11 +11,8 @@ module.exports = {
     //     allowedStatuses: ['creator', 'administrator', 'member'],
     // },
     discord: {
-        webhookEndpoint: process.env.DISCORD_WEBHOOKENDPOINT,
         authToken: process.env.DISCORD_AUTH_TOKEN,
-        botId: process.env.BOT_ID,
-        greetingsChannelId: process.env.GREETING_CHANNEL_ID,
-        guildId: process.env.GUILD_ID,
+        broadcastChannelName: process.env.BROADCAST_CHANNEL_NAME,
     },
     // see: https://github.com/yagop/node-telegram-bot-api/issues/319#issuecomment-324963294
     NTBA_FIX_319: true,

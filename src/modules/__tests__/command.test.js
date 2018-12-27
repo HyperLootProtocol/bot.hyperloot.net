@@ -60,26 +60,26 @@ describe('on command with args', () => {
     });
 
     describe('when doesn\'t have enough values', () => {
-        test('change values of response.args to be undefined', async () => {
+        test('is return null', async () => {
             const args = ['test'];
             let response = {};
             const msg = `${PREFIX}${expectedCmd} ${args[0]}`;
 
             response = await cmdModule(expectedCmd + expectedArgs)(response, { input: msg });
 
-            expect(response.args).toEqual({ arg1: args[0], arg2: undefined });
+            expect(response).toEqual(null);
         });
     });
 
     describe('when have excess number of values', () => {
-        test('ignores excess', async () => {
+        test('without rest return null', async () => {
             const args = ['value1', 'value2', 'value3'];
             const msg = `${PREFIX}${expectedCmd} ${args[0]} ${args[1]} ${args[2]}}`;
             let response = {};
 
             response = await cmdModule(expectedCmd + expectedArgs)(response, { input: msg });
 
-            expect(response.args).toEqual({ arg1: args[0], arg2: args[1] });
+            expect(response).toEqual(null);
         });
 
         test('keep rest', async () => {

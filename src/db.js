@@ -1,5 +1,6 @@
 const lodashGet = require('lodash/get');
 const extend = require('lodash/extend');
+const isEmpty = require('lodash/isEmpty');
 const mongo = require('mongojs');
 
 const { mongoURI } = require('./config');
@@ -18,7 +19,7 @@ db.on('connect', () => {
 });
 
 // Basic operations
-async function _update(collection, selector, query) {
+async function update(collection, selector, query) {
     return new Promise((resolve, reject) => {
         db[collection].update(selector, query, (err, result) => {
             if (err) {
@@ -43,13 +44,13 @@ async function get(collection, selector) {
 }
 
 async function set(collection, selector, query) {
-    return _update(collection, selector, {
+    return update(collection, selector, {
         $set: query,
     });
 }
 
 // async function inc(collection, selector, query) {
-//     return _update(collection, selector, {
+//     return update(collection, selector, {
 //         $inc: query,
 //     });
 // }
@@ -71,14 +72,30 @@ async function getUser(userId) {
     return user;
 }
 
-async function getModuleData(moduleName, { user }) {
+async function getModuleData(moduleName, { user } = {}) {
+    if (!user) {
+        const res = await get('global', { moduleName });
+        return res || {};
+    }
+
     return lodashGet(user, `data.${moduleName}`, {});
 }
 
-async function setModuleData(moduleName, { user }, query) {
-    // todo remove get
+async function updateModuleData(moduleName, query, { user } = {}) {
+    // TODO PLEASE STOP PLEASE REWORK IT PLEASE!
     const currentData = await getModuleData(moduleName, { user });
     const actualQuery = extend(currentData, query);
+
+    if (!user) {
+        if (isEmpty(currentData)) { // $setOrInsert???
+            return insert('global', {
+                moduleName,
+                ...actualQuery,
+            });
+        }
+
+        return set('global', { moduleName }, actualQuery);
+    }
 
     return set('users', {
         discordId: user.discordId,
@@ -90,10 +107,11 @@ async function setModuleData(moduleName, { user }, query) {
 module.exports = {
     getUser,
     getModuleData,
-    setModuleData,
+    updateModuleData,
 
     // Unsafe be carefuly!
     get,
     set,
+    update,
     insert,
 };
