@@ -1,5 +1,5 @@
 poll.created, "Poll created successfully, here's the id for results tracking and other stuff {pollId}"
 poll.alert, "Hey everyone @here, a new poll just popped up! vote by typing /vote your_answer"
 poll.header, "${day}/${month} ${question} | ${votes} votes | ID${pollId}\n"
-poll.answer, "${answer} (${percentage}%)"
+poll.option, "${option} (${percentage}%)"
 poll.close, "Poll ${pollId} was closed, the results are still awailable"

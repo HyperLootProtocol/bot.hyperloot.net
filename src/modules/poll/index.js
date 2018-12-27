@@ -5,7 +5,7 @@ const { discord: { broadcastChannelName } } = require('../../config');
 const getPollStringInfo = function (i18n, {
     dateCreated,
     question,
-    answers,
+    options,
     pollId,
 }) {
     const day = dateCreated.getDate();
@@ -21,12 +21,12 @@ const getPollStringInfo = function (i18n, {
         pollId,
     });
 
-    for (let i = 0; i < answers.length; i++) {
-        const answer = answers[i];
+    for (let i = 0; i < options.length; i++) {
+        const option = options[i];
         // TODO get real percentage from db
         const percentage = 10;
-        output += i18n('poll.answer', { answer, percentage });
-        if (i < answers.length - 1) {
+        output += i18n('poll.option', { option, percentage });
+        if (i < options.length - 1) {
             output += ' | ';
         }
     }
@@ -36,7 +36,7 @@ const getPollStringInfo = function (i18n, {
 
 /**
  * poll() implements the polls logic
- * input line for creating a poll should look like /poll 'question sentence' answer1 'answer 2' ...
+ * input line for creating a poll should look like /poll 'question sentence' option1 'option 2' ...
  * quotes are used to ignore spaces inside the arguments
  */
 const addPoll = async function (response, {
@@ -45,14 +45,14 @@ const addPoll = async function (response, {
     id,
     i18n,
 }) {
-    const { args: { question, answers } } = response;
+    const { args: { question, options } } = response;
     const { list = [] } = await getModuleData('poll');
 
     const newPoll = {
         authorId: id,
         isOpen: true,
         question,
-        answers,
+        options,
         dateCreated: new Date(),
     };
 
@@ -105,8 +105,9 @@ const closePoll = async function (response, {
 };
 
 module.exports = [
-    [command('poll question ...answers'), addPoll],
+    [command('poll question ...options'), addPoll],
     [command('poll pollId'), getPollById],
     [command('poll'), pollsList],
     [command('close pollId'), closePoll],
+    [command('vote pollId option')],
 ];
