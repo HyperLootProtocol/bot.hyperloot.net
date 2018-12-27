@@ -3,3 +3,5 @@ poll.alert, "Hey everyone @here, a new poll just popped up! vote by typing /vote
 poll.header, "${day}/${month} ${question} | ${votes} votes | ID${pollId}\n"
 poll.option, "${option} (${percentage}%)"
 poll.close, "Poll ${pollId} was closed, the results are still awailable"
+
+vote, "<@${id} voted for ${_option} in poll ${_pollId}>, hmmm which option's gonna win this this thing?"

@@ -118,6 +118,7 @@ const vote = async function (response, {
         dateVoted: new Date(),
     }
     return;
+    response.output = i18n('vote', { id, _pollId, _option });
 };
 
 module.exports = [
