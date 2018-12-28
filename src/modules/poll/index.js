@@ -1,11 +1,6 @@
 
 const command = require('../command');
 
-/**
- * addPoll() implements the polls creation logic
- * input line for creating a poll should look like /poll 'question sentence' option1 'option 2' ...
- * quotes are used to ignore spaces inside the arguments
- */
 const addPoll = async function (response, {
     getModuleData,
     updateModuleData,
@@ -14,6 +9,7 @@ const addPoll = async function (response, {
 }) {
     const { args: { question, options } } = response;
     const { list = [] } = await getModuleData('poll.polls');
+    // TODO use human-readable-ids
     const pollId = list.length + 1;
     const newPoll = {
         authorId: id,
@@ -34,11 +30,6 @@ const addPoll = async function (response, {
     return response;
 };
 
-/**
- * getPollById() implements the poll info logic
- * the function gets info about a poll by it's mneumonic id
- * usage /poll ID
- */
 const getPollById = async function (response, {
     getModuleData,
     i18n,
@@ -49,11 +40,6 @@ const getPollById = async function (response, {
     return response;
 };
 
-/**
- * pollsList() implements getting existing polls list feature
- * used by simply typing /poll
- * outputs only isOpen: true polls, for closed polls use getPollById
- */
 const pollsList = async function (response, {
     i18n,
     getModuleData,
@@ -95,12 +81,6 @@ const pollsList = async function (response, {
     return response;
 };
 
-/**
- * closePoll() is used to close poll by it's mneumonic id
- * usage: /close ID
- * the status is chaged to isOpen: false, poll stays in DB
- * results are still visible by typing
- */
 const closePoll = async function (response, {
     i18n,
     getModuleData,
@@ -120,10 +100,6 @@ const closePoll = async function (response, {
     return response;
 };
 
-/**
- * vote() is used to cast a new vote for an option in a poll
- * usage /vote pollId option(text or optionId)
- */
 const vote = async function (response, {
     i18n,
     id,
