@@ -2,45 +2,6 @@
 const command = require('../command');
 
 /**
- * reusable function to form an output string, containing the info about a single poll
- */
-const getPollStringInfo = function (i18n, {
-    dateCreated,
-    question,
-    options,
-    pollId,
-    isOpen,
-}) {
-    
-    const day = dateCreated.getDate();
-    const month = dateCreated.getMonth();
-
-    const status = isOpen ? 'open' : 'closed';
-    // TODO get real votes count from db
-    // all votes = filter(poll: pollId), maybe store? cause need it soon enough
-    const votes = 15;
-
-    let output = i18n('poll.header', {
-        day,
-        month,
-        question,
-        status,
-        votes,
-        pollId,
-    });
-
-    output += options.map((option) => {
-        // TODO get real percentage from db
-        // all votes = filter(poll: pollId)
-        // relevant votes = filter(poll: pollId, option = options[i])
-        // must keep in mind that percentage should round up in the way that sum is 100%
-        const percentage = 10;
-        return i18n('poll.option', { option, percentage });
-    });
-    return output;
-};
-
-/**
  * addPoll() implements the polls creation logic
  * input line for creating a poll should look like /poll 'question sentence' option1 'option 2' ...
  * quotes are used to ignore spaces inside the arguments
