@@ -11,7 +11,6 @@ const addPoll = async function (response, {
 }) {
     const { args: { question, options } } = response;
     const { pollsList = [] } = await getModuleData('poll');
-    // TODO use human-readable-ids
     const pollId = hri.random();
     const newPoll = {
         authorId: id,
