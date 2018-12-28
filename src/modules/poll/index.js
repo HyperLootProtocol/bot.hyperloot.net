@@ -103,16 +103,19 @@ const pollsList = async function (response, {
  */
 const closePoll = async function (response, {
     i18n,
-    // getModuleData,
+    getModuleData,
     // updateModuleData,
 }) {
     const { args: { pollId } } = response;
-    // test data
-    const poll = {
-        isOpen: true,
-        id: pollId,
+    const { list = [] } = await getModuleData('poll.polls');
+
+    if (!list.find(poll => poll.isOpen)){
+        response.output = i18n('poll.none');
+        return response;
     };
-    poll.isOpen = false;
+
+    const newList = list.filter(poll => poll.pollId === pollId)
+
     response.output = i18n('poll.close', { pollId });
     return response;
 };
