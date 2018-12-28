@@ -6,9 +6,10 @@ const mongo = require('mongojs');
 const { mongoURI } = require('./config');
 
 const USERS = 'users';
-const MODERATION = 'moderation';
+const LOGS = 'logs';
+const GLOBAL = 'global';
 
-const db = mongo(mongoURI, [USERS, MODERATION]);
+const db = mongo(mongoURI, [USERS, LOGS, GLOBAL]);
 
 db.on('error', (err) => {
     console.log('database error', err);
