@@ -53,12 +53,13 @@ const addPoll = async function (response, {
 }) {
     const { args: { question, options } } = response;
     const { list = [] } = await getModuleData('poll.polls');
-
+    const pollId = list.length + 1;
     const newPoll = {
         authorId: id,
         isOpen: true,
         question,
         options,
+        pollId,
         dateCreated: new Date(),
     };
 
@@ -66,7 +67,7 @@ const addPoll = async function (response, {
         list: [...list, newPoll],
     });
     // TODO use human-readable-ids
-    const pollId = 1;
+
     response.output = i18n('poll.created', { pollId });
 
     return response;
