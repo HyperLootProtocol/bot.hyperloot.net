@@ -34,9 +34,37 @@ const getPollById = async function (response, {
     getModuleData,
     i18n,
 }) {
+    const { list = [] } = await getModuleData('poll.polls');
     const { args: { pollId } } = response;
+        list.filter(poll => poll.isOpen).forEach(async function(poll){
+        const { votesList = [] } = await getModuleData('poll.votes');
+        const votes = votesList.filter(vote => vote.pollId === poll.pollId).length;
 
-    response.output = getPollStringInfo(i18n, { poll });
+        const {
+            dateCreated,
+            question,
+            options,
+            pollId,
+            isOpen,
+        } = poll;
+        const day = poll.dateCreated.getDate();
+        const month = poll.dateCreated.getMonth() + 1;
+
+        let output = i18n('poll.header', {
+            day,
+            month,
+            question,
+            votes,
+            pollId,
+        });
+
+        output += options.map(option => {
+            const optionVotes = votesList.filter(vote => vote.pollId === pollId && vote.option === option).length;
+            const percentage =  optionVotes / votes || 0;
+            return i18n('poll.line', { option, percentage });
+        })
+        response.output += output;
+    });
     return response;
 };
 
