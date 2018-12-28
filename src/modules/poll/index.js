@@ -85,8 +85,7 @@ const pollsList = async function (response, {
     i18n,
     getModuleData,
 }) {
-    const { pollsList = [] } = await getModuleData('poll');
-    const { votesList = [] } = await getModuleData('poll');
+    const { pollsList = [], votesList = [] } = await getModuleData('poll');
 
     if (!pollsList.find(poll => poll.isOpen)){
         response.output = i18n('poll.none');
