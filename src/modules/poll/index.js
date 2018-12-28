@@ -1,7 +1,7 @@
 
-const command = require('../command');
-const hri = require('human-readable-ids').hri;
+const { hri } = require('human-readable-ids');
 const isEqual = require('lodash/isEqual');
+const command = require('../command');
 
 const addPoll = async function (response, {
     getModuleData,
@@ -40,12 +40,12 @@ const getPollById = async function (response, {
 
     const poll = pollsList.find(p => p.pollId === requestedPollId);
 
-    if (!poll){
+    if (!poll) {
         response.output = i18n('poll.notfound', { requestedPollId });
         return response;
-    };
+    }
 
-    if (!poll.isOpen){
+    if (!poll.isOpen) {
         response.output = i18n('poll.closed');
     }
 
@@ -58,11 +58,10 @@ const getPollById = async function (response, {
         question,
         options,
         pollId,
-        isOpen,
     } = poll;
 
-    const day = poll.dateCreated.getDate();
-    const month = poll.dateCreated.getMonth() + 1;
+    const day = dateCreated.getDate();
+    const month = dateCreated.getMonth() + 1;
 
     let output = i18n('poll.header', {
         day,
@@ -72,39 +71,38 @@ const getPollById = async function (response, {
         pollId,
     });
 
-    output += options.map(option => {
-        const optionVotes = votesList.filter(vote => vote.pollId === pollId && vote.option === option).length;
-        const percentage =  optionVotes / votesCount * 100 || 0;
+    output += options.map((option) => {
+        const optionVotes = votesList.filter(v => (v.pollId === pollId && v.option === option)).length;
+        const percentage = optionVotes / votesCount * 100 || 0;
         return i18n('poll.line', { option, optionVotes, percentage });
-    })
+    });
     response.output += output;
     return response;
 };
 
-const pollsList = async function (response, {
+const listPolls = async function (response, {
     i18n,
     getModuleData,
 }) {
     const { pollsList = [], votesList = [] } = await getModuleData('poll');
 
-    if (!pollsList.find(poll => poll.isOpen)){
+    if (!pollsList.find(poll => poll.isOpen)) {
         response.output = i18n('poll.none');
         return response;
-    };
+    }
 
     response.output = i18n('poll.list');
 
-    pollsList.filter(poll => poll.isOpen).forEach(async function(poll){
-        const votesCount = votesList.filter(vote => vote.pollId === poll.pollId).length;
+    pollsList.filter(poll => poll.isOpen).forEach((poll) => {
+        const votesCount = votesList.filter(v => v.pollId === poll.pollId).length;
         const {
             dateCreated,
             question,
             options,
             pollId,
-            isOpen,
         } = poll;
-        const day = poll.dateCreated.getDate();
-        const month = poll.dateCreated.getMonth() + 1;
+        const day = dateCreated.getDate();
+        const month = dateCreated.getMonth() + 1;
 
         let output = i18n('poll.header', {
             day,
@@ -114,11 +112,11 @@ const pollsList = async function (response, {
             pollId,
         });
 
-        output += options.map(option => {
-            const optionVotes = votesList.filter(vote => vote.pollId === pollId && vote.option === option).length;
-            const percentage =  optionVotes / votesCount * 100 || 0;
+        output += options.map((option) => {
+            const optionVotes = votesList.filter(v => (v.pollId === pollId && v.option === option)).length;
+            const percentage = optionVotes / votesCount * 100 || 0;
             return i18n('poll.line', { option, optionVotes, percentage });
-        })
+        });
         response.output += output;
     });
     return response;
@@ -137,14 +135,14 @@ const closePoll = async function (response, {
     if (!poll) {
         response.output = i18n('poll.notfound', { requestedPollId });
         return response;
-    };
+    }
 
     if (!poll.isOpen) {
         response.output = i18n('poll.alreadyclosed');
         return response;
     }
 
-    const newList = pollsList.filter(poll => poll.pollId !== requestedPollId);
+    const newList = pollsList.filter(p => p.pollId !== requestedPollId);
 
     poll.isOpen = false;
 
@@ -154,7 +152,7 @@ const closePoll = async function (response, {
         updateModuleData('poll', {
             pollsList: newList,
         });
-    };
+    }
 
     response.output = i18n('poll.close', { requestedPollId });
     return response;
@@ -184,7 +182,7 @@ const vote = async function (response, {
 module.exports = [
     [command('poll question ...options'), addPoll],
     [command('poll requestedPollId'), getPollById],
-    [command('poll'), pollsList],
+    [command('poll'), listPolls],
     [command('close requestedPollId'), closePoll],
     [command('vote pollId option'), vote],
 ];
