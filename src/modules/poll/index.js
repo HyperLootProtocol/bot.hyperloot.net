@@ -120,17 +120,18 @@ const closePoll = async function (response, {
     getModuleData,
     // updateModuleData,
 }) {
-    const { args: { pollId } } = response;
+    const { args: { requestedPollId } } = response;
     const { pollsList = [] } = await getModuleData('poll');
 
     if (!pollsList.find(poll => poll.isOpen)){
         response.output = i18n('poll.none');
+        response.output = i18n('poll.notfound', { requestedPollId });
         return response;
     };
 
     const newList = pollsList.filter(poll => poll.pollId === pollId)
 
-    response.output = i18n('poll.close', { pollId });
+    response.output = i18n('poll.close', { requestedPollId });
     return response;
 };
 
@@ -157,8 +158,8 @@ const vote = async function (response, {
 
 module.exports = [
     [command('poll question ...options'), addPoll],
-    [command('poll pollId'), getPollById],
+    [command('poll requestedPollId'), getPollById],
     [command('poll'), pollsList],
-    [command('close pollId'), closePoll],
+    [command('close requestedPollId'), closePoll],
     [command('vote pollId option'), vote],
 ];
