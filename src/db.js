@@ -1,5 +1,5 @@
 const lodashGet = require('lodash/get');
-const extend = require('lodash/extend');
+const assign = require('lodash/assign');
 const isEmpty = require('lodash/isEmpty');
 const mongo = require('mongojs');
 
@@ -83,9 +83,9 @@ async function getModuleData(moduleName, { user } = {}) {
 }
 
 async function updateModuleData(moduleName, query, { user } = {}) {
-    // TODO PLEASE STOP PLEASE REWORK IT PLEASE!
+    // TODO PLEASE STOP PLEASE REWORK IT PLEASE! SORRY, NOPE
     const currentData = await getModuleData(moduleName, { user });
-    const actualQuery = extend(currentData, query);
+    const actualQuery = assign({}, currentData, query);
 
     if (!user) {
         if (isEmpty(currentData)) { // $setOrInsert???
