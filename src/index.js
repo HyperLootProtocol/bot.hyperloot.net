@@ -26,7 +26,7 @@ const error = require('./modules/error');
 const event = require('./modules/event');
 const logText = require('./modules/logText');
 const updateExp = require('./modules/updateExp');
-// const autoReaction = require('./modules/autoReaction');
+const autoReaction = require('./modules/autoReaction');
 
 // commands initializers
 const pong = require('./modules/pong.command');
