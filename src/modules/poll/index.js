@@ -171,7 +171,10 @@ const vote = async function (response, {
         response.output = i18n('poll.alreadyclosed');
         return response;
     }
-
+    if (votesList.find(v => (v.pollId === pollId && v.voterId === id))) {
+        response.output = i18n('poll.alreadyvoted');
+        return response;
+    }
     const newVote = {
         voterId: id,
         pollId,

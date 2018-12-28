@@ -11,5 +11,6 @@ poll.closed, "(closed) "
 
 poll.close, "Poll ${requestedPollId} was closed, the results are still available"
 poll.alreadyclosed, "This poll is already closed! Are you messing with me?"
+poll.alreadyvoted, "You've already voted in this poll, you're either cheating or very forgetfull"
 
 vote, "<@${id}> voted for ${option} in poll ${pollId}, hmmm which option's gonna win this this thing?"
