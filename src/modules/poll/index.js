@@ -163,8 +163,15 @@ const vote = async function (response, {
     getModuleData,
     updateModuleData,
 }) {
-    const { votesList = [] } = await getModuleData('poll');
+    const { votesList = [], pollsList = [] } = await getModuleData('poll');
     const { args: { pollId, option } } = response;
+
+    const poll = pollsList.find(p => p.pollId === pollId);
+    if (!poll.isOpen) {
+        response.output = i18n('poll.alreadyclosed');
+        return response;
+    }
+
     const newVote = {
         voterId: id,
         pollId,
