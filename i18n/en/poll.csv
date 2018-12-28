@@ -1,6 +1,8 @@
 poll.created, "Poll created successfully, here's the ID for results tracking and other stuff: ${pollId}"
 poll.alert, "Hey everyone @here, a new poll just popped up! vote by typing /vote your_answer"
 
+poll.notfound, "I couldn't find a poll with this ID (${pollId}), sorry, man("
+
 poll.list, "Here are all the polls that are open at the moment:\n"
 poll.header, "${day}/${month} ${question} (${status}) | ${votes} total votes | ID: ${pollId}\n"
 poll.line, "${option} | ${optionVotes} | (${percentage}%)\n"
