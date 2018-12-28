@@ -1,6 +1,7 @@
 
 const command = require('../command');
 const hri = require('human-readable-ids').hri;
+const isEqual = require('lodash/isEqual');
 
 const addPoll = async function (response, {
     getModuleData,
@@ -36,10 +37,19 @@ const getPollById = async function (response, {
 }) {
     const { args: { requestedPollId } } = response;
     const { pollsList = [] } = await getModuleData('poll');
-    const { votesList = [] } = await getModuleData('poll');
-    
+
     const poll = pollsList.find(p => p.pollId === requestedPollId);
-    console.log(poll);
+
+    if (!poll){
+        response.output = i18n('poll.notfound', { requestedPollId });
+        return response;
+    };
+
+    if (!poll.isOpen){
+        response.output = i18n('poll.closed');
+    }
+
+    const { votesList = [] } = await getModuleData('poll');
 
     const votesCount = votesList.filter(v => v.pollId === poll.pollId).length;
 
@@ -64,8 +74,8 @@ const getPollById = async function (response, {
 
     output += options.map(option => {
         const optionVotes = votesList.filter(vote => vote.pollId === pollId && vote.option === option).length;
-        const percentage =  optionVotes / votesCount || 0;
-        return i18n('poll.line', { option, percentage });
+        const percentage =  optionVotes / votesCount * 100 || 0;
+        return i18n('poll.line', { option, optionVotes, percentage });
     })
     response.output += output;
     return response;
@@ -76,6 +86,7 @@ const pollsList = async function (response, {
     getModuleData,
 }) {
     const { pollsList = [] } = await getModuleData('poll');
+    const { votesList = [] } = await getModuleData('poll');
 
     if (!pollsList.find(poll => poll.isOpen)){
         response.output = i18n('poll.none');
@@ -85,7 +96,6 @@ const pollsList = async function (response, {
     response.output = i18n('poll.list');
 
     pollsList.filter(poll => poll.isOpen).forEach(async function(poll){
-        const { votesList = [] } = await getModuleData('poll');
         const votesCount = votesList.filter(vote => vote.pollId === poll.pollId).length;
         const {
             dateCreated,
@@ -118,18 +128,34 @@ const pollsList = async function (response, {
 const closePoll = async function (response, {
     i18n,
     getModuleData,
-    // updateModuleData,
+    updateModuleData,
 }) {
     const { args: { requestedPollId } } = response;
     const { pollsList = [] } = await getModuleData('poll');
 
-    if (!pollsList.find(poll => poll.isOpen)){
-        response.output = i18n('poll.none');
+    const poll = pollsList.find(p => p.pollId === requestedPollId);
+
+    if (!poll) {
         response.output = i18n('poll.notfound', { requestedPollId });
         return response;
     };
 
-    const newList = pollsList.filter(poll => poll.pollId === pollId)
+    if (!poll.isOpen) {
+        response.output = i18n('poll.alreadyclosed');
+        return response;
+    }
+
+    const newList = pollsList.filter(poll => poll.pollId !== requestedPollId);
+
+    poll.isOpen = false;
+
+    newList.push(poll);
+
+    if (!isEqual(pollsList, newList)) {
+        updateModuleData('poll', {
+            pollsList: newList,
+        });
+    };
 
     response.output = i18n('poll.close', { requestedPollId });
     return response;
