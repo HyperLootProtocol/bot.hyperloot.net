@@ -23,7 +23,6 @@ const addPoll = async function (response, {
     updateModuleData('poll.polls', {
         list: [...list, newPoll],
     });
-    // TODO use human-readable-ids
 
     response.output = i18n('poll.created', { pollId });
 
@@ -82,8 +81,7 @@ const pollsList = async function (response, {
     response.output = i18n('poll.list');
 
     list.filter(poll => poll.isOpen).forEach(async function(poll){
-        const {votesList = [] } = await getModuleData('poll.votes');
-
+        const { votesList = [] } = await getModuleData('poll.votes');
         const votes = votesList.filter(vote => vote.pollId === poll.pollId).length;
 
         const {
@@ -104,6 +102,11 @@ const pollsList = async function (response, {
             pollId,
         });
 
+        output += options.map(option => {
+            const optionVotes = votesList.filter(vote => vote.pollId === pollId && vote.option === option).length;
+            const percentage =  optionVotes / votes || 0;
+            return i18n('poll.line', { option, percentage });
+        })
         response.output += output;
     });
     return response;
@@ -135,7 +138,6 @@ const vote = async function (response, {
     updateModuleData,
 }) {
     const { list = [] } = await getModuleData('poll.votes');
-
     const { args: { pollId, option } } = response;
     const newVote = {
         voterId: id,
