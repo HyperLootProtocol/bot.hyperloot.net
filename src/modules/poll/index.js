@@ -1,17 +1,19 @@
 
 const command = require('../command');
-// const { discord: { broadcastChannelName } } = require('../../config');
 
 /**
  * reusable function to form an output string, containing the info about a single poll
  */
 const getPollStringInfo = function (i18n, {
+    getModuleData,
     dateCreated,
     question,
     options,
     pollId,
     isOpen,
 }) {
+    const { list = [] } = await getModuleData('poll');
+    
     const day = dateCreated.getDate();
     const month = dateCreated.getMonth();
 
