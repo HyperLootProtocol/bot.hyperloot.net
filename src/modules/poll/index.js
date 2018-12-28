@@ -78,12 +78,11 @@ const addPoll = async function (response, {
  * usage /poll ID
  */
 const getPollById = async function (response, {
-    // getModuleData,
+    getModuleData,
     i18n,
 }) {
-    const { args: { _pollId } } = response;
-    // get poll object from db by pollId
-    const poll = { pollId: _pollId };
+    const { args: { pollId } } = response;
+
     response.output = getPollStringInfo(i18n, { poll });
     return response;
 };
