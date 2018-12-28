@@ -52,7 +52,7 @@ const addPoll = async function (response, {
     i18n,
 }) {
     const { args: { question, options } } = response;
-    const { list = [] } = await getModuleData('poll');
+    const { list = [] } = await getModuleData('poll.polls');
 
     const newPoll = {
         authorId: id,
@@ -62,7 +62,7 @@ const addPoll = async function (response, {
         dateCreated: new Date(),
     };
 
-    updateModuleData('poll', {
+    updateModuleData('poll.polls', {
         list: [...list, newPoll],
     });
     // TODO use human-readable-ids
@@ -97,11 +97,9 @@ const pollsList = async function (response, {
     i18n,
     getModuleData,
 }) {
-    // get list of existing polls from db
-    // iterate through them applying getPollStringInfo
-    const { list = [] } = await getModuleData('poll');
-    list.map(poll => getPollStringInfo({ poll }));
-    response.output = i18n('list polls');
+    const { list = [] } = await getModuleData('poll.polls');
+    response.output = i18n('poll.list');
+    response.output += list.map(poll => getPollStringInfo({ poll }));
     return response;
 };
 
@@ -137,7 +135,7 @@ const vote = async function (response, {
     getModuleData,
     updateModuleData,
 }) {
-    const { list = [] } = await getModuleData('vote');
+    const { list = [] } = await getModuleData('poll.votes');
 
     const { args: { pollId, option } } = response;
     const newVote = {
@@ -146,7 +144,7 @@ const vote = async function (response, {
         option,
         dateVoted: new Date(),
     };
-    updateModuleData('vote', {
+    updateModuleData('poll.votes', {
         list: [...list, newVote],
     });
     response.output = i18n('vote', { id, pollId, option });
