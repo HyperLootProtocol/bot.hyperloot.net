@@ -1,7 +1,11 @@
 poll.created, "Poll created successfully, here's the ID for results tracking and other stuff: ${pollId}"
 poll.alert, "Hey everyone @here, a new poll just popped up! vote by typing /vote your_answer"
+
+poll.list, "Here are all the polls that are open at the moment:\n"
 poll.header, "${day}/${month} ${question} (${status}) | ${votes} total votes | ID: ${pollId}\n"
 poll.line, "${option} | ${optionVotes} | (${percentage}%)\n"
+poll.none, "No polls are open at the moment, come on open new one!"
+
 poll.close, "Poll ${pollId} was closed, the results are still available"
 
 vote, "<@${id}> voted for ${option} in poll ${pollId}, hmmm which option's gonna win this this thing?"
