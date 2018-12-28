@@ -1,14 +1,15 @@
 poll.created, "Poll created successfully, here's the ID for results tracking and other stuff: ${pollId}"
 poll.alert, "Hey everyone @here, a new poll just popped up! vote by typing /vote your_answer"
 
-poll.notfound, "I couldn't find a poll with this ID (${pollId}), sorry, man("
+poll.notfound, "I couldn't find a poll with this ID (${requestedPollId}), sorry, man("
 
 poll.list, "Here are all the polls that are open at the moment:\n"
 poll.header, "${day}/${month} ${question} | ${votesCount} total votes | ID: ${pollId}\n"
-poll.line, "${option} | ${optionVotes} votes | (${percentage}%)\n\n"
+poll.line, "${option} | ${optionVotes} votes | (${percentage}%) |\n"
 poll.none, "No polls are open at the moment, come on open new one!"
 poll.closed, "(closed) "
 
-poll.close, "Poll ${pollId} was closed, the results are still available"
+poll.close, "Poll ${requestedPollId} was closed, the results are still available"
+poll.alreadyclosed, "This poll is already closed! Are you messing with me?"
 
 vote, "<@${id}> voted for ${option} in poll ${pollId}, hmmm which option's gonna win this this thing?"
