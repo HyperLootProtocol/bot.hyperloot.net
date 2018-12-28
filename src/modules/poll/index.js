@@ -12,37 +12,31 @@ const getPollStringInfo = function (i18n, {
     pollId,
     isOpen,
 }) {
-    let i18nOption = 'poll.header';
-    if (isOpen === false) i18nOption += '.wstatus';
-
     const day = dateCreated.getDate();
     const month = dateCreated.getMonth();
+
+    const status = isOpen ? 'open' : 'closed';
     // TODO get real votes count from db
     // all votes = filter(poll: pollId), maybe store? cause need it soon enough
     const votes = 15;
 
-    let output = i18n(i18nOption, {
+    let output = i18n('poll.header', {
         day,
         month,
         question,
+        status,
         votes,
         pollId,
-        // status,
     });
 
-    for (let i = 0; i < options.length; i++) {
-        const option = options[i];
+    output += options.map((option) => {
         // TODO get real percentage from db
         // all votes = filter(poll: pollId)
         // relevant votes = filter(poll: pollId, option = options[i])
         // must keep in mind that percentage should round up in the way that sum is 100%
         const percentage = 10;
-        output += i18n('poll.option', { option, percentage });
-        if (i < options.length - 1) {
-            output += ' | ';
-        }
-    }
-
+        return i18n('poll.option', { option, percentage });
+    });
     return output;
 };
 
@@ -99,10 +93,14 @@ const getPollById = async function (response, {
  * used by simply typing /poll
  * outputs only isOpen: true polls, for closed polls use getPollById
  */
-const pollsList = async function (response, { i18n }) {
+const pollsList = async function (response, {
+    i18n,
+    getModuleData,
+}) {
     // get list of existing polls from db
     // iterate through them applying getPollStringInfo
-
+    const { list = [] } = await getModuleData('poll');
+    list.map(poll => getPollStringInfo({ poll }));
     response.output = i18n('list polls');
     return response;
 };
@@ -136,9 +134,11 @@ const closePoll = async function (response, {
 const vote = async function (response, {
     i18n,
     id,
-    // getModuleData,
-    // updateModuleData,
+    getModuleData,
+    updateModuleData,
 }) {
+    const { list = [] } = await getModuleData('vote');
+
     const { args: { pollId, option } } = response;
     const newVote = {
         voterId: id,
@@ -146,9 +146,9 @@ const vote = async function (response, {
         option,
         dateVoted: new Date(),
     };
-    // test code
-    console.log(newVote);
-
+    updateModuleData('vote', {
+        list: [...list, newVote],
+    });
     response.output = i18n('vote', { id, pollId, option });
     return response;
 };
