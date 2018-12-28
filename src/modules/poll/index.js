@@ -59,8 +59,39 @@ const pollsList = async function (response, {
     getModuleData,
 }) {
     const { list = [] } = await getModuleData('poll.polls');
+
+    if (!list.find(poll => poll.isOpen)){
+        response.output = i18n('poll.none');
+        return response;
+    };
+
     response.output = i18n('poll.list');
-    response.output += list.map(poll => getPollStringInfo({ poll }));
+
+    list.filter(poll => poll.isOpen).forEach(async function(poll){
+        const {votesList = [] } = await getModuleData('poll.votes');
+
+        const votes = votesList.filter(vote => vote.pollId === poll.pollId).length;
+
+        const {
+            dateCreated,
+            question,
+            options,
+            pollId,
+            isOpen,
+        } = poll;
+        const day = poll.dateCreated.getDate();
+        const month = poll.dateCreated.getMonth() + 1;
+
+        let output = i18n('poll.header', {
+            day,
+            month,
+            question,
+            votes,
+            pollId,
+        });
+
+        response.output += output;
+    });
     return response;
 };
 
