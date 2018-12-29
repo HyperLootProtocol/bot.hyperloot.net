@@ -70,7 +70,7 @@ const getPollById = async function (response, {
     });
 
     output += options.map((option) => {
-        const optionVotes = votesList.filter(v => (v.pollId === pollId && v.option === option)).length;
+        const optionVotes = votesList.filter(v => (v.pollId === pollId && v.option === poll.options.indexOf(option))).length;
         const percentage = optionVotes / votesCount * 100 || 0;
         return i18n('poll.line', {
             option,
@@ -114,7 +114,7 @@ const listPolls = async function (response, {
         });
 
         output += options.map((option) => {
-            const optionVotes = votesList.filter(v => (v.pollId === pollId && v.option === option)).length;
+            const optionVotes = votesList.filter(v => (v.pollId === pollId && v.option === poll.options.indexOf(option))).length;
             const percentage = optionVotes / votesCount * 100 || 0;
             return i18n('poll.line', {
                 option,
@@ -163,6 +163,10 @@ const closePoll = async function (response, {
     return response;
 };
 
+const checkVote = async function(response) {
+    return response;
+}
+
 const vote = async function (response, {
     i18n,
     id,
@@ -170,27 +174,64 @@ const vote = async function (response, {
     updateModuleData,
 }) {
     const { votesList = [], pollsList = [] } = await getModuleData('poll');
-    const { args: { pollId, option } } = response;
+    const { args: { requestedPollId, requestedOption } } = response;
 
-    const poll = pollsList.find(p => p.pollId === pollId);
+    const poll = pollsList.find(p => p.pollId === requestedPollId);
+
+    if (!poll) {
+        response.output = i18n('poll.notfound', { requestedPollId });
+        return response;
+    }
+
     if (!poll.isOpen) {
         response.output = i18n('poll.alreadyclosed');
         return response;
     }
-    if (votesList.find(v => (v.pollId === pollId && v.voterId === id))) {
+
+    if (votesList.find(v => (v.pollId === requestedPollId && v.voterId === id))) {
         response.output = i18n('poll.alreadyvoted');
         return response;
     }
-    const newVote = {
-        voterId: id,
-        pollId,
-        option,
-        dateVoted: new Date(),
-    };
-    updateModuleData('poll', {
-        votesList: [...votesList, newVote],
-    });
-    response.output = i18n('vote', { id, pollId, option });
+
+    if (poll.options.includes(requestedOption)) {
+        const newVote = {
+            voterId: id,
+            pollId: requestedPollId,
+            option: poll.options.indexOf(requestedOption),
+            dateVoted: new Date(),
+        };
+        updateModuleData('poll', {
+            votesList: [...votesList, newVote],
+        });
+        const optionText = requestedOption;
+        response.output = i18n('vote.cast', {
+            id,
+            requestedPollId,
+            optionText,
+        });
+        return response;
+    }
+
+    if (requestedOption - 1  >= 0 && requestedOption - 1 <= poll.options.length) {
+        const newVote = {
+            voterId: id,
+            pollId: requestedPollId,
+            option: parseInt(requestedOption, 10),
+            dateVoted: new Date(),
+        };
+        updateModuleData('poll', {
+            votesList: [...votesList, newVote],
+        });
+        const optionText = poll.options[requestedOption - 1];
+        response.output = i18n('vote.cast', {
+            id,
+            requestedPollId,
+            optionText,
+        });
+        return response;
+    }
+
+    response.output = i18n('vote.nosuchoption');
     return response;
 };
 
@@ -199,5 +240,5 @@ module.exports = [
     [command('poll requestedPollId'), getPollById],
     [command('poll'), listPolls],
     [command('close requestedPollId'), closePoll],
-    [command('vote pollId option'), vote],
+    [command('vote requestedPollId requestedOption'), vote],
 ];
