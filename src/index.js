@@ -36,7 +36,7 @@ instance.use([
     [
         event('message'),
         addExp(1),
-        // autoReaction,
+        autoReaction,
         logText,
     ],
 
