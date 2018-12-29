@@ -105,7 +105,7 @@ async function updateModuleData(moduleName, query, { user } = {}) {
     });
 }
 
-async function updateLog(query) {
+async function insertLog(query) {
     return insert(LOGS, query);
 }
 
@@ -113,7 +113,7 @@ module.exports = {
     getUser,
     getModuleData,
     updateModuleData,
-    updateLog,
+    insertLog,
     // Unsafe be carefuly!
     get,
     set,
