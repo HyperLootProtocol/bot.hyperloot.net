@@ -26,12 +26,15 @@ const event = require('./modules/event');
 const logText = require('./modules/logText');
 const updateExp = require('./modules/updateExp');
 const autoReaction = require('./modules/autoReaction');
+const log = require('./modules/log');
 
 // commands initializers
 const pong = require('./modules/pong.command');
 const status = require('./modules/status.command');
 
 instance.use([
+    log,
+
     [
         event('message'),
         addExp(1),
@@ -126,6 +129,7 @@ if (discordCfg.authToken) {
         instance.process({
             id: msg.author.id,
             input: msg.content || '',
+            attachments: msg.attachments,
             from: 'discord',
             event: 'message',
             handle,
