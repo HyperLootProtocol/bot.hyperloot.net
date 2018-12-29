@@ -282,8 +282,8 @@ const checkVote = async function (response, {
             });
             return;
         }
-
-        if (input - 1 >= 0 && input - 1 < p.options.length) {
+        const inputIndex = input - 1;
+        if (inputIndex >= 0 && inputIndex < p.options.length) {
             const newVote = {
                 voterId: id,
                 pollId: p.pollId,
