@@ -231,10 +231,15 @@ const vote = async function (response, {
     return response;
 };
 
+const checkVote = async function(response) {
+    return response;
+}
+
 module.exports = [
     [command('poll question ...options'), addPoll],
     [command('poll requestedPollId'), getPollById],
     [command('poll'), listPolls],
     [command('close requestedPollId'), closePoll],
     [command('vote requestedPollId requestedOption'), vote],
+    checkVote,
 ];
