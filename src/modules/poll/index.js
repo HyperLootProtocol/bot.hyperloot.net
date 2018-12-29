@@ -41,7 +41,7 @@ const getPollById = async function (response, {
     const poll = pollsList.find(p => p.pollId === requestedPollId);
 
     if (!poll) {
-        response.output = i18n('poll.notfound', { requestedPollId });
+        response.output = i18n('poll.notFound', { requestedPollId });
         return response;
     }
 
@@ -146,12 +146,12 @@ const closePoll = async function (response, {
     }
 
     if (!poll) {
-        response.output = i18n('poll.notfound', { requestedPollId });
+        response.output = i18n('poll.notFound', { requestedPollId });
         return response;
     }
 
     if (!poll.isOpen) {
-        response.output = i18n('poll.alreadyclosed');
+        response.output = i18n('poll.alreadyClosed');
         return response;
     }
 
@@ -181,17 +181,17 @@ const vote = async function (response, {
     const poll = pollsList.find(p => p.pollId === requestedPollId);
 
     if (!poll) {
-        response.output = i18n('poll.notfound', { requestedPollId });
+        response.output = i18n('poll.notFound', { requestedPollId });
         return response;
     }
 
     if (!poll.isOpen) {
-        response.output = i18n('poll.alreadyclosed');
+        response.output = i18n('poll.alreadyClosed');
         return response;
     }
 
     if (votesList.find(v => (v.pollId === requestedPollId && v.voterId === id))) {
-        response.output = i18n('poll.alreadyvoted');
+        response.output = i18n('poll.alreadyVoted');
         return response;
     }
 
@@ -239,7 +239,7 @@ const vote = async function (response, {
         return response;
     }
 
-    response.output = i18n('vote.nosuchoption');
+    response.output = i18n('vote.noSuchOption');
     return response;
 };
 
