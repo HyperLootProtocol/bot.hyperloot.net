@@ -208,7 +208,7 @@ const vote = async function (response, {
         return response;
     }
 
-    if (requestedOption - 1 >= 0 && requestedOption - 1 <= poll.options.length) {
+    if (requestedOption - 1 >= 0 && requestedOption - 1 < poll.options.length) {
         const newVote = {
             voterId: id,
             pollId: requestedPollId,
