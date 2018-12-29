@@ -15,7 +15,7 @@ module.exports = async function log(response, context) {
         from,
         id,
         input,
-        updateLog,
+        insertLog,
     } = context;
 
     const query = {
@@ -33,7 +33,7 @@ module.exports = async function log(response, context) {
         });
     }
 
-    await updateLog(query);
+    await insertLog(query);
 
     return response;
 };
