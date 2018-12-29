@@ -13,5 +13,5 @@ poll.close, "Poll ${requestedPollId} was closed, the results are still available
 poll.alreadyclosed, "This poll is already closed! Are you messing with me?"
 poll.alreadyvoted, "You've already voted in this poll, you're either cheating or very forgetfull"
 
-vote.cast, "<@${id}> voted for ${option} in poll ${requestedPollId}, hmmm which option's gonna win this this thing?"
+vote.cast, "<@${id}> voted for ${optionText} in poll ${requestedPollId}, hmmm which option's gonna win this this thing?"
 vote.nosuchoption, "The option you're trying to vote for doesn't seem to exist"
