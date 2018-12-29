@@ -72,8 +72,12 @@ const getPollById = async function (response, {
     output += options.map((option) => {
         const optionVotes = votesList.filter(v => (v.pollId === pollId && v.option === option)).length;
         const percentage = optionVotes / votesCount * 100 || 0;
-        return i18n('poll.line', { option, optionVotes, percentage });
-    });
+        return i18n('poll.line', {
+            option,
+            optionVotes,
+            percentage,
+        });
+    }).join('');
     response.output += output;
     return response;
 };
@@ -112,8 +116,12 @@ const listPolls = async function (response, {
         output += options.map((option) => {
             const optionVotes = votesList.filter(v => (v.pollId === pollId && v.option === option)).length;
             const percentage = optionVotes / votesCount * 100 || 0;
-            return i18n('poll.line', { option, optionVotes, percentage });
-        });
+            return i18n('poll.line', {
+                option,
+                optionVotes,
+                percentage,
+            });
+        }).join('');
         response.output += output;
     });
     return response;
