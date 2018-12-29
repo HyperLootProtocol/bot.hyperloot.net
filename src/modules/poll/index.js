@@ -1,5 +1,6 @@
 
 const { hri } = require('human-readable-ids');
+const moment = require('moment');
 const isEqual = require('lodash/isEqual');
 const command = require('../command');
 
@@ -59,12 +60,10 @@ const getPollById = async function (response, {
         pollId,
     } = poll;
 
-    const day = dateCreated.getDate();
-    const month = dateCreated.getMonth() + 1;
+    const date = moment(dateCreated).format('DD/MM');
 
     let output = i18n('poll.header', {
-        day,
-        month,
+        date,
         question,
         votesCount,
         pollId,
@@ -100,12 +99,11 @@ const listPolls = async function (response, {
             options,
             pollId,
         } = poll;
-        const day = dateCreated.getDate();
-        const month = dateCreated.getMonth() + 1;
+        
+        const date = moment(dateCreated).format('DD/MM');
 
         let output = i18n('poll.header', {
-            day,
-            month,
+            date,
             question,
             votesCount,
             pollId,
