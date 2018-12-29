@@ -93,7 +93,7 @@ const listPolls = async function (response, {
         return response;
     }
 
-    response.output = i18n('poll.list');
+    response.output = `${i18n('poll.list')}\n`;
 
     pollsList.filter(poll => poll.isOpen).forEach((poll) => {
         const votesCount = votesList.filter(v => v.pollId === poll.pollId).length;
@@ -122,7 +122,7 @@ const listPolls = async function (response, {
                 percentage,
             });
         }).join('');
-        response.output += output;
+        response.output += `${output}\n`;
     });
     return response;
 };
