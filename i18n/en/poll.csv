@@ -4,7 +4,7 @@ poll.alert, "Hey everyone @here, a new poll just popped up! vote by typing /vote
 poll.notfound, "I couldn't find a poll with this ID (${requestedPollId}), sorry, man("
 
 poll.list, "Here are all the polls that are open at the moment:\n"
-poll.header, "${day}/${month} ${question} | ${votesCount} total votes | ID: ${pollId}\n"
+poll.header, "${date} ${question} | ${votesCount} total votes | ID: ${pollId}\n"
 poll.line, "${option} | ${optionVotes} votes | (${percentage}%) |\n"
 poll.none, "No polls are open at the moment, come on open new one!"
 poll.closed, "(closed) "
