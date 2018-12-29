@@ -38,27 +38,27 @@ const getPollById = async function (response, {
     const { args: { requestedPollId } } = response;
     const { pollsList = [] } = await getModuleData('poll');
 
-    const poll = pollsList.find(p => p.pollId === requestedPollId);
+    const currentPoll = pollsList.find(poll => poll.pollId === requestedPollId);
 
-    if (!poll) {
+    if (!currentPoll) {
         response.output = i18n('poll.notFound', { requestedPollId });
         return response;
     }
 
-    if (!poll.isOpen) {
+    if (!currentPoll.isOpen) {
         response.output = i18n('poll.closed');
     }
 
     const { votesList = [] } = await getModuleData('poll');
 
-    const votesCount = votesList.filter(v => v.pollId === poll.pollId).length;
+    const votesCount = votesList.filter(vote => vote.pollId === currentPoll.pollId).length;
 
     const {
         dateCreated,
         question,
         options,
         pollId,
-    } = poll;
+    } = currentPoll;
 
     const date = moment(dateCreated).format('DD/MM');
 
@@ -70,7 +70,7 @@ const getPollById = async function (response, {
     });
 
     output += options.map((option) => {
-        const optionVotes = votesList.filter(v => (v.pollId === pollId && v.option === poll.options.indexOf(option))).length;
+        const optionVotes = votesList.filter(vote => (vote.pollId === pollId && vote.option === currentPoll.options.indexOf(option))).length;
         const percentage = optionVotes / votesCount * 100 || 0;
 
         return i18n('poll.line', {
@@ -97,7 +97,7 @@ const listPolls = async function (response, {
     response.output = `${i18n('poll.list')}\n`;
 
     pollsList.filter(poll => poll.isOpen).forEach((poll) => {
-        const votesCount = votesList.filter(v => v.pollId === poll.pollId).length;
+        const votesCount = votesList.filter(vote => vote.pollId === poll.pollId).length;
         const {
             dateCreated,
             question,
@@ -115,7 +115,7 @@ const listPolls = async function (response, {
         });
 
         output += options.map((option) => {
-            const optionVotes = votesList.filter(v => (v.pollId === pollId && v.option === poll.options.indexOf(option))).length;
+            const optionVotes = votesList.filter(vote => (vote.pollId === pollId && vote.option === poll.options.indexOf(option))).length;
             const percentage = optionVotes / votesCount * 100 || 0;
 
             return i18n('poll.line', {
@@ -138,26 +138,26 @@ const closePoll = async function (response, {
     const { args: { requestedPollId } } = response;
     const { pollsList = [] } = await getModuleData('poll');
 
-    const poll = pollsList.find(p => p.pollId === requestedPollId);
+    const currentPoll = pollsList.find(poll => poll.pollId === requestedPollId);
 
-    if (!pollsList.find(p => p.isOpen)) {
+    if (!pollsList.find(poll => poll.isOpen)) {
         response.output = i18n('poll.none');
         return response;
     }
 
-    if (!poll) {
+    if (!currentPoll) {
         response.output = i18n('poll.notFound', { requestedPollId });
         return response;
     }
 
-    if (!poll.isOpen) {
+    if (!currentPoll.isOpen) {
         response.output = i18n('poll.alreadyClosed');
         return response;
     }
 
-    const newList = pollsList.filter(p => p.pollId !== requestedPollId);
-    poll.isOpen = false;
-    newList.push(poll);
+    const newList = pollsList.filter(poll => poll.pollId !== requestedPollId);
+    currentPoll.isOpen = false;
+    newList.push(currentPoll);
 
     if (!isEqual(pollsList, newList)) {
         updateModuleData('poll', {
@@ -169,7 +169,7 @@ const closePoll = async function (response, {
     return response;
 };
 
-const vote = async function (response, {
+const castVote = async function (response, {
     i18n,
     id,
     getModuleData,
@@ -178,28 +178,28 @@ const vote = async function (response, {
     const { votesList = [], pollsList = [] } = await getModuleData('poll');
     const { args: { requestedPollId, requestedOption } } = response;
 
-    const poll = pollsList.find(p => p.pollId === requestedPollId);
+    const currentPoll = pollsList.find(poll => poll.pollId === requestedPollId);
 
-    if (!poll) {
+    if (!currentPoll) {
         response.output = i18n('poll.notFound', { requestedPollId });
         return response;
     }
 
-    if (!poll.isOpen) {
+    if (!currentPoll.isOpen) {
         response.output = i18n('poll.alreadyClosed');
         return response;
     }
 
-    if (votesList.find(v => (v.pollId === requestedPollId && v.voterId === id))) {
+    if (votesList.find(vote => (vote.pollId === requestedPollId && vote.voterId === id))) {
         response.output = i18n('poll.alreadyVoted');
         return response;
     }
 
-    if (poll.options.includes(requestedOption)) {
+    if (currentPoll.options.includes(requestedOption)) {
         const newVote = {
             voterId: id,
             pollId: requestedPollId,
-            option: poll.options.indexOf(requestedOption),
+            option: currentPoll.options.indexOf(requestedOption),
             dateVoted: new Date(),
         };
 
@@ -218,7 +218,7 @@ const vote = async function (response, {
 
     const optionIndex = requestedOption - 1;
 
-    if (optionIndex >= 0 && optionIndex < poll.options.length) {
+    if (optionIndex >= 0 && optionIndex < currentPoll.options.length) {
         const newVote = {
             voterId: id,
             pollId: requestedPollId,
@@ -230,7 +230,7 @@ const vote = async function (response, {
             votesList: [...votesList, newVote],
         });
 
-        const optionText = poll.options[requestedOption - 1];
+        const optionText = currentPoll.options[requestedOption - 1];
         response.output = i18n('vote.cast', {
             id,
             requestedPollId,
@@ -256,16 +256,16 @@ const checkVote = async function (response, {
         return response;
     }
 
-    pollsList.filter(p => p.isOpen).forEach((p) => {
-        if (votesList.find(v => (v.pollId === p.pollId && v.voterId === id))) {
+    pollsList.filter(poll => poll.isOpen).forEach((poll) => {
+        if (votesList.find(vote => (vote.pollId === poll.pollId && vote.voterId === id))) {
             return;
         }
 
-        if (p.options.includes(input)) {
+        if (poll.options.includes(input)) {
             const newVote = {
                 voterId: id,
-                pollId: p.pollId,
-                option: p.options.indexOf(input),
+                pollId: poll.pollId,
+                option: poll.options.indexOf(input),
                 dateVoted: new Date(),
             };
 
@@ -274,7 +274,7 @@ const checkVote = async function (response, {
             });
 
             const optionText = input;
-            const requestedPollId = p.pollId;
+            const requestedPollId = poll.pollId;
             response.output = i18n('vote.cast', {
                 id,
                 requestedPollId,
@@ -282,11 +282,13 @@ const checkVote = async function (response, {
             });
             return;
         }
+
         const inputIndex = input - 1;
-        if (inputIndex >= 0 && inputIndex < p.options.length) {
+
+        if (inputIndex >= 0 && inputIndex < poll.options.length) {
             const newVote = {
                 voterId: id,
-                pollId: p.pollId,
+                pollId: poll.pollId,
                 option: parseInt(input, 10),
                 dateVoted: new Date(),
             };
@@ -295,8 +297,8 @@ const checkVote = async function (response, {
                 votesList: [...votesList, newVote],
             });
 
-            const optionText = p.options[input - 1];
-            const requestedPollId = p.pollId;
+            const optionText = poll.options[input - 1];
+            const requestedPollId = poll.pollId;
             response.output = i18n('vote.cast', {
                 id,
                 requestedPollId,
@@ -312,6 +314,6 @@ module.exports = [
     [command('poll requestedPollId'), getPollById],
     [command('poll'), listPolls],
     [command('close requestedPollId'), closePoll],
-    [command('vote requestedPollId requestedOption'), vote],
+    [command('vote requestedPollId requestedOption'), castVote],
     checkVote,
 ];
