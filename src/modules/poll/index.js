@@ -72,6 +72,7 @@ const getPollById = async function (response, {
     output += options.map((option) => {
         const optionVotes = votesList.filter(v => (v.pollId === pollId && v.option === poll.options.indexOf(option))).length;
         const percentage = optionVotes / votesCount * 100 || 0;
+
         return i18n('poll.line', {
             option,
             optionVotes,
@@ -116,12 +117,14 @@ const listPolls = async function (response, {
         output += options.map((option) => {
             const optionVotes = votesList.filter(v => (v.pollId === pollId && v.option === poll.options.indexOf(option))).length;
             const percentage = optionVotes / votesCount * 100 || 0;
+
             return i18n('poll.line', {
                 option,
                 optionVotes,
                 percentage,
             });
         }).join('');
+
         response.output += `${output}\n`;
     });
     return response;
@@ -137,7 +140,7 @@ const closePoll = async function (response, {
 
     const poll = pollsList.find(p => p.pollId === requestedPollId);
 
-    if (!pollsList.find(poll => poll.isOpen)) {
+    if (!pollsList.find(p => p.isOpen)) {
         response.output = i18n('poll.none');
         return response;
     }
@@ -153,9 +156,7 @@ const closePoll = async function (response, {
     }
 
     const newList = pollsList.filter(p => p.pollId !== requestedPollId);
-
     poll.isOpen = false;
-
     newList.push(poll);
 
     if (!isEqual(pollsList, newList)) {
@@ -201,9 +202,11 @@ const vote = async function (response, {
             option: poll.options.indexOf(requestedOption),
             dateVoted: new Date(),
         };
+
         updateModuleData('poll', {
             votesList: [...votesList, newVote],
         });
+
         const optionText = requestedOption;
         response.output = i18n('vote.cast', {
             id,
@@ -213,16 +216,20 @@ const vote = async function (response, {
         return response;
     }
 
-    if (requestedOption - 1 >= 0 && requestedOption - 1 < poll.options.length) {
+    const optionIndex = requestedOption - 1;
+
+    if (optionIndex >= 0 && optionIndex < poll.options.length) {
         const newVote = {
             voterId: id,
             pollId: requestedPollId,
             option: parseInt(requestedOption, 10),
             dateVoted: new Date(),
         };
+
         updateModuleData('poll', {
             votesList: [...votesList, newVote],
         });
+
         const optionText = poll.options[requestedOption - 1];
         response.output = i18n('vote.cast', {
             id,
@@ -251,7 +258,7 @@ const checkVote = async function (response, {
 
     pollsList.filter(p => p.isOpen).forEach((p) => {
         if (votesList.find(v => (v.pollId === p.pollId && v.voterId === id))) {
-            return response;
+            return;
         }
 
         if (p.options.includes(input)) {
@@ -261,9 +268,11 @@ const checkVote = async function (response, {
                 option: p.options.indexOf(input),
                 dateVoted: new Date(),
             };
+
             updateModuleData('poll', {
                 votesList: [...votesList, newVote],
             });
+
             const optionText = input;
             const requestedPollId = p.pollId;
             response.output = i18n('vote.cast', {
@@ -271,7 +280,7 @@ const checkVote = async function (response, {
                 requestedPollId,
                 optionText,
             });
-            return response;
+            return;
         }
 
         if (input - 1 >= 0 && input - 1 < p.options.length) {
@@ -281,9 +290,11 @@ const checkVote = async function (response, {
                 option: parseInt(input, 10),
                 dateVoted: new Date(),
             };
+
             updateModuleData('poll', {
                 votesList: [...votesList, newVote],
             });
+
             const optionText = p.options[input - 1];
             const requestedPollId = p.pollId;
             response.output = i18n('vote.cast', {
@@ -291,9 +302,7 @@ const checkVote = async function (response, {
                 requestedPollId,
                 optionText,
             });
-            return response;
         }
-        return;
     });
     return response;
 };
