@@ -103,7 +103,7 @@ const listPolls = async function (response, {
             options,
             pollId,
         } = poll;
-        
+
         const date = moment(dateCreated).format('DD/MM');
 
         let output = i18n('poll.header', {
@@ -163,10 +163,6 @@ const closePoll = async function (response, {
     return response;
 };
 
-const checkVote = async function(response) {
-    return response;
-}
-
 const vote = async function (response, {
     i18n,
     id,
@@ -212,7 +208,7 @@ const vote = async function (response, {
         return response;
     }
 
-    if (requestedOption - 1  >= 0 && requestedOption - 1 <= poll.options.length) {
+    if (requestedOption - 1 >= 0 && requestedOption - 1 <= poll.options.length) {
         const newVote = {
             voterId: id,
             pollId: requestedPollId,
