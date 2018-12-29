@@ -137,6 +137,11 @@ const closePoll = async function (response, {
 
     const poll = pollsList.find(p => p.pollId === requestedPollId);
 
+    if (!pollsList.find(poll => poll.isOpen)) {
+        response.output = i18n('poll.none');
+        return response;
+    }
+
     if (!poll) {
         response.output = i18n('poll.notfound', { requestedPollId });
         return response;
