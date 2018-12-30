@@ -62,12 +62,12 @@ async function insert(collection, query) {
 
 // high lvl methods
 async function getUser(userId) {
-    let user = await get('users', { discordId: userId });
+    let user = await get(USERS, { discordId: userId });
 
     if (!user) {
         user = { discordId: userId };
 
-        insert('users', user);
+        insert(USERS, user);
     }
 
     return user;
@@ -89,27 +89,31 @@ async function updateModuleData(moduleName, query, { user } = {}) {
 
     if (!user) {
         if (isEmpty(currentData)) { // $setOrInsert???
-            return insert('global', {
+            return insert(GLOBAL, {
                 moduleName,
                 ...actualQuery,
             });
         }
 
-        return set('global', { moduleName }, actualQuery);
+        return set(GLOBAL, { moduleName }, actualQuery);
     }
 
-    return set('users', {
+    return set(USERS, {
         discordId: user.discordId,
     }, {
         [`data.${moduleName}`]: actualQuery,
     });
 }
 
+async function insertLog(query) {
+    return insert(LOGS, query);
+}
+
 module.exports = {
     getUser,
     getModuleData,
     updateModuleData,
-
+    insertLog,
     // Unsafe be carefuly!
     get,
     set,

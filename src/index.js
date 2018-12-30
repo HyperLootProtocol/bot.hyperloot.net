@@ -18,6 +18,7 @@ const App = require('./app');
 const instance = new App({ db });
 
 const quiz = require('./modules/quiz');
+const poll = require('./modules/poll');
 
 const addExp = require('./modules/addExp');
 // const empty = require('./modules/empty');
@@ -26,6 +27,7 @@ const event = require('./modules/event');
 const logText = require('./modules/logText');
 const updateExp = require('./modules/updateExp');
 const autoReaction = require('./modules/autoReaction');
+const log = require('./modules/log');
 
 // commands initializers
 const pong = require('./modules/pong.command');
@@ -33,6 +35,8 @@ const status = require('./modules/status.command');
 const reactionSocial = require('./modules/reactions');
 
 instance.use([
+    log,
+
     [
         event('message'),
         addExp(1),
@@ -44,6 +48,7 @@ instance.use([
     status,
     quiz,
     reactionSocial,
+    poll,
 
     // empty,
 
@@ -128,6 +133,7 @@ if (discordCfg.authToken) {
         instance.process({
             id: msg.author.id,
             input: msg.content || '',
+            attachments: msg.attachments,
             from: 'discord',
             event: 'message',
             handle,

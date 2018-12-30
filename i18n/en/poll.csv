@@ -1,0 +1,17 @@
+poll.created, "Poll created successfully, here's the ID for results tracking and other stuff: ${pollId}"
+poll.alert, "Hey everyone @here, a new poll just popped up! vote by typing /vote your_answer"
+
+poll.notFound, "I couldn't find a poll with this ID (${requestedPollId}), sorry, man("
+
+poll.list, "Here are all the polls that are open at the moment:\n"
+poll.header, "${date} ${question} | ${votesCount} total votes | ID: ${pollId}\n"
+poll.line, "${option} | ${optionVotes} votes | (${percentage}%) |\n"
+poll.none, "No polls are open at the moment, come on open new one!"
+poll.closed, "(closed) "
+
+poll.close, "Poll ${requestedPollId} was closed, the results are still available"
+poll.alreadyClosed, "This poll is already closed! Are you messing with me?"
+poll.alreadyVoted, "You've already voted in this poll, you're either cheating or very forgetfull"
+
+vote.cast, "<@${id}> voted for ${optionText} in poll ${requestedPollId}, hmmm which option's gonna win this this thing?"
+vote.noSuchOption, "The option you're trying to vote for doesn't seem to exist"
