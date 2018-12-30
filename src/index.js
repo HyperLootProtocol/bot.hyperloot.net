@@ -30,6 +30,7 @@ const autoReaction = require('./modules/autoReaction');
 // commands initializers
 const pong = require('./modules/pong.command');
 const status = require('./modules/status.command');
+const reactionSocial = require('./modules/reactions');
 
 instance.use([
     [
@@ -42,6 +43,7 @@ instance.use([
     pong,
     status,
     quiz,
+    reactionSocial,
 
     // empty,
 
