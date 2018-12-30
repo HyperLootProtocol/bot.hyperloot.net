@@ -14,8 +14,7 @@ const reactionSocial = async function (response, { /* contex, */ input, i18n }) 
     const gif = sample(gifs[reactionName] || []);
 
     if (message && gif) {
-        response.output = message;
-        response.attachment = [gif];
+        response.output = message + [gif];
     }
 
     return response;
