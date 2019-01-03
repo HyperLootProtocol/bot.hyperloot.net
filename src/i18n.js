@@ -1,6 +1,9 @@
+const debug = require('debug')('bot:i18n');
 const CsvReader = require('promised-csv');
 const sample = require('lodash/sample');
 const fs = require('fs');
+
+const { lang } = require('./config');
 
 const reader = new CsvReader();
 
@@ -16,10 +19,12 @@ reader.on('row', ([key, value]) => {
 
 const newlines = str => str.replace(/\\n/g, '\n');
 
-function i18nFactory(lang) {
+function i18nFactory() {
     fs.readdirSync(`./i18n/${lang}/`).forEach((file) => {
         if (file.split('.')[1] === 'csv') {
-            reader.read(`./i18n/${lang}/${file}`, rawData);
+            reader
+                .read(`./i18n/${lang}/${file}`, rawData)
+                .then(() => debug(`locale '${lang}' file '${file}' loaded`));
         }
     });
 
@@ -43,6 +48,13 @@ function i18nFactory(lang) {
     };
 }
 
-module.exports = {
-    i18nFactory,
+const i18n = () => {};
+
+i18n.__INIT__ = function (context) {
+    return {
+        ...context,
+        i18n: i18nFactory(),
+    };
 };
+
+module.exports = i18n;

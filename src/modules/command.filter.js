@@ -17,7 +17,6 @@ module.exports = pattern => function command(response, { input }) {
         return null;
     }
 
-
     if (!pattern.includes('...') && rawArgs.length !== definedArgs.length) {
         return null;
     }

@@ -2,13 +2,12 @@ const App = require('../../app');
 const quiz = require('../quiz');
 
 describe('quiz', () => {
-    const mockDb = {
+    const mockContext = {
         getModuleData() {},
         updateModuleData() {},
     };
 
-    const instance = new App({ db: mockDb });
-    instance.use(quiz);
+    const instance = new App([quiz], mockContext);
 
     test('get list', (done) => {
         instance.process({
