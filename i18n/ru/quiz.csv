@@ -1,8 +1,8 @@
-quiz.info, "@here <@${id}> предлагает разгадать: \n\n${description}\n\nПишите ваши варианты! Победитель получит ${prize}"
+quiz.info, "@here <@{{id}}> предлагает разгадать: \n\n{{description}}\n\nПишите ваши варианты! Победитель получит {{prize}}"
 quiz.created, "Викторина создана... ждем победителя :)"
-quiz.winner, "@here НАШ ПОБЕДИТЕЛЬ <@${id}>! Награда ${prize}! Поздравляю <3"
+quiz.winner, "@here НАШ ПОБЕДИТЕЛЬ <@{{id}}>! Награда {{prize}}! Поздравляю <3"
 ,
 quiz.nope, "Нету активных викторин, создай одну, го го го)"
 quiz.list, "Создатель | Описание | Приз\n\n"
-quiz.listLine, "<@${authorId}> | ${description} | ${prize}"
-`<@${id}> winner and got ${q.prize}!!111`
+quiz.listLine, "<@{{authorId}}> | {{description}} | {{prize}}"
+`<@{{id}}> winner and got {{q.prize}}!!111`

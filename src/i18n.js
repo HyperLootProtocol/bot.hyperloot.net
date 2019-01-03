@@ -34,7 +34,7 @@ function i18nFactory(lang) {
         Object
             .entries(props)
             .forEach(([k, v]) => {
-                string = string.replace(`\${${k}}`, v);
+                string = string.replace(`{{${k}}}`, v);
             });
 
         string = newlines(string);
