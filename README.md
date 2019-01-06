@@ -6,6 +6,8 @@ Bot is powerful service what provide communication between people in community.
 ## usage
 Easy development start: `npm i` and `npm run dev` THEN u can create new modules. (using nedb and http adapter).
 
+> TIP for debugging used [Debug](https://github.com/visionmedia/debug), please set env `debug=bot:*` to see details then app started <3
+
 ### other commands
 * `npm run dev` start in development mode (with nodemon, it will reload after any changes), u can use web adapter for local work, easy start and call `//localhost:3000/api?message=/ping`
 * `npm test` run jest and eslint (please check it before commit)
