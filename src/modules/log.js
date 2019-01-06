@@ -38,11 +38,16 @@ const keepLog = async function (response, context) {
     return response;
 };
 
-const getLog = async function (response, { from,  }) {
-    
-    
-    await get('logs', { moduleName })
-    
+const getLog = async function (response, { query, from,  getAll }) {
+    if (query === 'getLog' && from === 'http') {
+        const logs = await getAll('logs');
+
+        response.data = logs;
+    }
+
+
+
+    return response;
 }
 
 module.exports = [keepLog, getLog]
