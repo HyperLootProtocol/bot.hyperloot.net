@@ -28,13 +28,10 @@ discordAdapter.__INIT__ = function ({ process }) {
 
             // TODO rework!
             if (!isEmpty(reactions)) {
-                reactions.forEach((reaction) => {
-                    msg
-                        .react(reaction)
-                        .catch((e) => {
-                            console.error(e.message);
-                        });
-                });
+                reactions.reduce(
+                    (prev, reaction) => prev.then(() => msg.react(reaction).catch((e) => { console.error(e.message); })),
+                    Promise.resolve(),
+                );
             }
 
             if (isEmpty(output)) {
