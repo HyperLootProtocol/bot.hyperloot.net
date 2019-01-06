@@ -20,7 +20,7 @@ Atomic element, we use it to build all bot functionality. It simple function wha
 * `response.output: string || [string] || [{ message, channelName }]` Output need to send text message as handler emiter (user get this as answer).
 * `response.reactions: [string]` array of reactions what should be placed to input message
 
-`context` immutable structure what contain basic functions provided by modules when app start `__INIT__` or per each request by adapters (then `process` calling) see [#adapters](Adapters), [#db](DB) and [#modules](Modules) for detail information
+`context` immutable structure what contain basic functions provided by modules when app start `__INIT__` or per each request by adapters (then `process` calling) see [Adapters](#adapters), [DB](#db) and [Modules](#modules) for detail information
 
 Basic example (signature):
 ```
