@@ -11,6 +11,9 @@ const preventer = () => null;
 const mutator2 = response => ({ ...response, test2: true });
 const errorer = () => { throw ('error'); };
 
+const initor = () => {};
+initor.__INIT__ = context => ({ ...context, test: true });
+
 describe('app with single executor', () => {
     test('without input should return empty string', async (done) => {
         const instance = new App();
@@ -141,6 +144,20 @@ describe('app with module', () => {
                 expect(response).toHaveProperty('error');
                 expect(response).not.toHaveProperty('test2', true);
 
+                done();
+            },
+        });
+    });
+
+    test('init emit props to context', async (done) => {
+        const instance = new App();
+
+        instance.use(initor);
+
+        instance.process({
+            input: '',
+            handle(response, context) {
+                expect(context).toHaveProperty('test', true);
                 done();
             },
         });

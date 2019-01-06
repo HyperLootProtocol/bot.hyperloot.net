@@ -1,8 +1,8 @@
-
 const { hri } = require('human-readable-ids');
 const moment = require('moment');
 const isEqual = require('lodash/isEqual');
-const command = require('../command');
+
+const command = require('./command.filter');
 
 const addPoll = async function (response, {
     getModuleData,

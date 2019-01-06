@@ -1,7 +1,7 @@
 const isEqual = require('lodash/isEqual');
 
-const command = require('../command');
-const { discord: { broadcastChannelName } } = require('../../config');
+const command = require('./command.filter');
+const { discord: { broadcastChannelName } } = require('../config');
 
 async function addQuiz(response, {
     getModuleData,

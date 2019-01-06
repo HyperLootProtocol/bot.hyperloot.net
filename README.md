@@ -1,31 +1,31 @@
 # Bot
 Bot is powerful service what provide communication between people in community.
 
-## Usage
+> ALL STRUCUTRES UNDERWORK! ALL SIGNATUES UNSTABLE!
 
-* `npm run dev` start in development mode (with nodemon, it will reload after any changes), u can use web adapter for local work, easy start and call `//localhost:3000/api/message?message=text&id=1&username=test`
+## usage
+Easy development start: `npm i` and `npm run dev` THEN u can create new modules. (using nedb and http adapter).
+
+> TIP for debugging used [Debug](https://github.com/visionmedia/debug), please set env `debug=bot:*` to see details then app started <3
+
+### other commands
+* `npm run dev` start in development mode (with nodemon, it will reload after any changes), u can use web adapter for local work, easy start and call `//localhost:3000/api?message=/ping`
 * `npm test` run jest and eslint (please check it before commit)
 * `npm start` start bundle in prod mode (TODO)
 
-## Abstract
+## abstract
 
 ### executor
 Atomic element, we use it to build all bot functionality. It simple function what get `response` and `context` and return new mutated `response` object.
 
 `response` like temp container what keep all session data (UNDERWORK! Signature unstable).
-* `response.output: string` Output need to send text message as handler emiter (user get this as answer).
+* `response.output: string || [string] || [{ message, channelName }]` Output need to send text message as handler emiter (user get this as answer).
+* `response.reactions: [string]` array of reactions what should be placed to input message
 
-`context` immutable structure what contain basic functions, what provide from app.js (core?) (UNDERWORK!)
-* `context.input: string` contain text view of event (like user msg text in most cases)
-* `context.handle: (response) => void` method for calling client callback (in-future need provide cross-client handling)
-* `context.from: CLIENT_ID` client name (discord/telegram/etc)
-* `context.i18n: (keyword: string) => string` provide function what return string by unique keyword from string lib, see more in i18n
-* `context.db: object` provide mongo connector, _in future provide helpers for fast module scope acces and user data_
-* `context.id: string` client specific id (for unuqie provide client+id)
-* `context.username: string` client specific username
+`context` immutable structure what contain basic functions provided by modules when app start `__INIT__` or per each request by adapters (then `process` calling) see [Adapters](#adapters), [DB](#db) and [Modules](#modules) for detail information
 
 Basic example (signature):
-```
+```js
 async (response, context) => {
     //... CHECKERS (to prevent unexpected mutation)
     if (response.something) {
@@ -61,9 +61,9 @@ If executor return `null` we prevent call rest executors in *array*! Also good p
 
 If executor `throw('error')` app also skip rest executors in array and add to `esponse.error` error tip. U can use it after filtering by some conditions and provide information for user.
 
-#### Examples:
+#### examples:
 
-```
+```js
 instance.use([someFilter, errorer, mutate]);
 
 // where
@@ -90,7 +90,7 @@ function mutate(response) {
 ```
 
 Also we can create advanced cases with different filters/filter factories and subchains
-```
+```js
 instance.use([
     [someFilter, filter2, mutate1, mutate2],
     [filter, filterFactory('someType'), mutate],
@@ -100,14 +100,13 @@ instance.use([
 
 ```
 
-### client
-Client is something like adapter to connect some service/way to work with app. Any client must emit `proccess` call then something happens and provide `context` with event data. Be sure to transform any handled data to universal form.
+### adapter
+Adapter is a executor with `__INIT__` that must call `context.process` its start execute modules chain. Any client must emit `proccess` call then something happens and provide `context` with event data. Be sure to transform any handled data to universal form.
 
 Client also must provide callback function, that will be called after all modules will be executed!
 
 In general cases we provide `input` and `handle` and basic adapter ready to serve! :)
-```
-
+```js
 client.onEvent(data => {
     instance.process({
         input: data.msg,
@@ -118,33 +117,109 @@ client.onEvent(data => {
 })
 ```
 
-### context
-signature and methods
+### executor init
+App provide only one function: `process`, other features provided by modules in `__INIT__` section. `__INIT__` is a function, what get `context` and must return `context`. Init can mutate context to add some properties and call something then it need (it call once, then app starts.
 
-#### i18n
-#### db
+It can be usefull for: setup/init something before app start get requests, provide functions for other modules (like `i18n` or `db connectors`) or emit proccess handler (as adapters).
 
-### response
-signature and lock-in keys
+Basic usecase:
+
+```js
+const executor = () {
+    console.log('i called every time, then someone call process')
+};
+
+executor.__INIT__ = (context) {
+    console.log('i called once, then app starts')
+
+    return context;
+}
+```
+
+Advanced:
+```js
+const twitterExample = (response, context) {
+    if (context.event !== 'tweet') {
+        return;
+    }
+
+    const id = parseIdFromPost(response.input);
+
+    if (!id) {
+        return;
+    }
+
+    const post = context.getTwitterPostById(id);
+    context.emitLog(post);
+
+    return response;
+};
+
+twitterExample.__INIT__ = (context) {
+    context.getTwitterPostById = twitter.getTwitterPostById;
+
+    twtitter.on('tweet').then(data =>
+        context.process(
+            event: 'tweet',
+            input: data.tweet.toText(),
+            handle: () => {}, // no back handler for this adapter!
+        )
+    )
+
+    return context;
+}
+```
 
 ### user model
-db structure
-methods
+* signature
+* cross-client ?
+* ...
 
-## Pre-build modules
-command
-user
-...
+## db
+Module db must provide three basics
+* `getUser: (userId) => PROMISE(userData)` get user data by user id
+* `getModuleData: (moduleName, scope = global) => PROMISE(moduleData)` get module data from user scope, or global
+* `updateModuleData: (moduleName, query, scope = global) => PROMISE(void)` update module data to user scope, or global scope
 
-## clients specific events
+### adater details
+* mongo
+* nedb
+* ...
 
-## messages
+## modules
+This modules provide funcs to context:
+* `i18n: (keyword: string) => string` provide function what return string by unique keyword from string lib, see more in i18n
 
-# feature list (+proposals)
-telegram
-discord
-clubs
-web-dashboard
-twitch
-youtube
-vk
+### other modules
+* quiz
+* poll
+* ...
+
+## adapters
+Each adapter must provide to context:
+* `input: string` contain text view of event (like user msg text in most cases)
+* `handle: (response) => void` method for calling client callback (in-future need provide cross-client handling)
+* `from: CLIENT_ID` client name (discord/telegram/etc)
+* `id: string` client specific id (for unuqie provide client+id)
+* `username: string` client specific username
+* `user: USER` current user data
+
+### adater details
+* http
+* discord
+* ...
+
+# TODO
+- [x] local development (easy start)
+- [x] nedb db
+- [x] mongojs db
+- [x] discord adapter
+- [x] http adapter
+- [ ] more docs and examples
+- [ ] cross-client merging reglament
+- [ ] telegram adapter
+- [ ] twitch adapter
+- [ ] youtube adapter
+- [ ] clans
+- [ ] missions
+- [ ] dashboard
