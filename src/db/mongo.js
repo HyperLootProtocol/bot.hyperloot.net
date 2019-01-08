@@ -55,7 +55,7 @@ dbMongo.__INIT__ = function (context) {
                     reject(err);
                 }
 
-                resolve(result);
+                return resolve(result);
             });
         });
     }
