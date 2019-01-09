@@ -1,0 +1,2 @@
+reaction_lick, "<@{{id}}> лизнул <@{{idWho}}> "
+reaction_kiss, "<@{{id}}> поцеловал <@{{idWho}}> "

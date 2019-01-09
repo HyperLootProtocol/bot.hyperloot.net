@@ -1,0 +1,2 @@
+reaction_lick, "<@{{id}}> is lick <@{{idWho}}> "
+reaction_kiss, "<@{{id}}> kiss you <@{{idWho}}> "

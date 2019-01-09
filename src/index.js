@@ -32,7 +32,7 @@ const log = require('./modules/log');
 // commands initializers
 const pong = require('./modules/pong.command');
 const status = require('./modules/status.command');
-const reactionSocial = require('./modules/reactions');
+const reactionSocial = require('./modules/reactions-gif');
 
 instance.use([
     log,
