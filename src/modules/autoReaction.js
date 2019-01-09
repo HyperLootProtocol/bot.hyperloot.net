@@ -4,5 +4,10 @@ module.exports = function autoReaction(response) {
     response.reactions.push('👍');
     response.reactions.push('👎');
 
+<<<<<<< HEAD
     return response;
 };
+=======
+     return response;
+ };
+>>>>>>> 9655535387f2c71fdc07d5ac3ee290ef6368a2c3

@@ -19,6 +19,7 @@ const updateExp = require('./modules/updateExp');
 const autoReaction = require('./modules/autoReaction');
 const log = require('./modules/log');
 
+// commands initializers
 const pong = require('./modules/commands/pong');
 const status = require('./modules/commands/status');
 const reactionSocial = require('./modules/reactions-gif');
