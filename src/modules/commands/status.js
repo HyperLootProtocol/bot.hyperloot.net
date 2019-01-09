@@ -1,4 +1,4 @@
-const command = require('./command');
+const command = require('../command.filter');
 
 const status = async function (response, context) {
     const { i18n, getModuleData } = context;

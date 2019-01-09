@@ -1,33 +1,31 @@
+const debug = require('debug')('bot:app');
 const isArray = require('lodash/isArray');
 const isFunction = require('lodash/isFunction');
 const cloneDeep = require('lodash/cloneDeep');
+const bind = require('lodash/bind');
 const invariant = require('invariant');
 
-const { lang } = require('./config');
-const { i18nFactory } = require('./i18n');
-
-
 module.exports = class App {
-    // TODO: PASS context functions in constructor, dont inject itself here)
-    constructor({ db } = { db: { } }) {
-        this.modules = [];
+    constructor(modules = [], context = {}) {
+        this.modules = modules;
 
-        // setup context here
-        this.commonContext = {
-            i18n: i18nFactory(lang),
-            ...db,
+        this.context = {
+            ...context,
+            process: bind(this.process, this),
         };
     }
 
     use(module) {
-        // TODO: additional initialization, (support factory modules and modules with metadata)
-        this.modules.push(module);
+        if (module) {
+            this.modules.push(module);
+            this.context = this._init(module, this.context);
+        }
 
         // for chaining :)
         return this;
     }
 
-    async process({ input = '', handle, ...processContext }) {
+    async process({ input = '', handle, ...data }) {
         invariant(isFunction(handle), 'handle must be function');
 
         // reference for response object, in future need add here comments
@@ -52,13 +50,13 @@ module.exports = class App {
 
         let user = {};
 
-        if (processContext.id) {
-            user = await this.commonContext.getUser(processContext.id);
+        if (data.id) {
+            user = await this.context.getUser(data.id);
         }
 
         const context = {
-            ...this.commonContext,
-            ...processContext, // Dirty need some standard structure
+            ...this.context,
+            ...data, // Dirty need some standard structure
             user,
             input,
             // handle,
@@ -72,6 +70,39 @@ module.exports = class App {
         return this;
     }
 
+    _init(module, context) {
+        if (isArray(module)) {
+            for (let i = 0; i < module.length; i++) {
+                try {
+                    // eslint-disable-next-line no-param-reassign
+                    context = this._init(module[i], context);
+                } catch (error) {
+                    console.error('error', error);
+
+                    break;
+                }
+            }
+
+            return context;
+        }
+
+        if (!module || !isFunction(module.__INIT__)) {
+            return context;
+        }
+
+
+        const _tmpContext = cloneDeep(context);
+        const _context = module.__INIT__(context);
+
+        debug(`module '${module.name}' inited`);
+
+        if (!_context) {
+            return _tmpContext;
+        }
+
+        return _context;
+    }
+
     async _execute(module, response, context) {
         invariant(isArray(module) || isFunction(module), 'module should be array or function');
 
@@ -82,13 +113,13 @@ module.exports = class App {
                 try {
                     _response = await this._execute(module[i], response, context);
                 } catch (error) {
-                    response.error = error;
                     console.error('error', error);
+                    response.error = error;
 
                     break;
                 }
 
-                if (_response === null) {
+                if (!_response) {
                     break;
                 } else {
                     // eslint-disable-next-line no-param-reassign
