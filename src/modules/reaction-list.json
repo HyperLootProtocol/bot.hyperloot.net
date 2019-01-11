@@ -1,7 +1,7 @@
 {
-        "lick": ["https://media1.giphy.com/media/3oEduFodl3UbrrHCfe/giphy.gif?cid=3640f6095c13c9064844686655ac9085", 
+        "!lick": ["https://media1.giphy.com/media/3oEduFodl3UbrrHCfe/giphy.gif?cid=3640f6095c13c9064844686655ac9085", 
             "https://media2.giphy.com/media/rCDk9E3Szskus/giphy.gif?cid=3640f6095c292724456f503745961d52"],
-        "kiss": ["https://media0.giphy.com/media/dpSrm4cwUmCeQ/giphy.gif?cid=3640f6095c2f027d4979663132a85624",
+        "!kiss": ["https://media0.giphy.com/media/dpSrm4cwUmCeQ/giphy.gif?cid=3640f6095c2f027d4979663132a85624",
             "https://media0.giphy.com/media/108M7gCS1JSoO4/200.webp?cid=3640f6095c36027c444c31564947cd81",
         "https://media1.giphy.com/media/HhPJIIpNIGXHq/200w.webp?cid=3640f6095c36028679584e58732983a4"]   
 }

@@ -7,21 +7,15 @@ const reactionSocial = async function (response, { id, input, i18n }) {
         return response;
     }
 
-    if (input.indexOf(' ') > 0) {
-        const idWho = input.split(' ')[1].slice(2, -1);
-        const reactionName = input.split(' ')[0].substr(1);
-        const message = i18n(`reaction_${reactionName}`, { id, idWho });
-        const gif = sample(gifs[reactionName] || []);
+    const [reactionName, idWho] = input.split(' ');
+    let message;
 
-        if (message && gif) {
-            response.output = message + [gif];
-            console.log(message);
-        }
-        return response;
+    if (!idWho) {
+        message = i18n(`reactionOne_${reactionName}`, { id });
+    } else {
+        message = i18n(`reaction_${reactionName}`, { id, idWho });
     }
 
-    const reactionName = input.split(' ')[0].substr(1);
-    const message = i18n(`reactionOne_${reactionName}`, { id });
     const gif = sample(gifs[reactionName] || []);
 
     if (message && gif) {
@@ -29,7 +23,6 @@ const reactionSocial = async function (response, { id, input, i18n }) {
         console.log(message);
     }
     return response;
-
 };
 
 module.exports = [reactionSocial];

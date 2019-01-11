@@ -1,2 +1,3 @@
-reaction_lick, "<@{{id}}> лизнул <@{{idWho}}> "
-reaction_kiss, "<@{{id}}> поцеловал <@{{idWho}}> "
+reaction_!lick, "<@{{id}}> лизнул {{idWho}} "
+reaction_!kiss, "<@{{id}}> поцеловал {{idWho}} "
+reactionOne_!kiss, "<@{{id}}> поцеловал себя любимого "
