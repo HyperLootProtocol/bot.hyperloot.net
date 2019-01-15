@@ -2,6 +2,7 @@ import React from 'react';
 import { Line } from 'react-chartjs-2';
 import _ from 'lodash';
 import moment from 'moment';
+import Calendar from 'react-calendar';
 
 const API = '/api?query=getLog';
 
@@ -11,9 +12,17 @@ export default class App extends React.Component {
 
         this.state = {
             logs: [],
+            axisX: [],
+            axisY: [],
+            selectedUsername: '',
+            selectedUserId: '',
+            value: '',
         };
+        this.handleChange = this.handleChange.bind(this);
     }
-
+    handleChange(event) {
+        this.setState({ value: event.target.value });
+    }
     componentDidMount() {
         fetch(API)
             .then(response => response.json())
@@ -21,6 +30,7 @@ export default class App extends React.Component {
     }
 
     renderData(logs) {
+        // const groupedUser = _.filter(logs, [ userId: userIdVariable]); Для фильтра по userId
         const groupedData = _.groupBy(logs, item => moment(item.date).format('DD.MM.YY'));
         const labels = _.keys(groupedData).sort();
         let data = [];
@@ -82,38 +92,14 @@ export default class App extends React.Component {
             },
         };
     }
-    renderDataUser(logs) {
-        console.log('logs', logs);
-
-        const groupedUser = _.filter(logs, ['userId', '509115709704372243']);
-        const groupedData = _.groupBy(groupedUser, item => moment(item.date).format('DD.MM.YY'));
-        const labels = _.keys(groupedData).sort();
-        let data = [];
-        labels.forEach(key => data.push(groupedData[key].length));
-        console.log('Grouped Data:' + groupedData);
-        console.log('Data: ' + data);
-        console.log('Labels: ' + labels);
-
-        return {
-            labels,
-            datasets: [
-                {
-                    label: 'Number of messages User per day',
-                    data,
-                    backgroundColor: ['rgba(233, 235, 0, 0.4)'],
-                    borderColor: ['rgba(233, 235, 0, 1)'],
-                    borderWidth: 1,
-                    lineTension: 0.1,
-                },
-            ],
-        };
-    }
 
     render() {
         return (
             <>
                 <p>Here! {this.state.logs.length ? 'loaded' : 'loading'}</p>
-
+                <input type="text" value={this.state.value} onChange={this.handleChange} />
+                <p onChange={this.handleChange}>{this.state.value}</p>
+                <Calendar />
                 <Line
                     data={this.renderData(this.state.logs)}
                     width={80}
@@ -124,14 +110,6 @@ export default class App extends React.Component {
                 />
                 <Line
                     data={this.renderDataHour(this.state.logs)}
-                    width={80}
-                    height={20}
-                    options={{
-                        maintainAspectRatio: true,
-                    }}
-                />
-                <Line
-                    data={this.renderDataUser(this.state.logs)}
                     width={80}
                     height={20}
                     options={{
