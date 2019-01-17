@@ -49,9 +49,9 @@ const getBetsById = async function (response, {
         response.output = i18n('bets.closed');
     }
 
-    const { votesList = [] } = await getModuleData('bets');
+    const { votesListBets = [] } = await getModuleData('bets');
 
-    const votesCount = votesList.filter(vote => vote.betsId === currentBets.betsId).length;
+    const votesCount = votesListBets.filter(vote => vote.betsId === currentBets.betsId).length;
 
     const {
         dateCreated,
@@ -70,7 +70,7 @@ const getBetsById = async function (response, {
     });
 
     output += options.map((option) => {
-        const optionVotes = votesList.filter(vote => (vote.betsId === betsId && vote.option === currentBets.options.indexOf(option))).length;
+        const optionVotes = votesListBets.filter(vote => (vote.betsId === betsId && vote.option === currentBets.options.indexOf(option))).length;
         const percentage = optionVotes / votesCount * 100 || 0;
 
         return i18n('bets.line', {
@@ -87,7 +87,7 @@ const listBets = async function (response, {
     i18n,
     getModuleData,
 }) {
-    const { betsList = [], votesList = [] } = await getModuleData('bets');
+    const { betsList = [], votesListBets = [] } = await getModuleData('bets');
 
     if (!betsList.find(bets => bets.isOpen)) {
         response.output = i18n('bets.none');
@@ -97,7 +97,7 @@ const listBets = async function (response, {
     response.output = `${i18n('bets.list')}\n`;
 
     betsList.filter(bets => bets.isOpen).forEach((bets) => {
-        const votesCount = votesList.filter(vote => vote.betsId === bets.betsId).length;
+        const votesCount = votesListBets.filter(vote => vote.betsId === bets.betsId).length;
         const {
             dateCreated,
             eventBets,
@@ -115,7 +115,7 @@ const listBets = async function (response, {
         });
 
         output += options.map((option) => {
-            const optionVotes = votesList.filter(vote => (vote.betsId === betsId && vote.option === bets.options.indexOf(option))).length;
+            const optionVotes = votesListBets.filter(vote => (vote.betsId === betsId && vote.option === bets.options.indexOf(option))).length;
             const percentage = optionVotes / votesCount * 100 || 0;
 
             return i18n('bets.line', {
@@ -175,7 +175,7 @@ const castVoteBets = async function (response, {
     getModuleData,
     updateModuleData,
 }) {
-    const { votesList = [], betsList = [] } = await getModuleData('bets');
+    const { votesListBets = [], betsList = [] } = await getModuleData('bets');
     const { args: { requestedBetsId, requestedOption } } = response;
 
     const currentBets = betsList.find(bets => bets.betsId === requestedBetsId);
@@ -190,7 +190,7 @@ const castVoteBets = async function (response, {
         return response;
     }
 
-    if (votesList.find(vote => (vote.betsId === requestedBetsId && vote.voterId === id))) {
+    if (votesListBets.find(vote => (vote.betsId === requestedBetsId && vote.voterId === id))) {
         response.output = i18n('bets.alreadyVoted');
         return response;
     }
@@ -204,7 +204,7 @@ const castVoteBets = async function (response, {
         };
 
         updateModuleData('bets', {
-            votesList: [...votesList, newVote],
+            votesListBets: [...votesListBets, newVote],
         });
 
         const optionText = requestedOption;
@@ -227,7 +227,7 @@ const castVoteBets = async function (response, {
         };
 
         updateModuleData('bets', {
-            votesList: [...votesList, newVote],
+            votesListBets: [...votesListBets, newVote],
         });
 
         const optionText = currentBets.options[requestedOption - 1];
@@ -250,14 +250,14 @@ const checkVoteBets = async function (response, {
     id,
     i18n,
 }) {
-    const { betsList = [], votesList = [] } = await getModuleData('bets');
+    const { betsList = [], votesListBets = [] } = await getModuleData('bets');
 
     if (!betsList.find(bets => bets.isOpen)) {
         return response;
     }
 
     betsList.filter(bets => bets.isOpen).forEach((bets) => {
-        if (votesList.find(vote => (vote.betsId === bets.betsId && vote.voterId === id))) {
+        if (votesListBets.find(vote => (vote.betsId === bets.betsId && vote.voterId === id))) {
             return;
         }
 
@@ -270,7 +270,7 @@ const checkVoteBets = async function (response, {
             };
 
             updateModuleData('bets', {
-                votesList: [...votesList, newVote],
+                votesListBets: [...votesListBets, newVote],
             });
 
             const optionText = input;
@@ -294,7 +294,7 @@ const checkVoteBets = async function (response, {
             };
 
             updateModuleData('bets', {
-                votesList: [...votesList, newVote],
+                votesListBets: [...votesListBets, newVote],
             });
 
             const optionText = bets.options[input - 1];
@@ -313,7 +313,7 @@ module.exports = [
     [command('bets eventBets ...options'), addBets],
     [command('bets requestedBetsId'), getBetsById],
     [command('bets'), listBets],
-    [command('close requestedBetsId'), closeBets],
-    [command('vote requestedBetsId requestedOption'), castVoteBets],
+    [command('closeBets requestedBetsId'), closeBets],
+    [command('voteBets requestedBetsId requestedOption'), castVoteBets],
     checkVoteBets,
 ];

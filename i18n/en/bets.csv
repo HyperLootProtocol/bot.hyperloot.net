@@ -13,5 +13,5 @@ bets.close, "Bets {{requestedBetsId}} was closed, the results are still availabl
 bets.alreadyClosed, "This bets is already closed! Are you messing with me?"
 bets.alreadyVoted, "You've already voted in this bets, you're either cheating or very forgetfull"
 
-vote.castBets, "<@{{id}}> voted for {{optionText}} in bets {{requestedBetsId}}, hmmm which option's gonna win this this thing?"
+vote.castBets, "<@{{id}}> voted for {{optionText}} in bets {{requestedBetsId}}, hmmm which option's gonna win this thing?"
 vote.noSuchOptionBets, "The option you're trying to vote for doesn't seem to exist"
