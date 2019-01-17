@@ -1,3 +1,27 @@
 body {
     line-height: 2;
 }
+
+.mainWrap {
+    padding: 15px;
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    padding-right: 20px;
+}
+
+/* .daysChart {
+    display: flex;
+} */
+
+.blockSearch {
+    display: flex;
+    align-items: flex-start;
+}
+
+.blockSearch p {
+    margin: 0;
+    padding-right: 10px;
+}

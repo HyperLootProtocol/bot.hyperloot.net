@@ -14,9 +14,12 @@ export default class App extends React.Component {
             logs: [],
             value: '',
             selectedDate: '',
+            valueRangeTime: '',
+            countMessage: '',
         };
         this.handleChange = this.handleChange.bind(this);
         this.calendarChange = this.calendarChange.bind(this);
+        this.changeRangeTime = this.changeRangeTime.bind(this);
     }
 
     handleChange(event) {
@@ -27,6 +30,10 @@ export default class App extends React.Component {
         this.setState({ selectedDate: date });
     }
 
+    changeRangeTime(event) {
+        this.setState({ valueRangeTime: event.target.value });
+    }
+
     componentDidMount() {
         fetch(API)
             .then(response => response.json())
@@ -35,18 +42,30 @@ export default class App extends React.Component {
 
     renderData(logs) {
         // const groupedUser = _.filter(logs, [ userId: userIdVariable]); Для фильтра по userId
-        let Date = logs;
+        let defaultData = logs;
+
+        // let countDates = logs.reduce((acc, el) => {
+        //     acc[el] = (acc[el] || 0) + 1;
+        //     return acc;
+        // }, {});
+
         if (this.state.value) {
-            Date = _.filter(logs, { _id: this.state.value });
+            defaultData = _.filter(defaultData, { _id: this.state.value });
         }
 
         if (this.state.selectedDate) {
-            Date = _.filter(logs, item =>
-                moment(item.date).isBetween(this.state.selectedDate[0], this.state.selectedDate[1]),
+            defaultData = _.filter(defaultData, item =>
+                moment(item.date).isBetween(moment(this.state.selectedDate[0]), moment(this.state.selectedDate[1])),
             );
+            console.log(defaultData);
         }
 
-        const groupedData = _.groupBy(Date, item => moment(item.date).format('DD.MM.YY'));
+        if (this.state.valueRangeTime) {
+            defaultData = _.filter(defaultData, item => moment(item.date));
+            console.log(defaultData);
+        }
+
+        const groupedData = _.groupBy(defaultData, item => moment(item.date).format('DD.MM.YY'));
         const labels = _.keys(groupedData).sort();
         let data = [];
         labels.forEach(key => data.push(groupedData[key].length));
@@ -65,6 +84,16 @@ export default class App extends React.Component {
             ],
             options: {
                 scales: {
+                    xAxes: [
+                        {
+                            type: 'time',
+                            time: {
+                                displayFormats: {
+                                    quarter: 'MMM YYYY',
+                                },
+                            },
+                        },
+                    ],
                     yAxes: [
                         {
                             ticks: {
@@ -77,7 +106,19 @@ export default class App extends React.Component {
         };
     }
     renderDataHour(logs) {
-        const groupedData = _.groupBy(logs, item => moment(item.date).format('HH:00'));
+        let defaultData = logs;
+        if (this.state.value) {
+            defaultData = _.filter(defaultData, { _id: this.state.value });
+        }
+
+        if (this.state.selectedDate) {
+            defaultData = _.filter(defaultData, item =>
+                moment(item.date).isBetween(moment(this.state.selectedDate[0]), moment(this.state.selectedDate[1])),
+            );
+            console.log(defaultData);
+        }
+
+        const groupedData = _.groupBy(defaultData, item => moment(item.date).format('HH:00'));
         const labels = _.keys(groupedData).sort();
         let data = [];
         labels.forEach(key => data.push(groupedData[key].length));
@@ -111,28 +152,38 @@ export default class App extends React.Component {
     render() {
         return (
             <>
-                <p>Here! {this.state.logs.length ? 'loaded' : 'loading'}</p>
-                <>
-                    <p>Поиск по ID:</p>
-                    <input type="text" value={this.state.value} onChange={this.handleChange} />
-                </>
-                <Calendar onChange={this.calendarChange} value={this.state.selectedDate} selectRange />
-                <Line
-                    data={this.renderData(this.state.logs)}
-                    width={80}
-                    height={20}
-                    options={{
-                        maintainAspectRatio: true,
-                    }}
-                />
-                <Line
-                    data={this.renderDataHour(this.state.logs)}
-                    width={80}
-                    height={20}
-                    options={{
-                        maintainAspectRatio: true,
-                    }}
-                />
+                <div className="mainWrap">
+                    <div className="blockSearch">
+                        <div className="search">
+                            <p>Поиск по ID:</p>
+                            <input type="text" value={this.state.value} onChange={this.handleChange} />
+                        </div>
+                        {/* <div className="search">
+                            <p>Range Time:</p>
+                            <input type="time" value={this.state.valueRangeTime} onChange={this.changeRangeTime} />
+                        </div> */}
+                        <Calendar onChange={this.calendarChange} value={this.state.selectedDate} selectRange />
+                    </div>
+                    <div className="daysChart">
+                        <Line
+                            data={this.renderData(this.state.logs)}
+                            width={100}
+                            height={20}
+                            options={{
+                                maintainAspectRatio: true,
+                            }}
+                        />
+                        <Line
+                            data={this.renderDataHour(this.state.logs)}
+                            width={80}
+                            height={20}
+                            options={{
+                                maintainAspectRatio: true,
+                            }}
+                        />
+                    </div>
+                    <p>Общее количество сообщений: </p>
+                </div>
             </>
         );
     }
