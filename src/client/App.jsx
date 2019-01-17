@@ -15,7 +15,7 @@ export default class App extends React.Component {
             value: '',
             selectedDate: '',
             valueRangeTime: '',
-            countMessage: '',
+            sumMessage: 0,
         };
         this.handleChange = this.handleChange.bind(this);
         this.calendarChange = this.calendarChange.bind(this);
@@ -44,10 +44,11 @@ export default class App extends React.Component {
         // const groupedUser = _.filter(logs, [ userId: userIdVariable]); Для фильтра по userId
         let defaultData = logs;
 
-        // let countDates = logs.reduce((acc, el) => {
-        //     acc[el] = (acc[el] || 0) + 1;
-        //     return acc;
-        // }, {});
+        let sumMessage = logs.reduce((acc, el) => {
+            acc[el] = (acc[el] || 0) + 1;
+            return acc;
+        }, {});
+        this.setState({ sumMessage: sumMessage() }, () => console.log(this.state));
 
         if (this.state.value) {
             defaultData = _.filter(defaultData, { _id: this.state.value });
@@ -182,7 +183,7 @@ export default class App extends React.Component {
                             }}
                         />
                     </div>
-                    <p>Общее количество сообщений: </p>
+                    <p>Общее количество сообщений: {sumMessage}</p>
                 </div>
             </>
         );
