@@ -39,7 +39,6 @@ const getBetsById = async function (response, {
     const { betsList = [] } = await getModuleData('bets');
 
     const currentBets = betsList.find(bets => bets.betsId === requestedBetsId);
-
     if (!currentBets) {
         response.output = i18n('bets.notFound', { requestedBetsId });
         return response;
@@ -136,9 +135,12 @@ const closeBets = async function (response, {
     updateModuleData,
 }) {
     const { args: { requestedBetsId } } = response;
-    const { betsList = [] } = await getModuleData('bets');
-
+    const { betsList = [], votesListBets = [] } = await getModuleData('bets');
+    const winOption = 2;
     const currentBets = betsList.find(bets => bets.betsId === requestedBetsId);
+    console.log(currentBets, votesListBets, '\n');
+    const [winList] = votesListBets.filter(voterId => voterId.betsId === requestedBetsId && voterId.option === winOption);
+    console.log(winList);
 
     if (!betsList.find(bets => bets.isOpen)) {
         response.output = i18n('bets.none');
@@ -165,7 +167,9 @@ const closeBets = async function (response, {
         });
     }
 
-    response.output = i18n('bets.close', { requestedBetsId });
+    const winId = winList.voterId;
+    response.output = i18n('bets.close', { requestedBetsId, winId });
+    console.log(winList.voterId);
     return response;
 };
 
