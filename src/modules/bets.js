@@ -134,12 +134,13 @@ const closeBets = async function (response, {
     getModuleData,
     updateModuleData,
 }) {
-    const { args: { requestedBetsId } } = response;
+    const { args: { requestedBetsId, winOption } } = response;
     const { betsList = [], votesListBets = [] } = await getModuleData('bets');
-    const winOption = 2;
     const currentBets = betsList.find(bets => bets.betsId === requestedBetsId);
     console.log(currentBets, votesListBets, '\n');
-    const [winList] = votesListBets.filter(voterId => voterId.betsId === requestedBetsId && voterId.option === winOption);
+    const winList = votesListBets.filter(
+        vote => vote.betsId === requestedBetsId && vote.option === Number(winOption) - 1,
+    );
     console.log(winList);
 
     if (!betsList.find(bets => bets.isOpen)) {
@@ -167,9 +168,9 @@ const closeBets = async function (response, {
         });
     }
 
-    const winId = winList.voterId;
+    const winId = winList.map(winner => `<@${winner.voterId}>`).join(', ');
+    console.log(winId);
     response.output = i18n('bets.close', { requestedBetsId, winId });
-    console.log(winList.voterId);
     return response;
 };
 
@@ -226,7 +227,7 @@ const castVoteBets = async function (response, {
         const newVote = {
             voterId: id,
             betsId: requestedBetsId,
-            option: parseInt(requestedOption, 10),
+            option: parseInt(requestedOption, 10) - 1,
             dateVoted: new Date(),
         };
 
@@ -293,7 +294,7 @@ const checkVoteBets = async function (response, {
             const newVote = {
                 voterId: id,
                 betsId: bets.betsId,
-                option: parseInt(input, 10),
+                option: parseInt(input, 10) - 1,
                 dateVoted: new Date(),
             };
 
@@ -317,7 +318,7 @@ module.exports = [
     [command('bets eventBets ...options'), addBets],
     [command('bets requestedBetsId'), getBetsById],
     [command('bets'), listBets],
-    [command('closeBets requestedBetsId'), closeBets],
+    [command('closeBets requestedBetsId winOption'), closeBets],
     [command('voteBets requestedBetsId requestedOption'), castVoteBets],
     checkVoteBets,
 ];

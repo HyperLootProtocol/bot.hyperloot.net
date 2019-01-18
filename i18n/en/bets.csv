@@ -9,7 +9,7 @@ bets.line, "{{option}} | {{optionVotes}} votes | ({{percentage}}%) |\n"
 bets.none, "No bets are open at the moment, come on open new one!"
 bets.closed, "(closed) "
 
-bets.close, "Bets {{requestedBetsId}} was closed.\nList winners: <@{{winId}}>"
+bets.close, "Bets {{requestedBetsId}} was closed.\nList winners: {{winId}}"
 bets.alreadyClosed, "This bets is already closed! Are you messing with me?"
 bets.alreadyVoted, "You've already voted in this bets, you're either cheating or very forgetfull"
 
