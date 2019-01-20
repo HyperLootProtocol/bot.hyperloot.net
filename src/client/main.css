@@ -17,6 +17,8 @@
         color: #151515;
         border-radius: 4px;
         margin-top: 2px;
+        cursor: pointer;
+        width: 150px;
     }
     .search input {
         background: #fff;
@@ -49,6 +51,8 @@
     }
     .mainWrap {
         padding: 15px;
+        width: 1200px;
+        margin: 0 auto;
     }
     .search {
         display: flex;
