@@ -11,8 +11,8 @@
     "dev": "npm-run-all --parallel dev-server dev-client",
     "test": "jest",
     "pretest": "npm run lint",
-    "lint": "eslint '**/*.js'",
-    "lint:fix": "eslint '**/*.js' --fix"
+    "lint": "eslint **/*.js",
+    "lint:fix": "eslint **/*.js --fix"
   },
   "license": "Apache-2.0",
   "nodemonConfig": {
