@@ -142,11 +142,6 @@ const closeBet = async function (response, {
         vote => vote.betId === requestedBetId && vote.option === winOption - 1,
     );
 
-    if (!betsList.find(bet => bet.isOpen)) {
-        response.output = i18n('bet.none');
-        return response;
-    }
-
     if (!currentBet) {
         response.output = i18n('bet.notFound', { requestedBetId });
         return response;
@@ -161,11 +156,10 @@ const closeBet = async function (response, {
     currentBet.isOpen = false;
     newList.push(currentBet);
 
-    if (!isEqual(betsList, newList)) {
-        updateModuleData('bets', {
-            betsList: newList,
-        });
-    }
+    updateModuleData('bets', {
+        betsList: newList,
+    });
+
 
     if (winList.length === 0) {
         response.output = i18n('bet.closeNoWinner', { requestedBetId });
