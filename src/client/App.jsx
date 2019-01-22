@@ -5,7 +5,6 @@ import moment from 'moment';
 import Calendar from 'react-calendar';
 
 const API = '/api?query=getLog';
-import bigData from './data';
 
 export default class App extends React.Component {
     constructor(props) {
