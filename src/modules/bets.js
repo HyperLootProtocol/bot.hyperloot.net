@@ -166,11 +166,7 @@ const closeBet = async function (response, {
         return response;
     }
 
-    const winners = winList.reduce((acc, winner) => {
-        let accum = acc;
-        accum += `<@${winner.voterId}>`;
-        return accum;
-    }, ' ');
+    const winners = winList.reduce((acc, winner) => `${acc} <@${winner.voterId}>`, '');
     response.output = i18n('bet.close', { requestedBetId, winners });
     return response;
 };
