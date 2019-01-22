@@ -4,7 +4,9 @@
   "version": "1.0.0",
   "main": "src/index.js",
   "scripts": {
-    "prestart": "webpack --mode production",
+    "postinstall": "npm run build",
+    "heroku-postbuild": "npm run build"
+    "build": "webpack --mode production",
     "start": "node src/index.js",
     "dev-client": "webpack-dev-server --mode development --open",
     "dev-server": "nodemon src/index.js",
