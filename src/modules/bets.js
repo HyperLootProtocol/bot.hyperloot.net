@@ -1,6 +1,5 @@
 const { hri } = require('human-readable-ids');
 const moment = require('moment');
-const isEqual = require('lodash/isEqual');
 
 const command = require('./command.filter');
 
@@ -69,7 +68,8 @@ const getBetById = async function (response, {
     });
 
     output += options.map((option) => {
-        const optionVotes = votesListBets.filter(vote => (vote.betId === betId && vote.option === currentBet.options.indexOf(option))).length;
+        const optionVotes = votesListBets.filter(vote => (
+            vote.betId === betId && vote.option === currentBet.options.indexOf(option))).length;
         const percentage = optionVotes / votesCount * 100 || 0;
 
         return i18n('bet.line', {
@@ -114,7 +114,8 @@ const listBets = async function (response, {
         });
 
         output += options.map((option) => {
-            const optionVotes = votesListBets.filter(vote => (vote.betId === betId && vote.option === bet.options.indexOf(option))).length;
+            const optionVotes = votesListBets.filter(vote => (
+                vote.betId === betId && vote.option === bet.options.indexOf(option))).length;
             const percentage = optionVotes / votesCount * 100 || 0;
 
             return i18n('bet.line', {

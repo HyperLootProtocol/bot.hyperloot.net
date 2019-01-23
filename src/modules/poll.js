@@ -70,7 +70,8 @@ const getPollById = async function (response, {
     });
 
     output += options.map((option) => {
-        const optionVotes = votesList.filter(vote => (vote.pollId === pollId && vote.option === currentPoll.options.indexOf(option))).length;
+        const optionVotes = votesList.filter(vote => (
+            vote.pollId === pollId && vote.option === currentPoll.options.indexOf(option))).length;
         const percentage = optionVotes / votesCount * 100 || 0;
 
         return i18n('poll.line', {
@@ -115,7 +116,8 @@ const listPolls = async function (response, {
         });
 
         output += options.map((option) => {
-            const optionVotes = votesList.filter(vote => (vote.pollId === pollId && vote.option === poll.options.indexOf(option))).length;
+            const optionVotes = votesList.filter(vote => (
+                vote.pollId === pollId && vote.option === poll.options.indexOf(option))).length;
             const percentage = optionVotes / votesCount * 100 || 0;
 
             return i18n('poll.line', {
