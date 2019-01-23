@@ -46,7 +46,6 @@ const getBetById = async function (response, {
 
     if (!currentBet.isOpen) {
         response.output = i18n('bet.closed');
-        return response;
     }
 
     const { votesListBets = [] } = await getModuleData('bets');
@@ -166,7 +165,7 @@ const closeBet = async function (response, {
         return response;
     }
 
-    const winners = winList.reduce((acc, winner) => `${acc} <@${winner.voterId}>`, '');
+    const winners = winList.map(winner => `<@${winner.voterId}>`).join(', ');
     response.output = i18n('bet.close', { requestedBetId, winners });
     return response;
 };
