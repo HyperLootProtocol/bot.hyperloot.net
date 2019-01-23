@@ -1,6 +1,5 @@
 const { hri } = require('human-readable-ids');
 const moment = require('moment');
-const isEqual = require('lodash/isEqual');
 
 const command = require('./command.filter');
 
@@ -70,7 +69,8 @@ const getPollById = async function (response, {
     });
 
     output += options.map((option) => {
-        const optionVotes = votesList.filter(vote => (vote.pollId === pollId && vote.option === currentPoll.options.indexOf(option))).length;
+        const optionVotes = votesList.filter(vote => (
+            vote.pollId === pollId && vote.option === currentPoll.options.indexOf(option))).length;
         const percentage = optionVotes / votesCount * 100 || 0;
 
         return i18n('poll.line', {
@@ -115,7 +115,8 @@ const listPolls = async function (response, {
         });
 
         output += options.map((option) => {
-            const optionVotes = votesList.filter(vote => (vote.pollId === pollId && vote.option === poll.options.indexOf(option))).length;
+            const optionVotes = votesList.filter(vote => (
+                vote.pollId === pollId && vote.option === poll.options.indexOf(option))).length;
             const percentage = optionVotes / votesCount * 100 || 0;
 
             return i18n('poll.line', {
@@ -140,11 +141,6 @@ const closePoll = async function (response, {
 
     const currentPoll = pollsList.find(poll => poll.pollId === requestedPollId);
 
-    if (!pollsList.find(poll => poll.isOpen)) {
-        response.output = i18n('poll.none');
-        return response;
-    }
-
     if (!currentPoll) {
         response.output = i18n('poll.notFound', { requestedPollId });
         return response;
@@ -159,11 +155,10 @@ const closePoll = async function (response, {
     currentPoll.isOpen = false;
     newList.push(currentPoll);
 
-    if (!isEqual(pollsList, newList)) {
-        updateModuleData('poll', {
-            pollsList: newList,
-        });
-    }
+    updateModuleData('poll', {
+        pollsList: newList,
+    });
+
 
     response.output = i18n('poll.close', { requestedPollId });
     return response;
@@ -215,30 +210,6 @@ const castVote = async function (response, {
         });
         return response;
     }
-
-    const optionIndex = requestedOption - 1;
-
-    if (optionIndex >= 0 && optionIndex < currentPoll.options.length) {
-        const newVote = {
-            voterId: id,
-            pollId: requestedPollId,
-            option: parseInt(requestedOption, 10),
-            dateVoted: new Date(),
-        };
-
-        updateModuleData('poll', {
-            votesList: [...votesList, newVote],
-        });
-
-        const optionText = currentPoll.options[requestedOption - 1];
-        response.output = i18n('vote.cast', {
-            id,
-            requestedPollId,
-            optionText,
-        });
-        return response;
-    }
-
     response.output = i18n('vote.noSuchOption');
     return response;
 };
@@ -274,30 +245,6 @@ const checkVote = async function (response, {
             });
 
             const optionText = input;
-            const requestedPollId = poll.pollId;
-            response.output = i18n('vote.cast', {
-                id,
-                requestedPollId,
-                optionText,
-            });
-            return;
-        }
-
-        const inputIndex = input - 1;
-
-        if (inputIndex >= 0 && inputIndex < poll.options.length) {
-            const newVote = {
-                voterId: id,
-                pollId: poll.pollId,
-                option: parseInt(input, 10),
-                dateVoted: new Date(),
-            };
-
-            updateModuleData('poll', {
-                votesList: [...votesList, newVote],
-            });
-
-            const optionText = poll.options[input - 1];
             const requestedPollId = poll.pollId;
             response.output = i18n('vote.cast', {
                 id,
