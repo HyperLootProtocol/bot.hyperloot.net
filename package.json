@@ -8,8 +8,8 @@
     "dev": "nodemon src/index.js",
     "test": "jest",
     "pretest": "npm run lint",
-    "lint": "eslint '**/*.js'",
-    "lint:fix": "eslint '**/*.js' --fix"
+    "lint": "eslint \"**/*.js\"",
+    "lint:fix": "eslint \"**/*.js\" --fix"
   },
   "license": "Apache-2.0",
   "dependencies": {
