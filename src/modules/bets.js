@@ -217,30 +217,6 @@ const castVoteBet = async function (response, {
         });
         return response;
     }
-
-    const optionIndex = requestedOption - 1;
-
-    if (optionIndex >= 0 && optionIndex < currentBet.options.length) {
-        const newVote = {
-            voterId: id,
-            betId: requestedBetId,
-            option: parseInt(requestedOption, 10) - 1,
-            dateVoted: new Date(),
-        };
-
-        updateModuleData('bets', {
-            votesListBets: [...votesListBets, newVote],
-        });
-
-        const optionText = currentBet.options[requestedOption - 1];
-        response.output = i18n('vote.castBet', {
-            id,
-            requestedBetId,
-            optionText,
-        });
-        return response;
-    }
-
     response.output = i18n('vote.noSuchOptionBet');
     return response;
 };
@@ -276,30 +252,6 @@ const checkVoteBet = async function (response, {
             });
 
             const optionText = input;
-            const requestedBetId = bet.betId;
-            response.output = i18n('vote.castBet', {
-                id,
-                requestedBetId,
-                optionText,
-            });
-            return;
-        }
-
-        const inputIndex = input - 1;
-
-        if (inputIndex >= 0 && inputIndex < bet.options.length) {
-            const newVote = {
-                voterId: id,
-                betId: bet.betId,
-                option: parseInt(input, 10) - 1,
-                dateVoted: new Date(),
-            };
-
-            updateModuleData('bets', {
-                votesListBets: [...votesListBets, newVote],
-            });
-
-            const optionText = bet.options[input - 1];
             const requestedBetId = bet.betId;
             response.output = i18n('vote.castBet', {
                 id,
