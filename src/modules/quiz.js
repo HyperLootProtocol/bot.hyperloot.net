@@ -46,7 +46,13 @@ async function checkQuiz(response, {
         const output = [];
 
         const newList = list.map((q) => {
-            if (!q.answers.includes(input.toLowerCase())) {
+            let subStrAnswer;
+            const inputLower = input.toLowerCase();
+            if (inputLower.indexOf(q.answers) >= 0) {
+                subStrAnswer = inputLower.substr(inputLower.indexOf(q.answers, q.answers.length));
+            }
+
+            if (!q.answers.includes(subStrAnswer)) {
                 return q;
             }
 
