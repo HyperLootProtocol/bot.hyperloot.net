@@ -197,11 +197,12 @@ const castVoteBet = async function (response, {
         return response;
     }
 
-    if (currentBet.options.includes(requestedOption)) {
+    const requestedOptionLower = requestedOption.toLowerCase();
+    if (currentBet.options.includes(requestedOptionLower)) {
         const newVote = {
             voterId: id,
             betId: requestedBetId,
-            option: currentBet.options.indexOf(requestedOption),
+            option: currentBet.options.indexOf(requestedOptionLower),
             dateVoted: new Date(),
         };
 
@@ -239,11 +240,12 @@ const checkVoteBet = async function (response, {
             return;
         }
 
-        if (bet.options.includes(input)) {
+        const inputLower = input.toLowerCase();
+        if (bet.options.includes(inputLower)) {
             const newVote = {
                 voterId: id,
                 betId: bet.betId,
-                option: bet.options.indexOf(input),
+                option: bet.options.indexOf(inputLower),
                 dateVoted: new Date(),
             };
 
@@ -251,7 +253,7 @@ const checkVoteBet = async function (response, {
                 votesListBets: [...votesListBets, newVote],
             });
 
-            const optionText = input;
+            const optionText = inputLower;
             const requestedBetId = bet.betId;
             response.output = i18n('vote.castBet', {
                 id,
