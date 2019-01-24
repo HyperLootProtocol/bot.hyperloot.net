@@ -60,6 +60,11 @@ discordAdapter.__INIT__ = function ({ process }) {
             if (isObject(output)) {
                 const { channelName, message } = output;
                 const channel = discordBot.channels.find(ch => ch.name === channelName);
+                
+                if (!channel) {
+                    return;
+                }
+                
                 channel
                     .send(message)
                     .catch((e) => {
