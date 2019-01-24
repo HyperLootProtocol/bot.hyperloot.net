@@ -53,6 +53,7 @@ async function checkQuiz(response, {
             if (!q.isOpen) {
                 return q;
             }
+            console.log(q);
 
             output.push(i18n('quiz.winner', { id, ...q }));
             output.push({ channelName: broadcastChannelName, message: i18n('quiz.winner', { id, ...q }) });
