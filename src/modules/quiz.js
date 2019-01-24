@@ -46,14 +46,13 @@ async function checkQuiz(response, {
         const output = [];
 
         const newList = list.map((q) => {
-            if (!q.answers.includes(input)) {
+            if (!q.answers.includes(input.toLowerCase())) {
                 return q;
             }
 
             if (!q.isOpen) {
                 return q;
             }
-            console.log(q);
 
             output.push(i18n('quiz.winner', { id, ...q }));
             output.push({ channelName: broadcastChannelName, message: i18n('quiz.winner', { id, ...q }) });

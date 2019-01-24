@@ -70,7 +70,8 @@ const getPollById = async function (response, {
     });
 
     output += options.map((option) => {
-        const optionVotes = votesList.filter(vote => (vote.pollId === pollId && vote.option === currentPoll.options.indexOf(option))).length;
+        const optionVotes = votesList.filter(vote => (
+            vote.pollId === pollId && vote.option === currentPoll.options.indexOf(option))).length;
         const percentage = optionVotes / votesCount * 100 || 0;
 
         return i18n('poll.line', {
@@ -115,7 +116,8 @@ const listPolls = async function (response, {
         });
 
         output += options.map((option) => {
-            const optionVotes = votesList.filter(vote => (vote.pollId === pollId && vote.option === poll.options.indexOf(option))).length;
+            const optionVotes = votesList.filter(vote => (
+                vote.pollId === pollId && vote.option === poll.options.indexOf(option))).length;
             const percentage = optionVotes / votesCount * 100 || 0;
 
             return i18n('poll.line', {
@@ -194,12 +196,13 @@ const castVote = async function (response, {
         response.output = i18n('poll.alreadyVoted');
         return response;
     }
+    const requestedOptionLower = requestedOption.toLowerCase();
 
-    if (currentPoll.options.includes(requestedOption)) {
+    if (currentPoll.options.includes(requestedOptionLower)) {
         const newVote = {
             voterId: id,
             pollId: requestedPollId,
-            option: currentPoll.options.indexOf(requestedOption),
+            option: currentPoll.options.indexOf(requestedOptionLower),
             dateVoted: new Date(),
         };
 
@@ -260,12 +263,13 @@ const checkVote = async function (response, {
         if (votesList.find(vote => (vote.pollId === poll.pollId && vote.voterId === id))) {
             return;
         }
+        const inputLower = input.toLowerCase();
 
-        if (poll.options.includes(input)) {
+        if (poll.options.includes(inputLower)) {
             const newVote = {
                 voterId: id,
                 pollId: poll.pollId,
-                option: poll.options.indexOf(input),
+                option: poll.options.indexOf(inputLower),
                 dateVoted: new Date(),
             };
 
@@ -273,7 +277,7 @@ const checkVote = async function (response, {
                 votesList: [...votesList, newVote],
             });
 
-            const optionText = input;
+            const optionText = inputLower;
             const requestedPollId = poll.pollId;
             response.output = i18n('vote.cast', {
                 id,
