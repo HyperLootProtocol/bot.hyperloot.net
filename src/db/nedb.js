@@ -45,6 +45,18 @@ dbNedb.__INIT__ = function (context) {
         });
     }
 
+    async function getAll(collection) {
+        return new Promise((resolve, reject) => {
+            db[collection].find({}, (err, result) => {
+                if (err) {
+                    reject(err);
+                }
+
+                resolve(result);
+            });
+        });
+    }
+
     async function set(collection, selector, query) {
         return update(collection, selector, {
             $set: query,
@@ -119,6 +131,7 @@ dbNedb.__INIT__ = function (context) {
 
         // Unsafe be carefuly!
         get,
+        getAll,
         set,
         update,
         insert,

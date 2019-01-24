@@ -5,7 +5,11 @@ module.exports = {
         'jest/globals': true
     },
 
-    'extends': ['airbnb'],
+    'ecmaFeatures': {
+        'jsx': true
+    },
+
+    'extends': ['airbnb', 'plugin:react/recommended'],
 
     'plugins': ['jest'],
 

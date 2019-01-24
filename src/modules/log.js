@@ -8,7 +8,7 @@ function containsLink(msg) {
     return !isEmpty(msg.match(URL_REGEXP));
 }
 
-module.exports = async function log(response, context) {
+const keepLog = async function (response, context) {
     const {
         attachments,
         event,
@@ -37,3 +37,15 @@ module.exports = async function log(response, context) {
 
     return response;
 };
+
+const getLog = async function (response, { query, from, getAll }) {
+    if (query === 'getLog' && from === 'http') {
+        const logs = await getAll('logs');
+
+        response.data = logs;
+    }
+
+    return response;
+};
+
+module.exports = [keepLog, getLog];

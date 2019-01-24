@@ -1,0 +1,77 @@
+@media(min-width: 300px) {
+    body {
+        line-height: 2;
+    }
+    .mainWrap {
+        padding: 15px;
+    }
+    .search {
+        display: flex;
+        align-items: center;
+        padding-right: 20px;
+    }
+    .calendar-btn {
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+        color: #151515;
+        border-radius: 4px;
+        margin-top: 2px;
+        cursor: pointer;
+        width: 150px;
+    }
+    .search input {
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 5px;
+        color: #151515;
+        border-radius: 4px;
+    }
+    /* .daysChart {
+        display: flex;
+    } */
+    .blockSearch {
+        display: flex;
+        align-items: flex-start;
+    }
+    .blockSearch p {
+        margin: 0;
+        padding-right: 10px;
+    }
+    .react-calendar {
+        position: fixed;
+        left: 70px;
+        top: 55px;
+    }
+}
+
+@media(min-width: 768px) {
+    body {
+        line-height: 2;
+    }
+    .mainWrap {
+        padding: 15px;
+        width: 1200px;
+        margin: 0 auto;
+    }
+    .search {
+        display: flex;
+        align-items: center;
+        padding-right: 20px;
+    }
+    /* .daysChart {
+        display: flex;
+    } */
+    .blockSearch {
+        display: flex;
+        align-items: flex-start;
+    }
+    .blockSearch p {
+        margin: 0;
+        padding-right: 10px;
+    }
+    .react-calendar {
+        position: fixed;
+        left: 440px;
+    }
+}

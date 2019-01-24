@@ -4,34 +4,61 @@
   "version": "1.0.0",
   "main": "src/index.js",
   "scripts": {
+    "postinstall": "npm run build",
+    "build": "webpack --mode production",
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js",
+    "dev-client": "webpack-dev-server --mode development --open",
+    "dev-server": "nodemon src/index.js",
+    "dev": "npm-run-all --parallel dev-server dev-client",
     "test": "jest",
     "pretest": "npm run lint",
     "lint": "eslint \"**/*.js\"",
     "lint:fix": "eslint \"**/*.js\" --fix"
   },
   "license": "Apache-2.0",
+  "nodemonConfig": {
+    "ignore": [
+      "src/client/*"
+    ]
+  },
   "dependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-react": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-loader": "^8.0.5",
+    "babel-preset-react": "^6.24.1",
     "body-parser": "^1.18.2",
+    "chart.js": "^2.7.3",
     "cors": "^2.8.4",
+    "css-loader": "^2.1.0",
     "dblapi.js": "^2.2.0",
     "debug": "^4.1.1",
     "discord.js": "^11.4.2",
     "event-stream": "3.3.4",
     "express": "^4.16.1",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
     "human-readable-ids": "^1.0.4",
     "invariant": "^2.2.4",
     "lodash": "^4.17.10",
+    "mini-css-extract-plugin": "^0.5.0",
     "moment": "^2.23.0",
     "mongodb": "^3.1.4",
     "mongojs": "^2.6.0",
     "nedb": "^1.8.0",
     "node-telegram-bot-api": "0.30.0",
     "promised-csv": "^1.0.1",
+    "react": "^16.7.0",
+    "react-calendar": "^2.17.5",
+    "react-chartjs-2": "^2.7.4",
+    "react-dom": "^16.7.0",
     "request": "^2.88.0",
     "uuid": "^3.2.1",
-    "wallet-address-validator": "^0.1.7"
+    "wallet-address-validator": "^0.1.7",
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.2.0",
+    "webpack-dev-server": "^3.1.14"
   },
   "devDependencies": {
     "eslint": "^5.10.0",
@@ -39,8 +66,9 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jest": "^22.1.2",
     "eslint-plugin-jsx-a11y": "^6.1.2",
-    "eslint-plugin-react": "^7.11.1",
+    "eslint-plugin-react": "^7.12.3",
     "jest": "^23.6.0",
-    "nodemon": "^1.18.4"
+    "nodemon": "^1.18.4",
+    "npm-run-all": "^4.1.5"
   }
 }
