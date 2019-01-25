@@ -41,42 +41,47 @@ async function checkQuiz(response, {
     i18n,
 }) {
     const { list = [] } = await getModuleData('quiz');
+    const openedQuizes = list.filter(quiz => quiz.isOpen);
+    const inputLower = input.toLowerCase();
+    const output = [];
+    
+    if (!openedQuizes.length) {
+        return response;
+    }
+    
+    for (openedQuiz in openedQuizes) {
+        const findedAnswer = false;
+        // openedQuiz.answers = ['asd', 'LOQETUR']
+        // inputLower = '23123 asd 123'
 
-    if (list.find(q => q.isOpen)) {
-        const output = [];
-
-        const newList = list.map((q) => {
-            let subStrAnswer;
-            const inputLower = input.toLowerCase();
-            if (inputLower.indexOf(q.answers) >= 0) {
-                subStrAnswer = inputLower.substr(inputLower.indexOf(q.answers, q.answers.length));
+        for (answer in openedQuiz.answers) {
+            const answerLower = answer.toLowerCase();
+            
+            if (inputLower.includes(answerLower)) {
+                findedAnswer = answer;
             }
+        }
+        
+        if (!findedAnswer) {
+            break;
+        }
 
-            if (!q.answers.includes(subStrAnswer)) {
-                return q;
-            }
-
-            if (!q.isOpen) {
-                return q;
-            }
-
-            output.push(i18n('quiz.winner', { id, ...q }));
-            output.push({ channelName: broadcastChannelName, message: i18n('quiz.winner', { id, ...q }) });
-
-            return {
-                ...q,
-                isOpen: false,
-                winnerId: id,
-            };
+        output.push(i18n('quiz.winner', { id, ...openedQuiz }));
+        output.push({
+            channelName: broadcastChannelName,
+            message: i18n('quiz.winner', { id, ...openedQuiz })
         });
 
-        if (!isEqual(list, newList)) {
-            updateModuleData('quiz', {
-                list: newList,
-            });
+        // WARNING! list MUTATION!
+        openedQuiz.isOpen = false;
+    }
+    
+    if (output.length) {
+        updateModuleData('quiz', {
+            list,
+        });
 
-            response.output = output;
-        }
+        response.output = output;
     }
 
     return response;
