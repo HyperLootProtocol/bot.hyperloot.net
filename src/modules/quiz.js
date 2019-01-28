@@ -50,7 +50,7 @@ async function checkQuiz(response, {
 
     // eslint-disable-next-line no-restricted-syntax
     for (const openedQuiz of openedQuizes) {
-        let findedAnswer = false;
+        let findAnswer = false;
 
         // openedQuiz.answers = ['asd', 'LOQETUR']
         // inputLower = '23123 asd 123'
@@ -60,21 +60,19 @@ async function checkQuiz(response, {
             const answerLower = answer.toLowerCase();
 
             if (inputLowerArray.includes(answerLower)) {
-                findedAnswer = answerLower;
+                findAnswer = answerLower;
             }
         }
 
-        if (!findedAnswer) {
-            break;
+        if (findAnswer) {
+            output.push(i18n('quiz.winner', { id, ...openedQuiz }));
+            output.push({
+                channelName: broadcastChannelName,
+                message: i18n('quiz.winner', { id, ...openedQuiz }),
+            });
+            // WARNING! list MUTATION!
+            openedQuiz.isOpen = false;
         }
-
-        output.push(i18n('quiz.winner', { id, ...openedQuiz }));
-        output.push({
-            channelName: broadcastChannelName,
-            message: i18n('quiz.winner', { id, ...openedQuiz }),
-        });
-        // WARNING! list MUTATION!
-        openedQuiz.isOpen = false;
     }
 
     if (output.length) {
