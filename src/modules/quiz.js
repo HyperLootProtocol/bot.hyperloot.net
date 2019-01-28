@@ -1,5 +1,3 @@
-const isEqual = require('lodash/isEqual');
-
 const command = require('./command.filter');
 const { discord: { broadcastChannelName } } = require('../config');
 
@@ -43,25 +41,29 @@ async function checkQuiz(response, {
     const { list = [] } = await getModuleData('quiz');
     const openedQuizes = list.filter(quiz => quiz.isOpen);
     const inputLower = input.toLowerCase();
+    const inputLowerArray = inputLower.split(' ');
     const output = [];
-    
+
     if (!openedQuizes.length) {
         return response;
     }
-    
-    for (openedQuiz in openedQuizes) {
-        const findedAnswer = false;
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const openedQuiz of openedQuizes) {
+        let findedAnswer = false;
+
         // openedQuiz.answers = ['asd', 'LOQETUR']
         // inputLower = '23123 asd 123'
 
-        for (answer in openedQuiz.answers) {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const answer of openedQuiz.answers) {
             const answerLower = answer.toLowerCase();
-            
-            if (inputLower.includes(answerLower)) {
-                findedAnswer = answer;
+
+            if (inputLowerArray.includes(answerLower)) {
+                findedAnswer = answerLower;
             }
         }
-        
+
         if (!findedAnswer) {
             break;
         }
@@ -69,13 +71,12 @@ async function checkQuiz(response, {
         output.push(i18n('quiz.winner', { id, ...openedQuiz }));
         output.push({
             channelName: broadcastChannelName,
-            message: i18n('quiz.winner', { id, ...openedQuiz })
+            message: i18n('quiz.winner', { id, ...openedQuiz }),
         });
-
         // WARNING! list MUTATION!
         openedQuiz.isOpen = false;
     }
-    
+
     if (output.length) {
         updateModuleData('quiz', {
             list,
