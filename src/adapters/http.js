@@ -25,6 +25,9 @@ httpAdapter.__INIT__ = function ({ process }) {
     server.use(bodyParser.urlencoded({ extended: false }));
     server.use(bodyParser.json());
 
+
+    server.use(express.static('dist'));
+
     server.listen(port, () => {
         debug(`express listnening port: ${port}`);
     });
