@@ -159,7 +159,6 @@ const closePoll = async function (response, {
         pollsList: newList,
     });
 
-
     response.output = i18n('poll.close', { requestedPollId });
     return response;
 };
@@ -189,12 +188,13 @@ const castVote = async function (response, {
         response.output = i18n('poll.alreadyVoted');
         return response;
     }
+    const requestedOptionLower = requestedOption.toLowerCase();
 
-    if (currentPoll.options.includes(requestedOption)) {
+    if (currentPoll.options.includes(requestedOptionLower)) {
         const newVote = {
             voterId: id,
             pollId: requestedPollId,
-            option: currentPoll.options.indexOf(requestedOption),
+            option: currentPoll.options.indexOf(requestedOptionLower),
             dateVoted: new Date(),
         };
 
@@ -222,21 +222,35 @@ const checkVote = async function (response, {
     i18n,
 }) {
     const { pollsList = [], votesList = [] } = await getModuleData('poll');
+    const openedPolls = pollsList.filter(poll => poll.isOpen);
+    const inputLower = input.toLowerCase();
+    const inputLowerArray = inputLower.split(' ');
 
-    if (!pollsList.find(poll => poll.isOpen)) {
+    if (!openedPolls.length) {
         return response;
     }
 
-    pollsList.filter(poll => poll.isOpen).forEach((poll) => {
-        if (votesList.find(vote => (vote.pollId === poll.pollId && vote.voterId === id))) {
-            return;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const openedPoll of openedPolls) {
+        let findOption = false;
+        if (votesList.find(vote => (vote.pollId === openedPoll.pollId && vote.voterId === id))) {
+            return response;
         }
 
-        if (poll.options.includes(input)) {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const option of openedPoll.options) {
+            if (inputLowerArray.includes(option.toLowerCase())) {
+                console.log(findOption);
+                console.log(option);
+                findOption = option;
+            }
+        }
+
+        if (findOption) {
             const newVote = {
                 voterId: id,
-                pollId: poll.pollId,
-                option: poll.options.indexOf(input),
+                pollId: openedPoll.pollId,
+                option: openedPoll.options.indexOf(findOption),
                 dateVoted: new Date(),
             };
 
@@ -244,15 +258,15 @@ const checkVote = async function (response, {
                 votesList: [...votesList, newVote],
             });
 
-            const optionText = input;
-            const requestedPollId = poll.pollId;
+            const optionText = findOption;
+            const requestedPollId = openedPoll.pollId;
             response.output = i18n('vote.cast', {
                 id,
                 requestedPollId,
                 optionText,
             });
         }
-    });
+    }
     return response;
 };
 
