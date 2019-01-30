@@ -1,4 +1,4 @@
-quiz.info, "@here <@{{id}}> proposed to solve: \n\n{{description}}\n\nWrite your 	variant! The winner will receive {{prize}}"
+quiz.info, "@here <@{{id}}> proposed to solve: \n\n{{description}}\n\nWrite your variant! The winner will receive {{prize}}"
 quiz.created, "Quiz created... waiting for the winner :)"
 quiz.winner, "@here OUR WINNER <@{{id}}>! The answer was {{answers}}! Reward {{prize}}! Congratulations <3"
 ,

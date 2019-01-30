@@ -6,6 +6,7 @@ const isObject = require('lodash/isObject');
 const isArray = require('lodash/isArray');
 const isEmpty = require('lodash/isEmpty');
 
+// const { PREFIX } = require('./../config');
 const { discord: discordCfg } = require('../config');
 
 const discordAdapter = () => {};
@@ -24,52 +25,62 @@ discordAdapter.__INIT__ = function ({ process }) {
         }
 
         const handle = (context) => {
-            const { output, reactions } = context;
+            const { output, reactions, outputRich } = context;
 
             // TODO rework!
-            if (!isEmpty(reactions)) {
-                reactions.reduce(
-                    (prev, reaction) => prev.then(() => msg.react(reaction).catch((e) => { console.error(e.message); })),
-                    Promise.resolve(),
-                );
-            }
-
-            if (isEmpty(output)) {
-                return;
-            }
-
-            // TODO: need check permissions!
-            // simple case, output as answer
-            if (isString(output)) {
+            if (outputRich) {
                 msg.channel
-                    .send(output)
+                    .sendEmbed(outputRich)
                     .catch((e) => {
                         console.error(e.message);
                     });
-            }
+            } else {
+                if (!isEmpty(reactions)) {
+                    reactions.reduce(
+                        (prev, reaction) => prev.then(() => msg.react(reaction).catch((e) => {
+                            console.error(e.message);
+                        })),
+                        Promise.resolve(),
+                    );
+                }
 
-            // send several messages
-            if (isArray(output)) {
-                output.forEach(_output => handle({
-                    ...context,
-                    output: _output,
-                }));
-            }
-
-            // send to another destination or with params
-            if (isObject(output)) {
-                const { channelName, message } = output;
-                const channel = discordBot.channels.find(ch => ch.name === channelName);
-
-                if (!channel) {
+                if (isEmpty(output)) {
                     return;
                 }
 
-                channel
-                    .send(message)
-                    .catch((e) => {
-                        console.error(e.message);
-                    });
+                // TODO: need check permissions!
+                // simple case, output as answer
+                if (isString(output)) {
+                    msg.channel
+                        .send(output)
+                        .catch((e) => {
+                            console.error(e.message);
+                        });
+                }
+
+                // send several messages
+                if (isArray(output)) {
+                    output.forEach(_output => handle({
+                        ...context,
+                        output: _output,
+                    }));
+                }
+
+                // send to another destination or with params
+                if (isObject(output)) {
+                    const { channelName, message } = output;
+                    const channel = discordBot.channels.find(ch => ch.name === channelName);
+
+                    if (!channel) {
+                        return;
+                    }
+
+                    channel
+                        .send(message)
+                        .catch((e) => {
+                            console.error(e.message);
+                        });
+                }
             }
         };
 

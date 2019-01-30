@@ -1,3 +1,4 @@
+const Discord = require('discord.js');
 const command = require('./command.filter');
 const { discord: { broadcastChannelName } } = require('../config');
 
@@ -90,6 +91,10 @@ async function quizList(response, { getModuleData, i18n }) {
     const { list = [] } = await getModuleData('quiz');
 
     if (!list.find(q => q.isOpen)) {
+        response.outputRich = new Discord.RichEmbed()
+            .setDescription('NO QUIZ!')
+            .setColor(0xFF0000)
+            .addField('There are no active quiz', 'Create one, go! go! go!');
         response.output = i18n('quiz.nope');
 
         return response;
