@@ -26,14 +26,33 @@ discordAdapter.__INIT__ = function ({ process }) {
 
         const handle = (context) => {
             const { output, reactions, outputRich } = context;
-
+            const { title, fields } = outputRich;
             // TODO rework!
+            console.log(fields);
+            console.log(title);
+            if (!title) {
+                return;
+            }
             if (outputRich) {
-                msg.channel
-                    .sendEmbed(outputRich)
-                    .catch((e) => {
-                        console.error(e.message);
-                    });
+                if (!isEmpty(reactions)) {
+                    reactions.reduce(
+                        (prev, reaction) => prev.then(() => msg.react(reaction).catch((e) => {
+                            console.error(e.message);
+                        })),
+                        Promise.resolve(),
+                    );
+                }
+                for (let i = 0; i < fields.length; i++) {
+                    const embed = new Discord.RichEmbed()
+                        .setTitle(`${title}`)
+                        .setColor(0x0000FF)
+                        .addField(`${fields[i].fieldTitle}`, `${fields[i].fieldText}`);
+                    msg.channel
+                        .send(embed)
+                        .catch((e) => {
+                            console.error(e.message);
+                        });
+                }
             } else {
                 if (!isEmpty(reactions)) {
                     reactions.reduce(
