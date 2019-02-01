@@ -24,7 +24,7 @@ async function addQuiz(response, {
     });
 
     response.outputRich = {
-        title: 'Quiz created...',
+        title: i18n('quiz.creatTitle'),
         fields: [{ fieldTitle: i18n('quiz.creatFieldTitle'), fieldText: i18n('quiz.creatFieldText') }],
     };
     //     { channelName: broadcastChannelName, message: { id, ...newQuiz } },
@@ -73,7 +73,7 @@ async function checkQuiz(response, {
 
         if (findAnswer) {
             response.outputRich = {
-                title: 'WE HAVE WINNER!!',
+                title: i18n('quiz.winTitle'),
                 fields: [{
                     fieldTitle: i18n('quiz.winFieldTitle', { ...openedQuiz }),
                     fieldText: i18n('quiz.winFieldText', { id, ...openedQuiz }),
@@ -105,7 +105,7 @@ async function quizList(response, { getModuleData, i18n }) {
 
     if (!list.find(q => q.isOpen)) {
         response.outputRich = {
-            title: 'NO QUIZ',
+            title: i18n('quiz.nopeTitle'),
             fields: [{ fieldTitle: i18n('quiz.nopeFieldTitle'), fieldText: i18n('quiz.nopeFieldText') }],
         };
         response.output = i18n('quiz.nope');
@@ -113,7 +113,7 @@ async function quizList(response, { getModuleData, i18n }) {
         return response;
     }
     response.outputRich = {
-        title: 'QUIZ LIST',
+        title: i18n('quiz.listTitle'),
         fields: [{
             fieldTitle: 'Creator',
             fieldText: list.filter(q => q.isOpen).map(q => `<@${q.authorId}>`),
