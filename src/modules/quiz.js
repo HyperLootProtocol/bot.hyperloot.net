@@ -23,7 +23,10 @@ async function addQuiz(response, {
         list: [...list, newQuiz],
     });
 
-    response.outputRich = { head: 'Quiz created...', title: 'Waiting for the winner :)', fields: [''] };
+    response.outputRich = {
+        title: 'Quiz created...',
+        fields: [{ fieldTitle: i18n('quiz.creatFieldTitle'), fieldText: i18n('quiz.creatFieldText') }],
+    };
     //     { channelName: broadcastChannelName, message: { id, ...newQuiz } },
 
     // ];
@@ -69,11 +72,13 @@ async function checkQuiz(response, {
         }
 
         if (findAnswer) {
-            response.outputRich = ({
-                head: '<@here> OUR WINNER `<@{id}>`!',
-                title: 'The answer was {{answers}}!',
-                fields: ['Reward {{prize}}!', 'Congratulations <3'],
-            });
+            response.outputRich = {
+                title: 'WE HAVE WINNER!!',
+                fields: [{
+                    fieldTitle: i18n('quiz.winFieldTitle', { ...openedQuiz }),
+                    fieldText: i18n('quiz.winFieldText', { id, ...openedQuiz }),
+                }],
+            };
             output.push(i18n('quiz.winner', { id, ...openedQuiz }));
             output.push({
                 channelName: broadcastChannelName,
@@ -101,23 +106,28 @@ async function quizList(response, { getModuleData, i18n }) {
     if (!list.find(q => q.isOpen)) {
         response.outputRich = {
             title: 'NO QUIZ',
-            fields: [{ fieldTitle: 'There are no active quiz', fieldText: 'Create one, go! go! go!' }],
+            fields: [{ fieldTitle: i18n('quiz.nopeFieldTitle'), fieldText: i18n('quiz.nopeFieldText') }],
         };
         response.output = i18n('quiz.nope');
 
         return response;
     }
     response.outputRich = {
-        head: 'QUIZ LIST',
-        titleCreator: 'Creator',
-        fieldCreator: [list.filter(q => q.isOpen).map(q => `<@${q.authorId}>`)],
-        titleDesc: 'Description',
-        fieldDesc: [list.filter(q => q.isOpen).map(q => `${q.description}`)],
-        titlePrize: 'Prize',
-        fieldPrize: [list.filter(q => q.isOpen).map(q => `${q.prize}`)],
+        title: 'QUIZ LIST',
+        fields: [{
+            fieldTitle: 'Creator',
+            fieldText: list.filter(q => q.isOpen).map(q => `<@${q.authorId}>`),
+        },
+        {
+            fieldTitle: 'Description',
+            fieldText: list.filter(q => q.isOpen).map(q => `${q.description}`),
+        },
+        {
+            fieldTitle: 'Prize',
+            fieldText: list.filter(q => q.isOpen).map(q => `${q.prize}`),
+        },
+        ],
     };
-    console.log(response.outputRich);
-    console.log(typeof outputRich);
 
     response.output = i18n('quiz.list');
     response.output += list.filter(q => q.isOpen).map(q => i18n('quiz.listLine', q)).join('\n');
