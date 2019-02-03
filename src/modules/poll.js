@@ -1,5 +1,6 @@
 const { hri } = require('human-readable-ids');
 const moment = require('moment');
+const { discord: { broadcastChannelName } } = require('../config');
 
 const command = require('./command.filter');
 
@@ -25,7 +26,14 @@ const addPoll = async function (response, {
         pollsList: [...pollsList, newPoll],
     });
 
-    response.output = i18n('poll.created', { pollId });
+    response.outputRich = {
+        title: i18n('poll.createdTitle'),
+        fields: [{ fieldTitle: i18n('poll.createdFieldTitle', { pollId }), fieldText: i18n('poll.createdFieldText') }],
+    };
+    response.output = [
+        i18n('poll.created', { pollId }),
+        { channelName: broadcastChannelName, message: i18n('poll.alert') },
+    ];
 
     return response;
 };
@@ -36,15 +44,30 @@ const getPollById = async function (response, {
 }) {
     const { args: { requestedPollId } } = response;
     const { pollsList = [] } = await getModuleData('poll');
+    console.log(pollsList);
 
     const currentPoll = pollsList.find(poll => poll.pollId === requestedPollId);
 
     if (!currentPoll) {
+        response.outputRich = {
+            title: i18n('poll.notFoundTitle'),
+            fields: [{
+                fieldTitle: i18n('poll.notFoundFieldTitle', { requestedPollId }),
+                fieldText: i18n('poll.notFoundFieldText'),
+            }],
+        };
         response.output = i18n('poll.notFound', { requestedPollId });
         return response;
     }
 
     if (!currentPoll.isOpen) {
+        response.outputRich = {
+            title: i18n('poll.closedTitle'),
+            // fields: [{
+            //     fieldTitle: i18n('poll.notFoundFieldTitle', { requestedPollId }),
+            //     fieldText: i18n('poll.notFoundFieldText'),
+            // }],
+        };
         response.output = i18n('poll.closed');
     }
 
@@ -61,6 +84,25 @@ const getPollById = async function (response, {
 
     const date = moment(dateCreated).format('DD/MM');
 
+    const fields = options.map((option) => {
+        const optionVotes = votesList.filter(vote => (
+            vote.pollId === pollId && vote.option === currentPoll.options.indexOf(option))).length;
+        const percentage = (optionVotes / votesCount * 100 || 0).toFixed(2);
+
+        return {
+            fieldTitle: i18n('poll.optionFieldTitle', { option }),
+            fieldText: i18n('poll.optionFieldText', { optionVotes, percentage }),
+        };
+    });
+
+    const outputRich = {
+        title: i18n('poll.titleHeader', {
+            date, question, votesCount, pollId,
+        }),
+        fields,
+    };
+    response.outputRich = outputRich;
+
     let output = i18n('poll.header', {
         date,
         question,
@@ -71,7 +113,7 @@ const getPollById = async function (response, {
     output += options.map((option) => {
         const optionVotes = votesList.filter(vote => (
             vote.pollId === pollId && vote.option === currentPoll.options.indexOf(option))).length;
-        const percentage = optionVotes / votesCount * 100 || 0;
+        const percentage = (optionVotes / votesCount * 100 || 0).toFixed(2);
 
         return i18n('poll.line', {
             option,
@@ -90,11 +132,49 @@ const listPolls = async function (response, {
     const { pollsList = [], votesList = [] } = await getModuleData('poll');
 
     if (!pollsList.find(poll => poll.isOpen)) {
+        response.outputRich = {
+            title: i18n('poll.noneTitle'),
+            fields: [{ fieldTitle: i18n('poll.noneFieldTitle'), fieldText: i18n('poll.noneFieldText') }],
+        };
         response.output = i18n('poll.none');
         return response;
     }
 
     response.output = `${i18n('poll.list')}\n`;
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const openedPoll of pollsList) {
+        if (openedPoll.isOpen) {
+            const votesCount = votesList.filter(vote => vote.pollId === openedPoll.pollId).length;
+            const {
+                dateCreated,
+                question,
+                options,
+                pollId,
+            } = openedPoll;
+            const date = moment(dateCreated).format('DD/MM');
+
+            const fields = options.map((option) => {
+                const optionVotes = votesList.filter(vote => (
+                    vote.pollId === pollId && vote.option === openedPoll.options.indexOf(option))).length;
+                const percentage = (optionVotes / votesCount * 100 || 0).toFixed(2);
+
+                return {
+                    fieldTitle: i18n('poll.optionFieldTitle', { option }),
+                    fieldText: i18n('poll.optionFieldText', { optionVotes, percentage }),
+                };
+            });
+
+            const outputRich = {
+                title: i18n('poll.titleHeader', {
+                    date, question, votesCount, pollId,
+                }),
+                fields,
+            };
+            response.outputRich = outputRich;
+            console.log('poll: ', response.outputRich);
+        }
+    }
 
     pollsList.filter(poll => poll.isOpen).forEach((poll) => {
         const votesCount = votesList.filter(vote => vote.pollId === poll.pollId).length;
@@ -106,7 +186,6 @@ const listPolls = async function (response, {
         } = poll;
 
         const date = moment(dateCreated).format('DD/MM');
-
         let output = i18n('poll.header', {
             date,
             question,
@@ -117,7 +196,7 @@ const listPolls = async function (response, {
         output += options.map((option) => {
             const optionVotes = votesList.filter(vote => (
                 vote.pollId === pollId && vote.option === poll.options.indexOf(option))).length;
-            const percentage = optionVotes / votesCount * 100 || 0;
+            const percentage = (optionVotes / votesCount * 100 || 0).toFixed(2);
 
             return i18n('poll.line', {
                 option,
@@ -142,11 +221,25 @@ const closePoll = async function (response, {
     const currentPoll = pollsList.find(poll => poll.pollId === requestedPollId);
 
     if (!currentPoll) {
+        response.outputRich = {
+            title: i18n('poll.notFoundTitle'),
+            fields: [{
+                fieldTitle: i18n('poll.notFoundFieldTitle', { requestedPollId }),
+                fieldText: i18n('poll.notFoundFieldText'),
+            }],
+        };
         response.output = i18n('poll.notFound', { requestedPollId });
         return response;
     }
 
     if (!currentPoll.isOpen) {
+        response.outputRich = {
+            title: i18n('poll.alreadyClosedTitle'),
+            fields: [{
+                fieldTitle: i18n('poll.alreadyClosedFieldTitle'),
+                fieldText: i18n('poll.alreadyClosedFieldText'),
+            }],
+        };
         response.output = i18n('poll.alreadyClosed');
         return response;
     }
@@ -159,6 +252,13 @@ const closePoll = async function (response, {
         pollsList: newList,
     });
 
+    response.outputRich = {
+        title: i18n('poll.closeTitle'),
+        fields: [{
+            fieldTitle: i18n('poll.closeFieldTitle', { requestedPollId }),
+            fieldText: i18n('poll.closeFieldText'),
+        }],
+    };
     response.output = i18n('poll.close', { requestedPollId });
     return response;
 };
@@ -175,16 +275,37 @@ const castVote = async function (response, {
     const currentPoll = pollsList.find(poll => poll.pollId === requestedPollId);
 
     if (!currentPoll) {
+        response.outputRich = {
+            title: i18n('poll.notFoundTitle'),
+            fields: [{
+                fieldTitle: i18n('poll.notFoundFieldTitle', { requestedPollId }),
+                fieldText: i18n('poll.notFoundFieldText'),
+            }],
+        };
         response.output = i18n('poll.notFound', { requestedPollId });
         return response;
     }
 
     if (!currentPoll.isOpen) {
+        response.outputRich = {
+            title: i18n('poll.alreadyClosedTitle'),
+            fields: [{
+                fieldTitle: i18n('poll.alreadyClosedFieldTitle'),
+                fieldText: i18n('poll.alreadyClosedFieldText'),
+            }],
+        };
         response.output = i18n('poll.alreadyClosed');
         return response;
     }
 
     if (votesList.find(vote => (vote.pollId === requestedPollId && vote.voterId === id))) {
+        response.outputRich = {
+            title: i18n('poll.alreadyVotedTitle'),
+            fields: [{
+                fieldTitle: i18n('poll.alreadyVotedFieldTitle'),
+                fieldText: i18n('poll.alreadyVotedFieldText'),
+            }],
+        };
         response.output = i18n('poll.alreadyVoted');
         return response;
     }
@@ -203,6 +324,13 @@ const castVote = async function (response, {
         });
 
         const optionText = requestedOption;
+        response.outputRich = {
+            title: i18n('vote.castTitle'),
+            fields: [{
+                fieldTitle: i18n('vote.castFieldTitle'),
+                fieldText: i18n('vote.castFieldText', { id, requestedPollId, optionText }),
+            }],
+        };
         response.output = i18n('vote.cast', {
             id,
             requestedPollId,
@@ -210,6 +338,13 @@ const castVote = async function (response, {
         });
         return response;
     }
+    response.outputRich = {
+        title: i18n('vote.noSuchOptionTitle'),
+        fields: [{
+            fieldTitle: i18n('vote.noSuchOptionFieldTitle'),
+            fieldText: i18n('vote.noSuchOptionFieldText'),
+        }],
+    };
     response.output = i18n('vote.noSuchOption');
     return response;
 };
@@ -240,8 +375,6 @@ const checkVote = async function (response, {
         // eslint-disable-next-line no-restricted-syntax
         for (const option of openedPoll.options) {
             if (inputLowerArray.includes(option.toLowerCase())) {
-                console.log(findOption);
-                console.log(option);
                 findOption = option;
             }
         }
@@ -260,6 +393,13 @@ const checkVote = async function (response, {
 
             const optionText = findOption;
             const requestedPollId = openedPoll.pollId;
+            response.outputRich = {
+                title: i18n('vote.castTitle'),
+                fields: [{
+                    fieldTitle: i18n('vote.castFieldTitle'),
+                    fieldText: i18n('vote.castFieldText', { id, requestedPollId, optionText }),
+                }],
+            };
             response.output = i18n('vote.cast', {
                 id,
                 requestedPollId,
