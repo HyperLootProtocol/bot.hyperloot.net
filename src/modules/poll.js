@@ -44,7 +44,6 @@ const getPollById = async function (response, {
 }) {
     const { args: { requestedPollId } } = response;
     const { pollsList = [] } = await getModuleData('poll');
-    console.log(pollsList);
 
     const currentPoll = pollsList.find(poll => poll.pollId === requestedPollId);
 
@@ -142,6 +141,7 @@ const listPolls = async function (response, {
 
     response.output = `${i18n('poll.list')}\n`;
 
+    const outputRich = [];
     // eslint-disable-next-line no-restricted-syntax
     for (const openedPoll of pollsList) {
         if (openedPoll.isOpen) {
@@ -164,16 +164,14 @@ const listPolls = async function (response, {
                     fieldText: i18n('poll.optionFieldText', { optionVotes, percentage }),
                 };
             });
-
-            const outputRich = {
+            outputRich.push({
                 title: i18n('poll.titleHeader', {
                     date, question, votesCount, pollId,
                 }),
                 fields,
-            };
-            response.outputRich = outputRich;
-            console.log('poll: ', response.outputRich);
+            });
         }
+        response.outputRich = outputRich;
     }
 
     pollsList.filter(poll => poll.isOpen).forEach((poll) => {
@@ -368,14 +366,16 @@ const checkVote = async function (response, {
     // eslint-disable-next-line no-restricted-syntax
     for (const openedPoll of openedPolls) {
         let findOption = false;
-        if (votesList.find(vote => (vote.pollId === openedPoll.pollId && vote.voterId === id))) {
-            return response;
-        }
 
         // eslint-disable-next-line no-restricted-syntax
         for (const option of openedPoll.options) {
+            if (votesList.find(vote => (vote.pollId === openedPoll.pollId && vote.voterId === id))) {
+                break;
+            }
+
             if (inputLowerArray.includes(option.toLowerCase())) {
                 findOption = option;
+                console.log(findOption);
             }
         }
 

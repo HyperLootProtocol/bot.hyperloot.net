@@ -29,9 +29,9 @@ poll.notFoundFieldTitle, "I couldn't find a poll with this ID ({{requestedPollId
 poll.notFoundFieldText, "Sorry, man("
 
 poll.closedTitle, "(closed) "
-poll.titleHeader, "{{date}} {{question}} | {{votesCount}} total votes | ID: {{pollId}}"
+poll.titleHeader, "{{date}} | {{question}} | {{votesCount}} total votes | ID: {{pollId}}"
 poll.optionFieldTitle, "{{option}}"
-poll.optionFieldText, "{{optionVotes}} votes | ({{percentage}}%) |"
+poll.optionFieldText, "{{optionVotes}} votes ({{percentage}}%)"
 
 poll.alreadyClosedTitle, "ALREADY CLOSED!"
 poll.alreadyClosedFieldTitle, "This poll is already closed!"

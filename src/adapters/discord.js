@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const Discord = require('discord.js');
 const debug = require('debug')('bot:adapter:discord');
 
@@ -26,23 +27,30 @@ discordAdapter.__INIT__ = function ({ process }) {
         const handle = (context) => {
             const { output, reactions, outputRich } = context;
             // TODO rework!
-            console.log('discord: ', outputRich);
 
             if (outputRich) {
-                if (!isEmpty(reactions)) {
-                    reactions.reduce(
-                        (prev, reaction) => prev.then(() => msg.react(reaction).catch((e) => {
-                            console.error(e.message);
-                        })),
-                        Promise.resolve(),
-                    );
+                if (isArray(outputRich)) {
+                    for (const outputRichLenght of outputRich) {
+                        const { title } = outputRichLenght;
+                        const embed = new Discord.RichEmbed()
+                            .setTitle(title)
+                            .setColor(0x0000FF);
+                        for (const fieldsLength of outputRichLenght.fields) {
+                            embed.addField(fieldsLength.fieldTitle, fieldsLength.fieldText);
+                        }
+                        msg.channel
+                            .send(embed)
+                            .catch((e) => {
+                                console.error(e.embed);
+                            });
+                    }
                 }
-                const { title, fields } = outputRich;
+                const { title } = outputRich;
                 const embed = new Discord.RichEmbed()
                     .setTitle(title)
                     .setColor(0x0000FF);
-                for (let i = 0; i < fields.length; i++) {
-                    embed.addField(fields[i].fieldTitle, fields[i].fieldText);
+                for (const fieldsLength of outputRich.fields) {
+                    embed.addField(fieldsLength.fieldTitle, fieldsLength.fieldText);
                 }
                 msg.channel
                     .send(embed)
