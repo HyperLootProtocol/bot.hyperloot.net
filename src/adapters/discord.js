@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 const Discord = require('discord.js');
 const debug = require('debug')('bot:adapter:discord');
 
@@ -29,13 +28,23 @@ discordAdapter.__INIT__ = function ({ process }) {
             // TODO rework!
 
             if (outputRich) {
+                if (!isEmpty(reactions)) {
+                    reactions.reduce(
+                        (prev, reaction) => prev.then(() => msg.react(reaction).catch((e) => {
+                            console.error(e.message);
+                        })),
+                        Promise.resolve(),
+                    );
+                }
                 if (isArray(outputRich)) {
-                    for (const outputRichLenght of outputRich) {
-                        const { title } = outputRichLenght;
+                    // eslint-disable-next-line no-restricted-syntax
+                    for (const richMessage of outputRich) {
+                        const { title } = richMessage;
                         const embed = new Discord.RichEmbed()
                             .setTitle(title)
                             .setColor(0x0000FF);
-                        for (const fieldsLength of outputRichLenght.fields) {
+                        // eslint-disable-next-line no-restricted-syntax
+                        for (const fieldsLength of richMessage.fields) {
                             embed.addField(fieldsLength.fieldTitle, fieldsLength.fieldText);
                         }
                         msg.channel
@@ -49,6 +58,7 @@ discordAdapter.__INIT__ = function ({ process }) {
                 const embed = new Discord.RichEmbed()
                     .setTitle(title)
                     .setColor(0x0000FF);
+                // eslint-disable-next-line no-restricted-syntax
                 for (const fieldsLength of outputRich.fields) {
                     embed.addField(fieldsLength.fieldTitle, fieldsLength.fieldText);
                 }

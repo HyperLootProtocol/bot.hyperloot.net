@@ -375,7 +375,6 @@ const checkVote = async function (response, {
 
             if (inputLowerArray.includes(option.toLowerCase())) {
                 findOption = option;
-                console.log(findOption);
             }
         }
 
