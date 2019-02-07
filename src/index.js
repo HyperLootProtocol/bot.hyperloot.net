@@ -7,6 +7,7 @@ const dbMongo = require('./db/mongo');
 const dbNedb = require('./db/nedb');
 const discordAdapter = require('./adapters/discord');
 const httpAdapter = require('./adapters/http');
+const youtubrAdapter = require('./adapters/youtube');
 
 const bets = require('./modules/bets');
 const quiz = require('./modules/quiz');
@@ -29,7 +30,8 @@ instance
     .use([i18n])
     .use(mongoURI ? [dbMongo] : [dbNedb])
     .use([httpAdapter])
-    .use(discord.authToken && [discordAdapter]);
+    .use(discord.authToken && [discordAdapter])
+    .use(youtubrAdapter);
 
 
 instance.use([

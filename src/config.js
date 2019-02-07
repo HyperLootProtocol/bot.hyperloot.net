@@ -8,4 +8,8 @@ module.exports = {
         authToken: process.env.DISCORD_AUTH_TOKEN,
         broadcastChannelName: process.env.BROADCAST_CHANNEL_NAME,
     },
+    youtube: {
+        myApiKey: 'AIzaSyBT_CuvhuHmYNapuUVYv6GjEa_G6EB6F6E',
+        videoId: '4993sBLAzGA',
+    },
 };
