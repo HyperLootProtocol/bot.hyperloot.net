@@ -31,10 +31,11 @@ const requestChatMessages = (nextPageToken, liveChatId) => {
 
         for (let i = 0; i < body.items.length; i++) {
             processYT = {
-                id: body.items[i].authorDetails.channalId,
+                id: body.items[i].snippet.authorChannelId,
                 user: body.items[i].authorDetails.displayName,
                 input: body.items[i].snippet.displayMessage,
             };
+            console.log(processYT);
             console.log(`${body.items[i].authorDetails.displayName} : ${body.items[i].snippet.displayMessage}`);
         }
 
