@@ -4,20 +4,13 @@ const express = require('express');
 
 const app = express();
 
+const myApiKey = 'AIzaSyBT_CuvhuHmYNapuUVYv6GjEa_G6EB6F6E';
+let processYT = {};
 
-const isString = require('lodash/isString');
-const isEmpty = require('lodash/isEmpty');
-
-const myApiKey = require('./../config');
-const videoId = require('./../config');
-
-const youtubeAdapter = () => {};
-
-const getLiveChatId = (callback) => {
+const getLiveChatId = (videoId, callback) => {
     const url = (`https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${myApiKey}&part=liveStreamingDetails,snippet`);
-
     request(url, (error, response, body) => {
-        const bodyObj = (JSON).parse(body);
+        const bodyObj = JSON.parse(body);
         callback(bodyObj.items[0].liveStreamingDetails.activeLiveChatId);
     });
 };
@@ -26,7 +19,7 @@ const chatMessageUrl = 'https://www.googleapis.com/youtube/v3/liveChat/messages'
 
 const requestChatMessages = (nextPageToken, liveChatId) => {
     const requestProperties = {
-        liveChatIdEl: liveChatId,
+        liveChatId: liveChatId,
         part: 'id, snippet, authorDetails',
         key: myApiKey,
         maxResults: 200,
@@ -37,6 +30,11 @@ const requestChatMessages = (nextPageToken, liveChatId) => {
         body = JSON.parse(body);
 
         for (let i = 0; i < body.items.length; i++) {
+            processYT = {
+                id: body.items[i].authorDetails.channalId,
+                user: body.items[i].authorDetails.displayName,
+                input: body.items[i].snippet.displayMessage,
+            };
             console.log(`${body.items[i].authorDetails.displayName} : ${body.items[i].snippet.displayMessage}`);
         }
 
@@ -47,50 +45,22 @@ const requestChatMessages = (nextPageToken, liveChatId) => {
 };
 
 const main = () => {
-    getLiveChatId(videoId, (liveChatId) => {
+    getLiveChatId('ozC_VihQXx8', (liveChatId) => {
         console.log(`liveChatId = ${liveChatId}`);
         if (liveChatId) {
             requestChatMessages('', liveChatId);
         }
     });
 };
-
-app.listen(1000, () => {
-    main();
-});
-
-
-// подключение авторизации с ютуб(channalId, videoId, video.setKey, auth.OAuth2(gogleapis?))
-// const { youtube: youTubeCfg } = require('../config');
+const youtubeAdapter = () => {};
 
 youtubeAdapter.__INIT__ = function ({ process }) {
-    const youtubeBot = new youTubeApi.Client();
-
-    youtubeBot.on('messageYoutube', (msgYoutube) => {
-        const handle = (context) => {
-            const { outputYT } = context;
-
-            if (isEmpty(outputYT)) {
-                return;
-            }
-
-            if (isString(outputYT)) {
-                // если получаем просто строку >=200 символом и выводим ее в чат
-                // пока не понял как выводится сообщение в чат
-                msgYoutube.send(outputYT);
-            }
-        };
-
-        process({
-            id: msgYoutube.author.id,
-            input: msgYoutube.conten || '',
-            from: 'youtube',
-            event: 'messageYoutube',
-            handle,
-        });
+    processYT = process;
+    console.log(processYT);
+    console.log('proc: ', process);
+    app.listen(4000, () => {
+        main();
     });
-
-    youtubeBot.login(youTubeCfg.authToken);
 };
 
 module.exports = youtubeAdapter;
