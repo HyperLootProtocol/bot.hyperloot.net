@@ -55,13 +55,19 @@ const main = () => {
 };
 const youtubeAdapter = () => {};
 
-youtubeAdapter.__INIT__ = function ({ process }) {
+youtubeAdapter.__INIT__ = function ({ process, expressServer }) {
     processYT = process;
+    
     console.log(processYT);
+    
     console.log('proc: ', process);
+    
     app.listen(4000, () => {
         main();
     });
+    
+    // expressServer!!
+    // no need app
 };
 
 module.exports = youtubeAdapter;
