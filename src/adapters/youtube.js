@@ -1,11 +1,7 @@
 // подключение модулей ютуб(если есть)
 const request = require('request');
-const express = require('express');
-
-const app = express();
 
 const myApiKey = 'AIzaSyBT_CuvhuHmYNapuUVYv6GjEa_G6EB6F6E';
-let processYT = {};
 
 const getLiveChatId = (videoId, callback) => {
     const url = (`https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${myApiKey}&part=liveStreamingDetails,snippet`);
@@ -17,7 +13,7 @@ const getLiveChatId = (videoId, callback) => {
 
 const chatMessageUrl = 'https://www.googleapis.com/youtube/v3/liveChat/messages';
 
-const requestChatMessages = (nextPageToken, liveChatId) => {
+const requestChatMessages = (nextPageToken, liveChatId, process) => {
     const requestProperties = {
         liveChatId: liveChatId,
         part: 'id, snippet, authorDetails',
@@ -30,44 +26,33 @@ const requestChatMessages = (nextPageToken, liveChatId) => {
         body = JSON.parse(body);
 
         for (let i = 0; i < body.items.length; i++) {
-            processYT = {
+            process({
                 id: body.items[i].snippet.authorChannelId,
                 user: body.items[i].authorDetails.displayName,
                 input: body.items[i].snippet.displayMessage,
-            };
-            console.log(processYT);
+            });
+
             console.log(`${body.items[i].authorDetails.displayName} : ${body.items[i].snippet.displayMessage}`);
         }
 
         setTimeout(() => {
-            requestChatMessages(body.nextPageToken, liveChatId);
+            requestChatMessages(body.nextPageToken, liveChatId, process);
         }, body.pollingIntervalMillis);
     });
 };
 
-const main = () => {
-    getLiveChatId('ozC_VihQXx8', (liveChatId) => {
-        console.log(`liveChatId = ${liveChatId}`);
-        if (liveChatId) {
-            requestChatMessages('', liveChatId);
-        }
-    });
-};
 const youtubeAdapter = () => {};
 
-youtubeAdapter.__INIT__ = function ({ process, expressServer }) {
-    processYT = process;
-    
-    console.log(processYT);
-    
+youtubeAdapter.__INIT__ = function ({ process }) {
     console.log('proc: ', process);
-    
-    app.listen(4000, () => {
-        main();
+
+    getLiveChatId('ozC_VihQXx8', (liveChatId) => {
+        console.log(`liveChatId = ${liveChatId}`);
+
+        if (liveChatId) {
+            requestChatMessages('', liveChatId, process);
+        }
     });
-    
-    // expressServer!!
-    // no need app
 };
 
 module.exports = youtubeAdapter;
