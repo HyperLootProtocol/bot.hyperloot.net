@@ -9,9 +9,9 @@ const server = express();
 
 const httpAdapter = () => {};
 
-httpAdapter.__INIT__ = function ({ process }) {
+httpAdapter.__INIT__ = function (context) {
     server.use('/api', (req, res) => {
-        process({
+        context.process({
             input: req.query.message,
             from: 'http',
             handle(response, context) {
@@ -31,6 +31,11 @@ httpAdapter.__INIT__ = function ({ process }) {
     server.listen(port, () => {
         debug(`express listnening port: ${port}`);
     });
+    
+    return {
+        ...context,
+        expressServer: server,
+    }
 };
 
 module.exports = httpAdapter;
