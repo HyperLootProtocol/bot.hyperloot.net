@@ -30,6 +30,9 @@ const requestChatMessages = (nextPageToken, liveChatId, process) => {
                 id: body.items[i].snippet.authorChannelId,
                 user: body.items[i].authorDetails.displayName,
                 input: body.items[i].snippet.displayMessage,
+                handle: (response) => {
+                    console.log('ITS WORKING!', response);
+                }
             });
 
             console.log(`${body.items[i].authorDetails.displayName} : ${body.items[i].snippet.displayMessage}`);
