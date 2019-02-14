@@ -31,7 +31,7 @@ instance
     .use(mongoURI ? [dbMongo] : [dbNedb])
     .use([httpAdapter])
     .use(discord.authToken && [discordAdapter])
-    .use(youtubrAdapter);
+    .use([youtubrAdapter]);
 
 
 instance.use([

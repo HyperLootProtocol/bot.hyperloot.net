@@ -1,5 +1,6 @@
 // подключение модулей ютуб(если есть)
 const request = require('request');
+const isEmpty = require('lodash/isEmpty');
 
 const myApiKey = 'AIzaSyBT_CuvhuHmYNapuUVYv6GjEa_G6EB6F6E';
 
@@ -24,17 +25,32 @@ const requestChatMessages = (nextPageToken, liveChatId, process) => {
 
     request({ url: chatMessageUrl, qs: requestProperties }, (error, response, body) => {
         body = JSON.parse(body);
-
         for (let i = 0; i < body.items.length; i++) {
             process({
                 id: body.items[i].snippet.authorChannelId,
                 user: body.items[i].authorDetails.displayName,
                 input: body.items[i].snippet.displayMessage,
                 handle: (response) => {
-                    console.log('ITS WORKING!', response);
-                }
-            });
+                    console.log('ITS WORKING!');
+                    const { output } = response;
+                    console.log(output);
+                    if (isEmpty(output)) {
+                        return;
+                    }
+                    request.post(
+                        chatMessageUrl,
+                        { json: { key: 'value' } }, (error, response, body) => {
+                            console.log(error);
+                            console.log(body);
 
+                            if (!error && response.statusCode === 200) {
+                                console.log(body);
+                            }
+                        },
+                    );
+                    console.log(request.post);
+                },
+            });
             console.log(`${body.items[i].authorDetails.displayName} : ${body.items[i].snippet.displayMessage}`);
         }
 
@@ -47,9 +63,7 @@ const requestChatMessages = (nextPageToken, liveChatId, process) => {
 const youtubeAdapter = () => {};
 
 youtubeAdapter.__INIT__ = function ({ process }) {
-    console.log('proc: ', process);
-
-    getLiveChatId('ozC_VihQXx8', (liveChatId) => {
+    getLiveChatId('ditsr-WqZXo', (liveChatId) => {
         console.log(`liveChatId = ${liveChatId}`);
 
         if (liveChatId) {

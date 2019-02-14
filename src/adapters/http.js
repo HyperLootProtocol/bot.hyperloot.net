@@ -31,11 +31,11 @@ httpAdapter.__INIT__ = function (context) {
     server.listen(port, () => {
         debug(`express listnening port: ${port}`);
     });
-    
+
     return {
         ...context,
         expressServer: server,
-    }
+    };
 };
 
 module.exports = httpAdapter;
