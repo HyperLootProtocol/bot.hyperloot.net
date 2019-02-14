@@ -26,11 +26,13 @@ discordAdapter.__INIT__ = function ({ process }) {
 
         const handle = (context) => {
             const { output, reactions, outputRich } = context;
-            const { title, fields } = outputRich;
+
             // TODO rework!
-            if (!title) {
-                return;
-            }
+            // TODO rework!
+            // TODO rework!
+            // TODO rework!
+            // TODO rework!
+            // JUST DO IT!
             if (outputRich) {
                 if (!isEmpty(reactions)) {
                     reactions.reduce(
@@ -40,12 +42,34 @@ discordAdapter.__INIT__ = function ({ process }) {
                         Promise.resolve(),
                     );
                 }
+
+                if (isArray(outputRich)) {
+                    // eslint-disable-next-line no-restricted-syntax
+                    for (const richMessage of outputRich) {
+                        const { title } = richMessage;
+                        const embed = new Discord.RichEmbed()
+                            .setTitle(title)
+                            .setColor(0x0000FF);
+                        // eslint-disable-next-line no-restricted-syntax
+                        for (const fieldsLength of richMessage.fields) {
+                            embed.addField(fieldsLength.fieldTitle, fieldsLength.fieldText);
+                        }
+                        msg.channel
+                            .send(embed)
+                            .catch((e) => {
+                                console.error(e.embed);
+                            });
+                    }
+                }
+                const { title } = outputRich;
                 const embed = new Discord.RichEmbed()
                     .setTitle(title)
                     .setColor(0x0000FF);
-                for (let i = 0; i < fields.length; i++) {
-                    embed.addField(fields[i].fieldTitle, fields[i].fieldText);
+                // eslint-disable-next-line no-restricted-syntax
+                for (const fieldsLength of outputRich.fields) {
+                    embed.addField(fieldsLength.fieldTitle, fieldsLength.fieldText);
                 }
+              
                 msg.channel
                     .send(embed)
                     .catch((e) => {
