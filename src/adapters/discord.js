@@ -1,142 +1,102 @@
 const Discord = require('discord.js');
 const debug = require('debug')('bot:adapter:discord');
 
-const isString = require('lodash/isString');
-const isObject = require('lodash/isObject');
-const isArray = require('lodash/isArray');
-const isEmpty = require('lodash/isEmpty');
+const merge = require('lodash/merge');
 
 // const { PREFIX } = require('./../config');
 const { discord: discordCfg } = require('../config');
 
 const discordAdapter = () => {};
 
-discordAdapter.__INIT__ = function ({ process }) {
+discordAdapter.__INIT__ = function (ctx) {
     const discordBot = new Discord.Client();
 
     discordBot.on('ready', () => {
         debug('Discrodjs ready');
     });
 
-    discordBot.on('message', (msg) => {
+    const handler = async (output) => {
+        const { message, to, reactions } = output;
+        const [, channelId, msgId] = to;
+        let { embed } = output;
+
+        const channel = discordBot.channels.find(ch => ch.id === channelId);
+        const msg = msgId ? channel.fetchMessage(msgId) : null;
+
+        if (embed) {
+            const {
+                title,
+                description,
+                url,
+                fields = [],
+            } = embed;
+
+            embed = new Discord.RichEmbed();
+            embed.setColor(discordCfg.color);
+
+            if (title) {
+                embed.setTitle(title);
+            }
+
+            if (description) {
+                embed.setDescription(description);
+            }
+
+            if (url) {
+                embed.setURL(url);
+            }
+
+            fields.forEach((field) => {
+                embed.addField(field);
+            });
+        }
+
+        if (msg && reactions) {
+            await reactions.reduce(
+                (prev, reaction) => prev.then(() => msg.react(reaction).catch((e) => {
+                    console.error(e.message);
+                })),
+                Promise.resolve(),
+            );
+        }
+
+        return channel.send(message, embed).catch((e) => {
+            console.error(e.message);
+        });
+    };
+
+    discordBot.on('message', (message) => {
+        const {
+            content = '',
+            author,
+            id,
+            channel,
+        } = message;
+
         // anti-bot + anti-self-loop
-        if (msg.author.bot) {
+        if (author.bot) {
             return;
         }
 
-        const handle = (context) => {
-            const { output, reactions, outputRich } = context;
-
-            // TODO rework!
-            // TODO rework!
-            // TODO rework!
-            // TODO rework!
-            // TODO rework!
-            // JUST DO IT!
-            if (outputRich) {
-                if (!isEmpty(reactions)) {
-                    reactions.reduce(
-                        (prev, reaction) => prev.then(() => msg.react(reaction).catch((e) => {
-                            console.error(e.message);
-                        })),
-                        Promise.resolve(),
-                    );
-                }
-
-                if (isArray(outputRich)) {
-                    // eslint-disable-next-line no-restricted-syntax
-                    for (const richMessage of outputRich) {
-                        const { title } = richMessage;
-                        const embed = new Discord.RichEmbed()
-                            .setTitle(title)
-                            .setColor(0x0000FF);
-                        // eslint-disable-next-line no-restricted-syntax
-                        for (const fieldsLength of richMessage.fields) {
-                            embed.addField(fieldsLength.fieldTitle, fieldsLength.fieldText);
-                        }
-                        msg.channel
-                            .send(embed)
-                            .catch((e) => {
-                                console.error(e.embed);
-                            });
-                    }
-                }
-                const { title } = outputRich;
-                const embed = new Discord.RichEmbed()
-                    .setTitle(title)
-                    .setColor(0x0000FF);
-                // eslint-disable-next-line no-restricted-syntax
-                for (const fieldsLength of outputRich.fields) {
-                    embed.addField(fieldsLength.fieldTitle, fieldsLength.fieldText);
-                }
-              
-                msg.channel
-                    .send(embed)
-                    .catch((e) => {
-                        console.error(e.embed);
-                    });
-            } else {
-                if (!isEmpty(reactions)) {
-                    reactions.reduce(
-                        (prev, reaction) => prev.then(() => msg.react(reaction).catch((e) => {
-                            console.error(e.message);
-                        })),
-                        Promise.resolve(),
-                    );
-                }
-
-                if (isEmpty(output)) {
-                    return;
-                }
-
-                // TODO: need check permissions!
-                // simple case, output as answer
-                if (isString(output)) {
-                    msg.channel
-                        .send(output)
-                        .catch((e) => {
-                            console.error(e.message);
-                        });
-                }
-
-                // send several messages
-                if (isArray(output)) {
-                    output.forEach(_output => handle({
-                        ...context,
-                        output: _output,
-                    }));
-                }
-
-                // send to another destination or with params
-                if (isObject(output)) {
-                    const { channelName, message } = output;
-                    const channel = discordBot.channels.find(ch => ch.name === channelName);
-
-                    if (!channel) {
-                        return;
-                    }
-
-                    channel
-                        .send(message)
-                        .catch((e) => {
-                            console.error(e.message);
-                        });
-                }
-            }
-        };
-
         process({
-            id: msg.author.id,
-            username: msg.author.username,
-            input: msg.content || '',
-            attachments: msg.attachments,
-            from: 'discord',
+            userData: author,
+            userId: author.id,
+            input: content,
+            from: ['discord', channel.id, id],
             event: 'message',
-            handle,
+
+            _handleDirect: handler,
         });
     });
 
     discordBot.login(discordCfg.authToken);
+
+    return merge(ctx, {
+        _handlers: {
+            // handleTo implementation
+            discord: handler,
+        },
+    });
 };
 
 module.exports = discordAdapter;

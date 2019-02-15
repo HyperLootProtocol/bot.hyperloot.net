@@ -12,26 +12,31 @@ function checkOnCooldown(missionUserData) {
 }
 
 // todo: refactor this sh*t?
-async function checkAndUpdateRequirements(ctx, mission) {
+async function checkAndUpdateRequirements(mission, req, ctx) {
     if (isEmpty(mission.requirements)) {
         return true;
     }
 
+    const { user } = req;
+
     const {
         getModuleData,
         updateModuleData,
-        user,
     } = ctx;
+
     const userMissions = await getModuleData('missions', { user });
     const missionUserData = userMissions && userMissions[mission.id];
+
     const defaultValues = {
         count: 0,
         onCooldown: false,
     };
+
     let query = {
         id: mission.id,
         onCooldown: false,
     };
+
     let requirementsMet = true;
     let baseValues = defaults({}, defaultValues);
 
@@ -71,17 +76,19 @@ async function checkAndUpdateRequirements(ctx, mission) {
     return requirementsMet;
 }
 
-module.exports = async function missionChecker(response, ctx) {
+module.exports = async function missionChecker(req, ctx) {
     const {
         getModuleData,
-        id,
         i18n,
         set,
+        send,
     } = ctx;
+
+    const { userId } = req;
 
     let { list: missions } = await getModuleData('missions');
 
-    missions = filter(missions, mission => mission.assignee === 'all' || mission.assignee === id);
+    missions = filter(missions, mission => mission.assignee === 'all' || mission.assignee === userId);
     missions = filter(missions, mission => !mission.closed);
 
     // eslint-disable-next-line no-restricted-syntax
@@ -92,7 +99,7 @@ module.exports = async function missionChecker(response, ctx) {
             throw i18n('missionChecker.badChecker');
         }
 
-        if (actualChecker(ctx, mission.checkerSettings) && await checkAndUpdateRequirements(ctx, mission)) {
+        if (actualChecker(ctx, mission.checkerSettings) && await checkAndUpdateRequirements(mission, req, ctx)) {
             if (!mission.requirements.cooldown) {
                 await set(
                     'global',
@@ -101,15 +108,15 @@ module.exports = async function missionChecker(response, ctx) {
                 );
             }
 
-            response.output += i18n('missionChecker.success', {
-                user: `<@${id}>`,
+            send(i18n('missionChecker.success', {
+                user: `<@${userId}>`,
                 missionId: mission.id,
                 reward: mission.reward,
-            });
+            }));
 
-            response.exp += parseInt(mission.reward, 10);
+            req.exp += parseInt(mission.reward, 10);
         }
     }
 
-    return response;
+    return req;
 };

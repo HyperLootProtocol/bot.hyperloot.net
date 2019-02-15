@@ -21,9 +21,10 @@ describe('app with single executor', () => {
         instance.use(simple);
 
         instance.process({
-            input: '',
-            handle(response) {
-                expect(response).toHaveProperty('output', '');
+            input: 'test',
+            from: ['test'],
+            _handleDirect({ message }) {
+                expect(message).toEqual('test');
                 done();
             },
         });
@@ -35,8 +36,10 @@ describe('app with single executor', () => {
         instance.use(mutator);
 
         instance.process({
-            input: '',
-            handle(response) {
+            input: 'test',
+            from: 'test',
+            _handleDirect({ message }, response) {
+                expect(message).toEqual('test');
                 expect(response).toHaveProperty('test', true);
                 done();
             },
@@ -51,8 +54,8 @@ describe('app with single executor', () => {
 
         instance.process({
             input: msg,
-            handle(response) {
-                expect(response).toHaveProperty('output', msg);
+            _handleDirect({ message }) {
+                expect(message).toEqual(msg);
                 done();
             },
         });
@@ -66,7 +69,7 @@ describe('app with single executor', () => {
         expect(() => {
             instance.process({
                 input: '',
-                handle() { done(); },
+                _handleDirect() { done(); },
             });
         }).toThrow();
     });
@@ -81,7 +84,7 @@ describe('app with module', () => {
 
         instance.process({
             input: '',
-            handle(response) {
+            _handleDirect(message, response) {
                 expect(response).toHaveProperty('output', '');
                 done();
             },
@@ -95,7 +98,7 @@ describe('app with module', () => {
 
         instance.process({
             input: '',
-            handle(response) {
+            _handleDirect(message, response) {
                 expect(response).toHaveProperty('test', true);
                 expect(response).toHaveProperty('test2', true);
                 done();
@@ -111,7 +114,7 @@ describe('app with module', () => {
 
         instance.process({
             input: msg,
-            handle(response) {
+            _handleDirect(message, response) {
                 expect(response).toHaveProperty('output', msg);
                 done();
             },
@@ -126,7 +129,7 @@ describe('app with module', () => {
 
         instance.process({
             input: msg,
-            handle(response) {
+            _handleDirect(message, response) {
                 expect(response).toHaveProperty('output', '');
                 done();
             },
@@ -140,7 +143,7 @@ describe('app with module', () => {
 
         instance.process({
             input: '',
-            handle(response) {
+            _handleDirect(message, response) {
                 expect(response).toHaveProperty('error');
                 expect(response).not.toHaveProperty('test2', true);
 
@@ -156,7 +159,8 @@ describe('app with module', () => {
 
         instance.process({
             input: '',
-            handle(response, context) {
+            from: 'test',
+            _handleDirect(message, response, context) {
                 expect(context).toHaveProperty('test', true);
                 done();
             },

@@ -1,9 +1,9 @@
 // const trimStart = require('lodash/trimStart');
 const { PREFIX } = require('../config');
 
-module.exports = pattern => function command(response, { input }) {
+module.exports = pattern => function command(request) {
     const [definedCommand, ...definedArgs] = pattern.split(' ');
-    const [rawCommand, ...rawArgs] = input
+    const [rawCommand, ...rawArgs] = request.input
         .trim()
         .replace(/\s+(?=([^"]*"[^"]*")*[^"]*$)/g, '|')
         .replace(/["]/g, '')
@@ -41,9 +41,9 @@ module.exports = pattern => function command(response, { input }) {
         return _result;
     }, {});
 
-    response.rawArgs = rawArgs || [];
-    response.cmd = definedCommand;
-    response.args = parsedArgs;
+    request.rawArgs = rawArgs || [];
+    request.cmd = definedCommand;
+    request.args = parsedArgs;
 
-    return response;
+    return request;
 };

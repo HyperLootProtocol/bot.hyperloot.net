@@ -8,44 +8,48 @@ function containsLink(msg) {
     return !isEmpty(msg.match(URL_REGEXP));
 }
 
-const keepLog = async function (response, context) {
+const keepLog = async function (request, context) {
     const {
-        attachments,
         event,
         from,
-        id,
+        userId,
         input,
+    } = request;
+
+    const {
         insertLog,
     } = context;
 
     const query = {
         date: new Date(),
         event,
-        userId: id,
-        client: from,
+        userId,
+        client: from[0],
+        from,
     };
 
     if (event === 'message') {
         extend(query, {
             message: input,
             hasLinks: containsLink(input),
-            hasAttachments: !isEmpty(attachments.array()),
         });
     }
 
     await insertLog(query);
 
-    return response;
+    return request;
 };
 
-const getLog = async function (response, { query, from, getAll }) {
-    if (query === 'getLog' && from === 'http') {
+const getLog = async function (request, { getAll }) {
+    const { query, from } = request;
+
+    if (query === 'getLog' && from[0] === 'http') {
         const logs = await getAll('logs');
 
-        response.data = logs;
+        request.data = logs;
     }
 
-    return response;
+    return request;
 };
 
 module.exports = [keepLog, getLog];

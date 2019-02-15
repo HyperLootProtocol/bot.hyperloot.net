@@ -13,16 +13,18 @@ function getDiscordIdFromMention(mention) {
     return match && match[1];
 }
 
-const missionAdd = async function (response, ctx) {
+const missionAdd = async function (req, ctx) {
     const {
         i18n,
         getModuleData,
         updateModuleData,
         push,
     } = ctx;
+
     const {
         args: { options },
-    } = response;
+    } = req;
+
     const [assignee, checker, description, reward, checkerSettings, requirements, iteration] = options;
     const assigneeId = getDiscordIdFromMention(assignee);
 
@@ -78,14 +80,14 @@ const missionAdd = async function (response, ctx) {
         { list: query },
     );
 
-    response.output = i18n('missionAdd.success', {
+    req.output = i18n('missionAdd.success', {
         id: missionId,
         description,
         reward,
         assignee: assignee === 'all' ? 'everyone' : assignee,
     });
 
-    return response;
+    return req;
 };
 
 module.exports = [

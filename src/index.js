@@ -8,14 +8,13 @@ const dbNedb = require('./db/nedb');
 const discordAdapter = require('./adapters/discord');
 const httpAdapter = require('./adapters/http');
 
-const bets = require('./modules/bets');
-const quiz = require('./modules/quiz');
-const poll = require('./modules/poll');
+// const bets = require('./modules/bets');
+// const quiz = require('./modules/quiz');
+// const poll = require('./modules/poll');
 
 const addExp = require('./modules/addExp');
 const error = require('./modules/error');
 const event = require('./modules/event');
-const logText = require('./modules/logText');
 const updateExp = require('./modules/updateExp');
 const autoReaction = require('./modules/autoReaction');
 const log = require('./modules/log');
@@ -43,18 +42,17 @@ instance.use([
         event('message'),
         addExp(1),
         autoReaction,
-        logText,
     ],
 
     moderatorAdd,
     missionAdd,
     missions,
-    poll,
     pong,
-    quiz,
     status,
-    poll,
-    bets,
+
+    // quiz,
+    // poll,
+    // bets,
 
     missionChecker,
     updateExp,

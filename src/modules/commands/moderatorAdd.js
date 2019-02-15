@@ -1,21 +1,23 @@
 const isModerator = require('../isModerator');
 const command = require('../command.filter');
 
-const moderatorAdd = async function (response, ctx) {
+const moderatorAdd = async function (req, ctx) {
     const {
         i18n,
         getUser,
         getModuleData,
         updateModuleData,
+        send,
     } = ctx;
-    const { args: { moderatorId } } = response;
+
+    const { args: { moderatorId } } = req;
     const moderatorUser = await getUser(moderatorId);
     const data = await getModuleData('moderation', { user: moderatorUser });
 
     if (data && data.moderator) {
-        response.output = i18n('moderatorAdd.alreadyExist', { id: moderatorId });
+        send(i18n('moderatorAdd.alreadyExist', { id: moderatorId }));
 
-        return response;
+        return req;
     }
 
     updateModuleData(
@@ -24,9 +26,9 @@ const moderatorAdd = async function (response, ctx) {
         { user: moderatorUser },
     );
 
-    response.output = i18n('moderatorAdd.success', { id: moderatorId });
+    send(i18n('moderatorAdd.success', { id: moderatorId }));
 
-    return response;
+    return req;
 };
 
 module.exports = [isModerator, command('moderatorAdd moderatorId'), moderatorAdd];

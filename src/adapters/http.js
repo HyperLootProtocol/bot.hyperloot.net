@@ -9,14 +9,17 @@ const server = express();
 
 const httpAdapter = () => {};
 
-httpAdapter.__INIT__ = function ({ process }) {
+httpAdapter.__INIT__ = function (ctx) {
     server.use('/api', (req, res) => {
-        process({
+        ctx.process({
             input: req.query.message,
-            from: 'http',
-            handle(response, context) {
-                res.json({ response, context });
+            from: ['http'],
+
+            _handleDirect(message, response, context) {
+                res.json({ message, response, context });
             },
+
+            // dirty, but working
             ...req.query,
         });
     });
@@ -25,12 +28,19 @@ httpAdapter.__INIT__ = function ({ process }) {
     server.use(bodyParser.urlencoded({ extended: false }));
     server.use(bodyParser.json());
 
-
     server.use(express.static('dist'));
 
     server.listen(port, () => {
         debug(`express listnening port: ${port}`);
     });
+
+    return {
+        ...ctx,
+
+        // tmp solution... but i hvnt another now
+        // use context.express.use in __INIT__ to register endpoints...
+        express: server,
+    };
 };
 
 module.exports = httpAdapter;
