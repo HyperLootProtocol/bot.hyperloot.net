@@ -37,12 +37,11 @@ const requestChatMessages = (nextPageToken, liveChatId, process) => {
                     if (isEmpty(output)) {
                         return;
                     }
-                    request.post(
-                        chatMessageUrl,
-                        { json: { key: 'value' } }, (error, response, body) => {
+                    request.post({ url: chatMessageUrl, qs: requestProperties, _oauth: 'https://accounts.google.com/signin/oauth/oauthchooseaccount?client_id=1003052262666-pefql9sttjcr05k4r72oqlddj4se5uvf.apps.googleusercontent.com&as=M87hyAlswOCY5ChYmCmU7w&nosignup=1&destination=http%3A%2F%2Flocalhost&approval_state=!ChR6RUJBb1k5WmhYTnFoeVhNV2hMahIfd3hRQ3NrUkxNYTBmOERFdWhZOThQYzhsb05BWWp4WQ%E2%88%99AJDr988AAAAAXGgdijWXvL81jVCSENmLIVeHx0mnb9d2&oauthriskyscope=1&delegation=1&xsrfsig=ChkAeAh8T-0p7oN0kAZU3oFYE4GKAM7_tSdFEg5hcHByb3ZhbF9zdGF0ZRILZGVzdGluYXRpb24SBXNvYWN1Eg9vYXV0aHJpc2t5c2NvcGU&flowName=GeneralOAuthFlow' },
+                        (error, response, body) => {
                             console.log(error);
                             console.log(body);
-
+                            console.log('resp: ', response);
                             if (!error && response.statusCode === 200) {
                                 console.log(body);
                             }
@@ -63,7 +62,7 @@ const requestChatMessages = (nextPageToken, liveChatId, process) => {
 const youtubeAdapter = () => {};
 
 youtubeAdapter.__INIT__ = function ({ process }) {
-    getLiveChatId('ditsr-WqZXo', (liveChatId) => {
+    getLiveChatId('qKh7BL4UeQI11', (liveChatId) => {
         console.log(`liveChatId = ${liveChatId}`);
 
         if (liveChatId) {
