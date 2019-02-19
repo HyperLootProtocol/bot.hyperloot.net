@@ -100,6 +100,7 @@ module.exports = class App {
 
         // send as request mutation func
         const _send = (message) => {
+            console.log('message', message)
             invariant(!isEmpty(message), 'send: message must contain something!');
 
             if (isArray(message)) {
