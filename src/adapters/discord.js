@@ -78,7 +78,7 @@ discordAdapter.__INIT__ = function (ctx) {
             return;
         }
 
-        process({
+        ctx.process({
             userData: author,
             userId: author.id,
             input: content,
