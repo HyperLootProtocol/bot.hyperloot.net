@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const debug = require('debug')('bot:adapter:discord');
 
 const merge = require('lodash/merge');
+const get = require('lodash/get');
 
 // const { PREFIX } = require('./../config');
 const { discord: discordCfg } = require('../config');
@@ -60,7 +61,10 @@ discordAdapter.__INIT__ = function (ctx) {
             );
         }
 
-        return channel.send(message, embed).catch((e) => {
+        // sending empty msg?
+        const _message = message || get(embed, 'description', '');
+
+        return channel.send(_message, embed).catch((e) => {
             console.error(e.message);
         });
     };
