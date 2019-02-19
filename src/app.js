@@ -177,7 +177,7 @@ module.exports = class App {
                 try {
                     _request = await this._execute(module[i], request, context);
                 } catch (error) {
-                    console.error('error', error);
+                    console.error('Error', error, _request);
                     request.error = error;
 
                     break;

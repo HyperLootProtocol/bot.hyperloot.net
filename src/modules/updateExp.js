@@ -9,10 +9,9 @@ function amountTillNextLevel(lvl) {
 }
 
 module.exports = async function updateExp(request, context) {
-    const { 
-        exp, 
-        output, 
-        user, 
+    const {
+        exp,
+        user,
         userId,
     } = request;
 
@@ -75,7 +74,7 @@ module.exports = async function updateExp(request, context) {
             rich: {
                 title: i18n('lvl'),
                 description: updLvlMsg,
-            }
+            },
         });
     }
 

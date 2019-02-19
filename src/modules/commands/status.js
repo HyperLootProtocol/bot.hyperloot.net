@@ -4,7 +4,7 @@ const command = require('../command.filter');
 const status = async function (request, context) {
     const { i18n, getModuleData, send } = context;
     const { lvl, value } = await getModuleData('exp', { user: request.user });
-    console.log('lvl, value', lvl, value)
+    console.log('lvl, value', lvl, value);
 
     if (!isInteger(lvl) || !value) {
         throw (i18n('statusError'));
@@ -13,7 +13,7 @@ const status = async function (request, context) {
             rich: {
                 title: i18n('lvl'),
                 description: i18n('status', { lvl, value }),
-            }
+            },
         });
     }
 
