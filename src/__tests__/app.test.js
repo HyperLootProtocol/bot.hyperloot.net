@@ -1,14 +1,14 @@
 const App = require('../app');
 
-const simple = response => response;
-const mutator = response => ({ ...response, test: true });
-const echo = (response, context) => ({ ...response, output: context.input });
+const simple = request => request;
+const mutator = request => ({ ...request, test: true });
+const echo = request => ({ ...request, output: [request.input] });
 
 const inccorrect = 'dont do it';
-// const breaker = (response) => {dont: 'do it'};
+// const breaker = (request) => {dont: 'do it'};
 
 const preventer = () => null;
-const mutator2 = response => ({ ...response, test2: true });
+const mutator2 = request => ({ ...request, test2: true });
 const errorer = () => { throw ('error'); };
 
 const initor = () => {};
@@ -22,25 +22,22 @@ describe('app with single executor', () => {
 
         instance.process({
             input: 'test',
-            from: ['test'],
             _handleDirect({ message }) {
-                expect(message).toEqual('test');
+                expect(message).toEqual('');
                 done();
             },
         });
     });
 
-    test('should provide response mutation functionality', async (done) => {
+    test('should provide request mutation functionality', async (done) => {
         const instance = new App();
 
         instance.use(mutator);
 
         instance.process({
-            input: 'test',
-            from: 'test',
-            _handleDirect({ message }, response) {
-                expect(message).toEqual('test');
-                expect(response).toHaveProperty('test', true);
+            input: '',
+            _handleDirect(message, request) {
+                expect(request).toHaveProperty('test', true);
                 done();
             },
         });
@@ -84,23 +81,23 @@ describe('app with module', () => {
 
         instance.process({
             input: '',
-            _handleDirect(message, response) {
-                expect(response).toHaveProperty('output', '');
+            _handleDirect(message) {
+                expect(message).toHaveProperty('message', '');
                 done();
             },
         });
     });
 
-    test('should provide response several mutation functionality', async (done) => {
+    test('should provide request several mutation functionality', async (done) => {
         const instance = new App();
 
         instance.use([mutator, mutator2]);
 
         instance.process({
             input: '',
-            _handleDirect(message, response) {
-                expect(response).toHaveProperty('test', true);
-                expect(response).toHaveProperty('test2', true);
+            _handleDirect(message, request) {
+                expect(request).toHaveProperty('test', true);
+                expect(request).toHaveProperty('test2', true);
                 done();
             },
         });
@@ -114,8 +111,8 @@ describe('app with module', () => {
 
         instance.process({
             input: msg,
-            _handleDirect(message, response) {
-                expect(response).toHaveProperty('output', msg);
+            _handleDirect(message) {
+                expect(message).toHaveProperty('message', msg);
                 done();
             },
         });
@@ -129,8 +126,8 @@ describe('app with module', () => {
 
         instance.process({
             input: msg,
-            _handleDirect(message, response) {
-                expect(response).toHaveProperty('output', '');
+            _handleDirect(message) {
+                expect(message).toHaveProperty('message', '');
                 done();
             },
         });
@@ -143,9 +140,9 @@ describe('app with module', () => {
 
         instance.process({
             input: '',
-            _handleDirect(message, response) {
-                expect(response).toHaveProperty('error');
-                expect(response).not.toHaveProperty('test2', true);
+            _handleDirect(message, request) {
+                expect(request).toHaveProperty('error');
+                expect(request).not.toHaveProperty('test2', true);
 
                 done();
             },
@@ -159,8 +156,8 @@ describe('app with module', () => {
 
         instance.process({
             input: '',
-            from: 'test',
-            _handleDirect(message, response, context) {
+            from: ['test'],
+            _handleDirect(message, request, context) {
                 expect(context).toHaveProperty('test', true);
                 done();
             },

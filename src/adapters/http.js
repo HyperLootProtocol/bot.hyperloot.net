@@ -15,8 +15,8 @@ httpAdapter.__INIT__ = function (ctx) {
             input: req.query.message,
             from: ['http'],
 
-            _handleDirect(message, response, context) {
-                res.json({ message, response, context });
+            _handleDirect(message, request, context) {
+                res.json({ message, request, context });
             },
 
             // dirty, but working

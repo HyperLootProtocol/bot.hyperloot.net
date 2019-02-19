@@ -12,12 +12,11 @@ describe('quiz', () => {
 
     const instance = new App([quiz], mockContext);
 
-    test('get list', (done) => {
+    test('return empty if doesnt call command', (done) => {
         instance.process({
-            input: '/quiz',
-            from: ['test'],
-            _handleDirect({ message }) {
-                expect(message).toHaveProperty('output', '');
+            input: '',
+            _handleDirect(message) {
+                expect(message).toHaveProperty('message', '');
                 done();
             },
         });

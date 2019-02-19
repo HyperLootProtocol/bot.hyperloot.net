@@ -34,7 +34,7 @@ module.exports = class App {
         let _output = output;
 
         if (isEmpty(_output)) {
-            return Promise.reject();
+            _output = '';
         }
 
         if (isArray(_output)) {
@@ -48,10 +48,10 @@ module.exports = class App {
         }
 
         if (isString(_output)) {
-            _output = { to: request.from, message: output };
+            _output = { to: request.from, message: _output };
         }
 
-        if (isObject(_output) && !output.to) {
+        if (isObject(_output) && !_output.to) {
             _output = { to: request.from, ..._output };
         }
 
@@ -109,11 +109,6 @@ module.exports = class App {
             }
         };
 
-        request.stack = [{
-            key: 'init',
-            request: cloneDeep(request),
-        }];
-
         // context, methods
         // and immutable part
         const context = {
@@ -124,6 +119,12 @@ module.exports = class App {
             send: _send,
             _handleDirect,
         };
+
+        // exept stack
+        context.stack = [{
+            key: 'init',
+            request: cloneDeep(request),
+        }];
 
         request = await this._execute(this.modules, request, context);
 
@@ -167,7 +168,6 @@ module.exports = class App {
     }
 
     async _execute(module, request, context) {
-        console.log('!!!', module.name);
         invariant(isArray(module) || isFunction(module), 'module should be array or function');
 
         if (isArray(module)) {
@@ -195,9 +195,9 @@ module.exports = class App {
         }
 
         // if module is simple executor
-        request.stack.push({
+        context.stack.push({
             key: module.name,
-            request: cloneDeep(request),
+            request,
         });
 
         return module(request, context);
