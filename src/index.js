@@ -20,7 +20,7 @@ const autoReaction = require('./modules/autoReaction');
 const log = require('./modules/log');
 const missionChecker = require('./modules/missions/missionChecker');
 
-const pong = require('./modules/commands/pong');
+const ping = require('./modules/commands/ping');
 const status = require('./modules/commands/status');
 const moderatorAdd = require('./modules/commands/moderatorAdd');
 const missionAdd = require('./modules/commands/missionAdd');
@@ -47,7 +47,7 @@ instance.use([
     moderatorAdd,
     missionAdd,
     missions,
-    pong,
+    ping,
     status,
 
     // quiz,
