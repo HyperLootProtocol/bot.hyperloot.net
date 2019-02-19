@@ -21,6 +21,7 @@ const log = require('./modules/log');
 const missionChecker = require('./modules/missions/missionChecker');
 
 const ping = require('./modules/commands/ping');
+const echo = require('./modules/commands/echo');
 const status = require('./modules/commands/status');
 const moderatorAdd = require('./modules/commands/moderatorAdd');
 const missionAdd = require('./modules/commands/missionAdd');
@@ -48,6 +49,7 @@ instance.use([
     missionAdd,
     missions,
     ping,
+    echo,
     status,
 
     // quiz,

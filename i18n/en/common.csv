@@ -1,5 +1,6 @@
 empty, "Ooof, not sure what you're looking for!"
 otherError, "Error"
+done, "done"
 ,
 ping, "pong1"
 ping, "pong2"
