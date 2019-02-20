@@ -60,8 +60,6 @@ discordAdapter.__INIT__ = function (ctx) {
                 embed.addField(field);
             });
 
-            console.log('embed', embed);
-
             return channel.send({ embed }).catch((e) => {
                 console.error(e.message);
             });
