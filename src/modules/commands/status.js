@@ -10,7 +10,7 @@ const status = async function (request, context) {
         throw (i18n('statusError'));
     } else {
         send({
-            rich: {
+            embed: {
                 title: i18n('lvl'),
                 description: i18n('status', { lvl, value }),
             },

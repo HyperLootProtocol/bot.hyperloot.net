@@ -42,22 +42,22 @@ discordAdapter.__INIT__ = function (ctx) {
             } = embed;
 
             embed = new Discord.RichEmbed();
-            embed = embed.setColor(discordCfg.color);
+            embed.setColor(discordCfg.color);
 
             if (title) {
-                embed = embed.setTitle(title);
+                embed.setTitle(title);
             }
 
             if (description) {
-                embed = embed.setDescription(description);
+                embed.setDescription(description);
             }
 
             if (url) {
-                embed = embed.setURL(url);
+                embed.setURL(url);
             }
 
             fields.forEach((field) => {
-                embed = embed.addField(field);
+                embed.addField(field);
             });
 
             console.log('embed', embed)

@@ -71,7 +71,7 @@ module.exports = async function updateExp(request, context) {
 
         const updLvlMsg = i18n('lvlUp', { lvl: newLvl, id: userId });
         send({
-            rich: {
+            embed: {
                 title: i18n('lvl'),
                 description: updLvlMsg,
             },
