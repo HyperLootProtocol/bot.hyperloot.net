@@ -24,6 +24,15 @@ discordAdapter.__INIT__ = function (ctx) {
         const channel = discordBot.channels.find(ch => ch.id === channelId);
         const msg = msgId ? channel.fetchMessage(msgId) : null;
 
+        if (msg && reactions) {
+            await reactions.reduce(
+                (prev, reaction) => prev.then(() => msg.react(reaction).catch((e) => {
+                    console.error(e.message);
+                })),
+                Promise.resolve(),
+            );
+        }
+
         if (embed) {
             const {
                 title,
@@ -50,21 +59,13 @@ discordAdapter.__INIT__ = function (ctx) {
             fields.forEach((field) => {
                 embed.addField(field);
             });
+
+            return channel.send({ embed }).catch((e) => {
+                console.error(e.message);
+            });
         }
 
-        if (msg && reactions) {
-            await reactions.reduce(
-                (prev, reaction) => prev.then(() => msg.react(reaction).catch((e) => {
-                    console.error(e.message);
-                })),
-                Promise.resolve(),
-            );
-        }
-
-        // sending empty msg?
-        const _message = message || get(embed, 'description', '');
-
-        return channel.send(_message, embed).catch((e) => {
+        return channel.send(message).catch((e) => {
             console.error(e.message);
         });
     };
