@@ -26,9 +26,6 @@ discordAdapter.__INIT__ = function (ctx) {
         if (msgId && reactions) {
             const msg = await channel.fetchMessage(msgId);
 
-            console.log('to', to)
-            console.log('msg', msg)
-
             await reactions.reduce(
                 (prev, reaction) => prev.then(() => msg.react(reaction).catch((e) => {
                     console.error(e.message);

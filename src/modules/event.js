@@ -1,6 +1,6 @@
 // Event filter
 module.exports = function (eventName) {
-    return (request) => (
+    return request => (
         eventName === request.event ? request : null
     );
 };
