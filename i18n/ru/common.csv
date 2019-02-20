@@ -7,6 +7,7 @@ ping, "понг"
 ping, "понг по русски"
 ping, "понг епта что я делаю"
 ping, "понг я пишу код в час ночи"
+ping, "System.out.println(system.errors.VitalyasheException);"
 ,
 status, "Уровень: {{lvl}}\nОпыт: {{value}}"
 statusError, "Ошибка в моем днк =/"
