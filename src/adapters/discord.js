@@ -22,13 +22,13 @@ discordAdapter.__INIT__ = function (ctx) {
         let { embed } = output;
 
         const channel = discordBot.channels.find(ch => ch.id === channelId);
-        const msg = msgId ? channel.fetchMessage(msgId) : null;
 
-        console.log('to', to)
-        console.log('msg', msg)
-        console.log('msg', discordBot.channels)
+        if (msgId && reactions) {
+            const msg = await channel.fetchMessage(msgId);
 
-        if (msg && reactions) {
+            console.log('to', to)
+            console.log('msg', msg)
+
             await reactions.reduce(
                 (prev, reaction) => prev.then(() => msg.react(reaction).catch((e) => {
                     console.error(e.message);
