@@ -86,7 +86,7 @@ discordAdapter.__INIT__ = function (ctx) {
         }
 
         ctx.process({
-            userData: author,
+            userData: pick(author, discordCfg.userFields),
             userId: author.id,
             input: content,
             from: ['discord', channel.id, id],

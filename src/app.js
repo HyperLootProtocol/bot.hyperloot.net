@@ -8,6 +8,7 @@ const isObject = require('lodash/isObject');
 const cloneDeep = require('lodash/cloneDeep');
 const bind = require('lodash/bind');
 const concat = require('lodash/concat');
+const pick = require('lodash/pick');
 const invariant = require('invariant');
 
 module.exports = class App {

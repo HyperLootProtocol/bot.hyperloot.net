@@ -4,7 +4,7 @@ module.exports = async function error(request, { i18n, send }) {
         const output = request.error || i18n('otherError');
 
         send({
-            rich: {
+            embded: {
                 title: i18n('error'),
                 description: output,
             },
