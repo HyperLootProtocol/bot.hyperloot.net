@@ -1,147 +1,89 @@
+const isEmpty = require('lodash/isEmpty');
 const command = require('./command.filter');
-const { discord: { broadcastChannelName } } = require('../config');
 
-async function addQuiz(request, {
+
+const addQuiz = async function (request, {
     getModuleData,
     updateModuleData,
     i18n,
+    send,
 }) {
-    const {
-        args: {
-            description,
-            prize,
-            answers,
-        },
-        id,
-    } = request;
-    const { list = [] } = await getModuleData('quiz');
+    const { args: { description, prize, answer } } = request;
 
+    const { quizList = [] } = await getModuleData('quiz');
     const newQuiz = {
-        authorId: id,
         isOpen: true,
         description,
         prize,
-        answers,
+        answer,
         winnerId: null,
     };
 
     updateModuleData('quiz', {
-        list: [...list, newQuiz],
+        quizList: [...quizList,
+            newQuiz],
     });
-
-    request.outputRich = {
-        title: i18n('quiz.creatTitle'),
-        fields: [{ fieldTitle: i18n('quiz.creatFieldTitle'), fieldText: i18n('quiz.creatFieldText') }],
-    };
-    //     { channelName: broadcastChannelName, message: { id, ...newQuiz } },
-
-    // ];
-    request.output = [
-        i18n('quiz.created'),
-        { channelName: broadcastChannelName, message: i18n('quiz.info', { id, ...newQuiz }) },
-    ];
-
+    send(i18n('quiz.info', { description, prize }));
     return request;
-}
+};
 
-async function checkQuiz(request, {
+const quiz = async function (request, {
     getModuleData,
-    updateModuleData,
     i18n,
+    send,
 }) {
-    const { input, id } = request;
-    const { list = [] } = await getModuleData('quiz');
-    const openedQuizes = list.filter(quiz => quiz.isOpen);
+    const { quizList = [] } = await getModuleData('quiz');
+    const openQuizList = quizList.filter(quizOpen => quizOpen.isOpen === true);
+    if (isEmpty(openQuizList)) {
+        send(i18n('quiz.nope'));
+        return request;
+    }
+
+    openQuizList.forEach((quizs) => {
+        send(i18n('quiz.listLine', {
+            description: quizs.description,
+            prize: quizs.prize,
+        }));
+    });
+    return request;
+};
+
+const checkQuiz = async function (request, {
+    updateModuleData,
+    getModuleData,
+    i18n,
+    send,
+}) {
+    const { input, userId } = request;
+    const { quizList = [] } = await getModuleData('quiz');
     const inputLower = input.toLowerCase();
-    const inputLowerArray = inputLower.split(' ');
-    const output = [];
+    const openQuizList = quizList.filter(quizs => quizs.isOpen === true);
 
-    if (!openedQuizes.length) {
-        return request;
-    }
+    openQuizList.forEach((quizs) => {
+        if (inputLower.includes(quizs.answer.toLowerCase())) {
+            const winnerAnswer = quizs.answer;
+            const winnerPrize = quizs.prize;
+            send(i18n('quiz.winner', { userId, winnerAnswer, winnerPrize }));
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const openedQuiz of openedQuizes) {
-        let findAnswer = false;
-
-        // openedQuiz.answers = ['asd', 'LOQETUR']
-        // inputLower = '23123 asd 123'
-
-        // eslint-disable-next-line no-restricted-syntax
-        for (const answer of openedQuiz.answers) {
-            const answerLower = answer.toLowerCase();
-
-            if (inputLowerArray.includes(answerLower)) {
-                findAnswer = answerLower;
-            }
-        }
-
-        if (findAnswer) {
-            request.outputRich = {
-                title: i18n('quiz.winTitle'),
-                fields: [{
-                    fieldTitle: i18n('quiz.winFieldTitle', { ...openedQuiz }),
-                    fieldText: i18n('quiz.winFieldText', { id, ...openedQuiz }),
-                }],
+            const filteredQuiz = quizList.filter(filtQuiz => filtQuiz.answer !== quizs.answer);
+            const closeQuiz = {
+                ...quizs,
+                isOpen: false,
+                winnerId: userId,
             };
-            output.push(i18n('quiz.winner', { id, ...openedQuiz }));
-            output.push({
-                channelName: broadcastChannelName,
-                message: i18n('quiz.winner', { id, ...openedQuiz }),
+            updateModuleData('quiz', {
+                quizList: [
+                    ...filteredQuiz,
+                    closeQuiz,
+                ],
             });
-            // WARNING! list MUTATION!
-            openedQuiz.isOpen = false;
         }
-    }
-
-    if (output.length) {
-        updateModuleData('quiz', {
-            list,
-        });
-
-        request.output = output;
-    }
-
+    });
     return request;
-}
-
-async function quizList(request, { getModuleData, i18n }) {
-    const { list = [] } = await getModuleData('quiz');
-
-    if (!list.find(q => q.isOpen)) {
-        request.outputRich = {
-            title: i18n('quiz.nopeTitle'),
-            fields: [{ fieldTitle: i18n('quiz.nopeFieldTitle'), fieldText: i18n('quiz.nopeFieldText') }],
-        };
-        request.output = i18n('quiz.nope');
-
-        return request;
-    }
-    request.outputRich = {
-        title: i18n('quiz.listTitle'),
-        fields: [{
-            fieldTitle: 'Creator',
-            fieldText: list.filter(q => q.isOpen).map(q => `<@${q.authorId}>`),
-        },
-        {
-            fieldTitle: 'Description',
-            fieldText: list.filter(q => q.isOpen).map(q => `${q.description}`),
-        },
-        {
-            fieldTitle: 'Prize',
-            fieldText: list.filter(q => q.isOpen).map(q => `${q.prize}`),
-        },
-        ],
-    };
-
-    request.output = i18n('quiz.list');
-    request.output += list.filter(q => q.isOpen).map(q => i18n('quiz.listLine', q)).join('\n');
-
-    return request;
-}
+};
 
 module.exports = [
-    [command('quiz'), quizList],
-    [command('quiz description prize ...answers'), addQuiz],
+    [command('quiz'), quiz],
+    [command('addQuiz description prize answer'), addQuiz],
     checkQuiz,
 ];
