@@ -1,5 +1,5 @@
 quiz.info, "@here We have a quiz:\n\n{{description}}\n\nWrite your variant! The winner will receive {{prize}}"
 quiz.winner, "@here OUR WINNER <@{{userId}}>! The answer was {{winnerAnswer}}! Reward {{winnerPrize}}! Congratulations <3"
 
-quiz.nope, "There are no active quiz"
+quiz.noActive, "There are no active quiz"
 quiz.listLine, "Description | Prize\n{{description}} | {{prize}}\n"

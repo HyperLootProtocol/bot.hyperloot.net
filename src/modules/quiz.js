@@ -27,7 +27,7 @@ const addQuiz = async function (request, {
     return request;
 };
 
-const quiz = async function (request, {
+const quizs = async function (request, {
     getModuleData,
     i18n,
     send,
@@ -35,14 +35,14 @@ const quiz = async function (request, {
     const { quizList = [] } = await getModuleData('quiz');
     const openQuizList = quizList.filter(quizOpen => quizOpen.isOpen === true);
     if (isEmpty(openQuizList)) {
-        send(i18n('quiz.nope'));
+        send(i18n('quiz.noActive'));
         return request;
     }
 
-    openQuizList.forEach((quizs) => {
+    openQuizList.forEach((quiz) => {
         send(i18n('quiz.listLine', {
-            description: quizs.description,
-            prize: quizs.prize,
+            description: quiz.description,
+            prize: quiz.prize,
         }));
     });
     return request;
@@ -57,24 +57,24 @@ const checkQuiz = async function (request, {
     const { input, userId } = request;
     const { quizList = [] } = await getModuleData('quiz');
     const inputLower = input.toLowerCase();
-    const openQuizList = quizList.filter(quizs => quizs.isOpen === true);
+    const openQuizList = quizList.filter(quiz => quiz.isOpen === true);
 
-    openQuizList.forEach((quizs) => {
-        if (inputLower.includes(quizs.answer.toLowerCase())) {
-            const winnerAnswer = quizs.answer;
-            const winnerPrize = quizs.prize;
+    openQuizList.forEach((quiz) => {
+        if (inputLower.includes(quiz.answer.toLowerCase())) {
+            const winnerAnswer = quiz.answer;
+            const winnerPrize = quiz.prize;
             send(i18n('quiz.winner', { userId, winnerAnswer, winnerPrize }));
 
-            const filteredQuiz = quizList.filter(filtQuiz => filtQuiz.answer !== quizs.answer);
-            const closeQuiz = {
-                ...quizs,
+            const filteredQuiz = quizList.filter(filtQuiz => filtQuiz.answer !== quiz.answer);
+            const closedQuiz = {
+                ...quiz,
                 isOpen: false,
                 winnerId: userId,
             };
             updateModuleData('quiz', {
                 quizList: [
                     ...filteredQuiz,
-                    closeQuiz,
+                    closedQuiz,
                 ],
             });
         }
@@ -83,7 +83,7 @@ const checkQuiz = async function (request, {
 };
 
 module.exports = [
-    [command('quiz'), quiz],
+    [command('quiz'), quizs],
     [command('addQuiz description prize answer'), addQuiz],
     checkQuiz,
 ];

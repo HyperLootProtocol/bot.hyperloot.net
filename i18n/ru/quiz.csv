@@ -1,5 +1,5 @@
 quiz.info, "@here У нас новая викторина:\n\n{{description}}\n\nПишите ваши варианты! Победитель получит {{prize}}"
 quiz.winner, "@here НАШ ПОБЕДИТЕЛЬ <@{{userId}}>! Ответ был {{winnerAnswer}}! Награда {{winnerPrize}}! Поздравляю <3"
 ,
-quiz.nope, "Нет активных викторин"
+quiz.noActive, "Нет активных викторин"
 quiz.listLine, "Описание | Приз\n{{description}} | {{prize}}\n"
