@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const debug = require('debug')('bot:adapter:http');
 
 const discordAdapter = require('./discord');
+const { discord: { broadcastChannelId } } = require('../config');
 const { port } = require('../config');
 
 const server = express();
@@ -34,11 +35,16 @@ httpAdapter.__INIT__ = function (ctx) {
         const { target } = req.query;
         const redirectUrl = REDIRECT_MAP[target];
 
-        process({
-            from: 'http',
-            handle(response, context) {
+        ctx.process({
+            from: ['http'],
+            _handleDirect(message, request) {
                 res.redirect(redirectUrl);
-                discordAdapter.handler(response, context);
+                discordAdapter.handler({
+                    message: request.output,
+                    embed: request.output && request.output.embed,
+                    to: ['http', broadcastChannelId],
+                    reactions: request.reactions,
+                });
             },
             ...req.query,
         });

@@ -32,7 +32,7 @@ function modifyDescriptionValues(values, checker, missionId, assignee) {
             path: 'redirect',
             queryParams: {
                 target: values.target,
-                id: assignee,
+                userId: assignee,
                 missionId,
             },
         });

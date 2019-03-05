@@ -80,7 +80,6 @@ module.exports = async function missionChecker(req, ctx) {
         getModuleData,
         i18n,
         set,
-        send,
     } = ctx;
 
     const { userId } = req;
@@ -102,7 +101,7 @@ module.exports = async function missionChecker(req, ctx) {
             throw i18n('missionChecker.badChecker');
         }
 
-        if (actualChecker(ctx, mission.checkerSettings) && await checkAndUpdateRequirements(mission, req, ctx)) {
+        if (actualChecker(req, mission.checkerSettings) && await checkAndUpdateRequirements(mission, req, ctx)) {
             if (isEmpty(mission.requirements) || !mission.requirements.cooldown) {
                 await set(
                     'global',
@@ -111,7 +110,7 @@ module.exports = async function missionChecker(req, ctx) {
                 );
             }
 
-            send({
+            req.output = {
                 embed: {
                     title: i18n('mission'),
                     description: i18n('missionChecker.success', {
@@ -120,7 +119,7 @@ module.exports = async function missionChecker(req, ctx) {
                         reward: mission.reward,
                     }),
                 },
-            });
+            };
 
             req.exp += parseInt(mission.reward, 10);
         }
