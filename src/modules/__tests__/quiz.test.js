@@ -3,17 +3,20 @@ const quiz = require('../quiz');
 
 describe('quiz', () => {
     const mockContext = {
-        getModuleData() {},
+        getModuleData() {
+            return {};
+        },
         updateModuleData() {},
+        i18n() {},
     };
 
     const instance = new App([quiz], mockContext);
 
-    test('get list', (done) => {
+    test('return empty if doesnt call command', (done) => {
         instance.process({
-            input: '/quiz',
-            handle(response) {
-                expect(response).toHaveProperty('output', '');
+            input: '',
+            _handleDirect(message) {
+                expect(message).toHaveProperty('message', '');
                 done();
             },
         });

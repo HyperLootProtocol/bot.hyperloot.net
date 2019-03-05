@@ -1,2 +1,3 @@
 missions.empty, "Сорян, сейчас доступных миссий нет =\\"
 missions.list, "{{id}}\nЗадание: {{description}}\nНаграда: {{reward}}\n\n"
+mission, "Подсистема МОТИВАЦИИ"

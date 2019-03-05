@@ -3,19 +3,26 @@ const filter = require('lodash/filter');
 
 const command = require('../command.filter');
 
-const missions = async function (response, ctx) {
+const missions = async function (req, ctx) {
     const {
-        id,
+        userId,
+    } = req;
+
+    const {
         getModuleData,
         i18n,
+        send,
     } = ctx;
 
     let { list: data } = await getModuleData('missions');
-    data = filter(data, mission => mission.assignee === 'all' || mission.assignee === id);
+
     data = filter(data, mission => !mission.closed);
+    data = filter(data, mission => mission.assignee === 'all' || mission.assignee === userId);
+
     if (isEmpty(data)) {
-        response.output = i18n('missions.empty');
-        return response;
+        send(i18n('missions.empty'));
+
+        return req;
     }
 
     data.forEach((mission) => {
@@ -26,15 +33,15 @@ const missions = async function (response, ctx) {
             details,
         } = mission;
 
-        response.output += i18n('missions.list', {
+        send(i18n('missions.list', {
             id: missionId,
             description,
             reward,
             details,
-        });
+        }));
     });
 
-    return response;
+    return req;
 };
 
 module.exports = [command('missions'), missions];

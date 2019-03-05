@@ -1,9 +1,6 @@
-const checkEvent = async function (expectedEvent, response, { event }) {
-    return event === expectedEvent ? response : null;
-};
-
+// Event filter
 module.exports = function (eventName) {
-    return async function event(response, options) {
-        return checkEvent(eventName, response, options);
-    };
+    return request => (
+        eventName === request.event ? request : null
+    );
 };

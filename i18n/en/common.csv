@@ -1,11 +1,16 @@
 empty, "Ooof, not sure what you're looking for!"
-otherError, "Error"
+otherError, "Does not sure what error..."
+error, "Error"
+done, "done"
 ,
 ping, "pong1"
 ping, "pong2"
 ping, "pong3"
 ping, "pong4"
 ,
-status, "Ayo!\nLevel: {{lvl}}\nExp: {{value}}\nNext level on: {{nextLvl}}"
+status, "Ayo!\nLevel: {{lvl}}\nExp: {{value}}"
 statusError, "Something's wrong with your status, mate =\\"
+lvl, "Level system"
 lvlUp, "Hey, congratulations, <@{{id}}>! Level up! Your new level is {{lvl}}, keep it up!"
+,
+selfReact, "Can i help you?"

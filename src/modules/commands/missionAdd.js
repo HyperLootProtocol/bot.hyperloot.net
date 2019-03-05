@@ -50,7 +50,7 @@ function modifyMission(mission) {
     return mission;
 }
 
-const missionAdd = async function (response, ctx) {
+const missionAdd = async function (req, ctx) {
     const missionId = hri.random();
     const {
         i18n,
@@ -58,9 +58,10 @@ const missionAdd = async function (response, ctx) {
         updateModuleData,
         push,
     } = ctx;
+
     const {
         args: { options },
-    } = response;
+    } = req;
     const [assignee, checker, originalDescription, reward, checkerSettings, requirements, iteration] = options;
     const assigneeId = getDiscordIdFromMention(assignee);
     let description = originalDescription;
@@ -129,14 +130,14 @@ const missionAdd = async function (response, ctx) {
         { list: query },
     );
 
-    response.output = i18n('missionAdd.success', {
+    req.output = i18n('missionAdd.success', {
         id: missionId,
         description,
         reward,
         assignee: assignee === 'all' ? 'everyone' : assignee,
     });
 
-    return response;
+    return req;
 };
 
 module.exports = [

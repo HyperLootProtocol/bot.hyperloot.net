@@ -16,46 +16,47 @@ Easy development start: `npm i` and `npm run dev` THEN u can create new modules.
 ## abstract
 
 ### executor
-Atomic element, we use it to build all bot functionality. It simple function what get `response` and `context` and return new mutated `response` object.
+Atomic element, we use it to build all bot functionality. It simple function what get `request` and `context` and return new mutated `request` object.
 
-`response` like temp container what keep all session data (UNDERWORK! Signature unstable).
-* `response.output: string || [string] || [{ message, channelName }]` Output need to send text message as handler emiter (user get this as answer).
-* `response.reactions: [string]` array of reactions what should be placed to input message
+`request` like temp container what keep all session data (UNDERWORK! Signature unstable).
+* `request.input: String` User input, what emit proccess in adapter
+* `request.from: Array` Place where message getted, first item - adapter name, other - adapter-specific
+* `requst.send: ({message, to, ...} | STRING | [{message, to, ...}]) => void` basic method, for sending anything from executors. `from` and `to` have equal structure, u can send simple string to direct answer (like `from` === `to`) or array with multiple answers. 
 
 `context` immutable structure what contain basic functions provided by modules when app start `__INIT__` or per each request by adapters (then `process` calling) see [Adapters](#adapters), [DB](#db) and [Modules](#modules) for detail information
 
 Basic example (signature):
 ```js
-async (response, context) => {
+async (request, context) => {
     //... CHECKERS (to prevent unexpected mutation)
-    if (response.something) {
-        return response; // if we return response, we skip executor
+    if (request.something) {
+        return request; // if we return request, we skip executor
     }
 
     // OR skip executor-set
-    if (response.something && context.someMethod()) {
+    if (request.something && context.someMethod()) {
         return; // if we return null, we skip executor and all executor set in this module (executor set) see later
     }
 
-    //... RESPONSE MUTATIONS
-    response.someData = true;
+    //... request MUTATIONS
+    request.someData = true;
 
     // OR
     try {
-        response.test = await someAsyncCall(); // we can write like this
+        request.test = await someAsyncCall(); // we can write like this
     } catch (error) {
         throw(new Error());
     }
 
-    return response;
+    return request;
 }
 
 // Also good point to deconstruction context
-async (response, { i18n, db }) => { ... }
+async (request, { i18n, db }) => { ... }
 ```
 
 ### module (executors set)
-Module is array of executors. Each executor called by declared order and transmit mutated `response` to next executor in array.
+Module is array of executors. Each executor called by declared order and transmit mutated `request` to next executor in array.
 
 If executor return `null` we prevent call rest executors in *array*! Also good point use this behavior for filtering in queue.
 
@@ -67,24 +68,24 @@ If executor `throw('error')` app also skip rest executors in array and add to `e
 instance.use([someFilter, errorer, mutate]);
 
 // where
-function someFilter(response, context) {
-    if (context.input[0] === '1') {
-        return response; // we pass only then first input symbol equal '!'
+function someFilter(request, context) {
+    if (request.input[0] === '1') {
+        return request; // we pass only then first input symbol equal '!'
     }
 }
 
-function errorer(response, context) {
-    if (context.input[0] !== '2') {
+function errorer(request, context) {
+    if (request.input[0] !== '2') {
         throw('SECOND SYMBOL NOT 2');
     }
 
-    return response;
+    return request;
 }
 
-function mutate(response) {
-    response.output = '3';
+function mutate(request) {
+    request.output = '3';
 
-    return response;
+    return request;
 }
 
 ```
@@ -105,17 +106,21 @@ Adapter is a executor with `__INIT__` that must call `context.process` its start
 
 Client also must provide callback function, that will be called after all modules will be executed!
 
-In general cases we provide `input` and `handle` and basic adapter ready to serve! :)
+In general cases we provide `input` and `_handleDirect` and basic adapter ready to serve! :)
 ```js
 client.onEvent(data => {
     instance.process({
         input: data.msg,
-        handle(response) {
-            client.emitTextAnswer(response.output);
+        _handleDirect(request) {
+            client.emitTextAnswer(request.output);
         },
     });
 })
 ```
+
+Also, if adapter can provide sending messages to several places, need setup in `__INIT__` section`context._handlers.${adapterName}` function with `({ message, to, ...})` where
+* `output.message: STRING` message for sending
+* `output.to: [adapterName, ...] place to send message (first, adapterName, next adapterSpecific path, like channelId, or groupId etc)
 
 ### executor init
 App provide only one function: `process`, other features provided by modules in `__INIT__` section. `__INIT__` is a function, what get `context` and must return `context`. Init can mutate context to add some properties and call something then it need (it call once, then app starts.
@@ -138,12 +143,12 @@ executor.__INIT__ = (context) {
 
 Advanced:
 ```js
-const twitterExample = (response, context) {
+const twitterExample = (request, context) {
     if (context.event !== 'tweet') {
         return;
     }
 
-    const id = parseIdFromPost(response.input);
+    const id = parseIdFromPost(request.input);
 
     if (!id) {
         return;
@@ -152,7 +157,7 @@ const twitterExample = (response, context) {
     const post = context.getTwitterPostById(id);
     context.emitLog(post);
 
-    return response;
+    return request;
 };
 
 twitterExample.__INIT__ = (context) {
@@ -162,7 +167,7 @@ twitterExample.__INIT__ = (context) {
         context.process(
             event: 'tweet',
             input: data.tweet.toText(),
-            handle: () => {}, // no back handler for this adapter!
+            _handleDirect: () => {}, // no back handler for this adapter!
         )
     )
 
@@ -177,7 +182,7 @@ twitterExample.__INIT__ = (context) {
 
 ## db
 Module db must provide three basics
-* `getUser: (userId) => PROMISE(userData)` get user data by user id
+* `getUser: (userId, userData) => PROMISE(userData)` get user data by user id and default data about user
 * `getModuleData: (moduleName, scope = global) => PROMISE(moduleData)` get module data from user scope, or global
 * `updateModuleData: (moduleName, query, scope = global) => PROMISE(void)` update module data to user scope, or global scope
 
@@ -196,13 +201,12 @@ This modules provide funcs to context:
 * ...
 
 ## adapters
-Each adapter must provide to context:
+Each adapter must provide:
 * `input: string` contain text view of event (like user msg text in most cases)
-* `handle: (response) => void` method for calling client callback (in-future need provide cross-client handling)
-* `from: CLIENT_ID` client name (discord/telegram/etc)
-* `id: string` client specific id (for unuqie provide client+id)
-* `username: string` client specific username
-* `user: USER` current user data
+* `_handleDirect: (request) => void` method for calling client DIRECT callback (where `to` equal `from`, like answer)
+* `from: [CLIENT_ID, ...]` client name (discord/telegram/etc), and coords/place where we get message (adapter specific data, what we use in `_handleTo`)
+* `userId: string` client specific id (for unuqie provide client+id)
+* `userData: USER` current user data
 
 ### adater details
 * http
@@ -216,6 +220,7 @@ Each adapter must provide to context:
 - [x] discord adapter
 - [x] http adapter
 - [ ] more docs and examples
+- [ ] cross-client sending messages, and multiple message sending
 - [ ] cross-client merging reglament
 - [ ] telegram adapter
 - [ ] twitch adapter

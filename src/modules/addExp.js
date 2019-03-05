@@ -1,11 +1,11 @@
-module.exports = amount => function addExp(response) {
-    const { exp } = response;
+module.exports = amount => function addExp(request) {
+    const { exp } = request;
 
     if (exp) {
-        response.exp = exp + amount;
+        request.exp = exp + amount;
     } else {
-        response.exp = amount;
+        request.exp = amount;
     }
 
-    return response;
+    return request;
 };

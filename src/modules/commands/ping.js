@@ -1,10 +1,10 @@
 const command = require('../command.filter');
 
-const ping = async function (response, { i18n, pong }) {
+const ping = async function (request, { i18n, pong, send }) {
     // we init pong in __INIT__
-    response.output = i18n('ping', { pong });
+    send(i18n('ping', { pong }));
 
-    return response;
+    return request;
 };
 
 ping.__INIT__ = function (context) {

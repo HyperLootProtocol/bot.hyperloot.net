@@ -1,8 +1,13 @@
 const debug = require('debug')('bot:app');
+const get = require('lodash/get');
 const isArray = require('lodash/isArray');
 const isFunction = require('lodash/isFunction');
+const isEmpty = require('lodash/isEmpty');
+const isString = require('lodash/isString');
+const isObject = require('lodash/isObject');
 const cloneDeep = require('lodash/cloneDeep');
 const bind = require('lodash/bind');
+const concat = require('lodash/concat');
 const invariant = require('invariant');
 
 module.exports = class App {
@@ -25,47 +30,106 @@ module.exports = class App {
         return this;
     }
 
-    async process({ input = '', handle, ...data }) {
-        invariant(isFunction(handle), 'handle must be function');
+    async _handle(output, request, context) {
+        let _output = output;
 
-        // reference for response object, in future need add here comments
-        // and additional universal (non-client-locked) fields
-        let response = {
-            output: '',
-            stack: [],
-            reactions: [],
-            // attachments: [],
-            // stack: {
-            //   [moduleName]: { ... ??? }
-            // },
-            // ...
-        };
-
-        // TODO: i prefer to check it before inject here!
-        // let context = {
-        //     id: '',
-        //     input: '',
-        //     handle: () => {}
-        // }
-
-        let user = {};
-
-        if (data.id) {
-            user = await this.context.getUser(data.id);
+        if (isEmpty(_output)) {
+            _output = '';
         }
 
-        const context = {
-            ...this.context,
-            ...data, // Dirty need some standard structure
-            user,
+        if (isArray(_output)) {
+            const _handleMapper = localOutput => this._handle(
+                localOutput,
+                request,
+                context,
+            );
+
+            return Promise.all(_output.map(_handleMapper));
+        }
+
+        if (isString(_output)) {
+            _output = { to: request.from, message: _output };
+        }
+
+        if (isObject(_output) && !_output.to) {
+            _output = { to: request.from, ..._output };
+        }
+
+        if (_output.to === request.from) {
+            return context._handleDirect(_output, request, context);
+        }
+
+        // or HandleTo section
+        const handlerId = _output.to[0];
+        const handler = context._handlers[handlerId];
+
+        invariant(isFunction(handler), 'handleTo must be a function');
+
+        return handler(_output, request, context);
+    }
+
+    async process({
+        input = '',
+        from,
+        userId,
+        _handleDirect,
+        ...data
+    }) {
+        // start prepare "process specific" data, in future, need clear all inputed data!
+        let user = {};
+
+        // need rework later!
+        if (userId && isFunction(this.context.getUser)) {
+            const userData = get(data, 'userData', {});
+
+            user = await this.context.getUser(userId, userData);
+        }
+
+        // request, per "process" state
+        // mutable structure
+        let request = {
+            userId,
             input,
-            // handle,
+            from, // [adapter, ...],
+
+            ...data, // Dirty need some standard structure !!!
+            user,
+            output: [],
+            // stack: [],
         };
 
-        response = await this._execute(this.modules, response, context);
+        // send as request mutation func
+        const _send = (message) => {
+            invariant(!isEmpty(message), 'send: message must contain something!');
+
+            if (isArray(message)) {
+                request.output = concat(request.output, message);
+            } else {
+                request.output.push(message);
+            }
+        };
+
+        // context, methods
+        // and immutable part
+        const context = {
+            // prepared, system context
+            ...this.context,
+
+            // some procces-specific part of context
+            send: _send,
+            _handleDirect,
+        };
+
+        // exept stack
+        context.stack = [{
+            key: 'init',
+            request: cloneDeep(request),
+        }];
+
+        request = await this._execute(this.modules, request, context);
 
         // after all modules we call one
-        handle(response, context);
+        await this._handle(request.output, request, context);
 
         return this;
     }
@@ -103,35 +167,39 @@ module.exports = class App {
         return _context;
     }
 
-    async _execute(module, response, context) {
+    async _execute(module, request, context) {
         invariant(isArray(module) || isFunction(module), 'module should be array or function');
 
         if (isArray(module)) {
             for (let i = 0; i < module.length; i++) {
-                let _response = cloneDeep(response);
+                let _request = cloneDeep(request);
 
                 try {
-                    _response = await this._execute(module[i], response, context);
+                    _request = await this._execute(module[i], request, context);
                 } catch (error) {
-                    console.error('error', error);
-                    response.error = error;
+                    console.error('Error', error, _request);
+                    request.error = error;
 
                     break;
                 }
 
-                if (!_response) {
+                if (!_request) {
                     break;
                 } else {
                     // eslint-disable-next-line no-param-reassign
-                    response = _response;
+                    request = _request;
                 }
             }
 
-            return response;
+            return request;
         }
 
         // if module is simple executor
-        response.stack.push(module.name);
-        return module(response, context);
+        context.stack.push({
+            key: module.name,
+            request,
+        });
+
+        return module(request, context);
     }
 };

@@ -1,8 +1,22 @@
-quiz.info, "@here <@{{id}}> proposed to solve: \n\n{{description}}\n\nWrite your 	variant! The winner will receive {{prize}}"
+quiz.info, "@here <@{{id}}> proposed to solve: \n\n{{description}}\n\nWrite your variant! The winner will receive {{prize}}"
 quiz.created, "Quiz created... waiting for the winner :)"
-quiz.winner, "@here OUR WINNER <@{{id}}>! Reward {{prize}}! Congratulations <3"
+quiz.winner, "@here OUR WINNER <@{{id}}>! The answer was {{answers}}! Reward {{prize}}! Congratulations <3"
 ,
 quiz.nope, "There are no active quiz, create one, go go go)"
-quiz.list, "Creator | Description | Prize\n\n"
+quiz.list, "Creator | Description | Prize\n"
 quiz.listLine, "<@{{authorId}}> | {{description}} | {{prize}}"
 `<@{{id}}> winner and got {{q.prize}}!!111`
+,
+quiz.winTitle, "WE HAVE A WINNER!!"
+quiz.winFieldTitle, "The answer was {{answers}}!"
+quiz.winFieldText, "@here OUR WINNER <@{{id}}>! Reward \"{{prize}}\"! Congratulations <3"
+,
+quiz.creatTitle, "Quiz Created..."
+quiz.creatFieldTitle, "Waiting for the winner :)"
+quiz.creatFieldText, "Don`t forgote for prize!"
+,
+quiz.nopeTitle, "No Quiz"
+quiz.nopeFieldTitle, "There are no active quiz"
+quiz.nopeFieldText, "Create one, go! go! go!"
+,
+quiz.listTitle, "QUIZ LIST"

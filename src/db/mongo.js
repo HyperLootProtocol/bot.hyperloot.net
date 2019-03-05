@@ -83,11 +83,11 @@ dbMongo.__INIT__ = function (context) {
     }
 
     // high lvl methods
-    async function getUser(userId) {
+    async function getUser(userId, userData) {
         let user = await get(USERS, { discordId: userId });
 
         if (!user) {
-            user = { discordId: userId };
+            user = { discordId: userId, ...userData };
 
             insert(USERS, user);
         }
@@ -97,7 +97,7 @@ dbMongo.__INIT__ = function (context) {
 
     async function getModuleData(moduleName, { user } = {}) {
         if (!user) {
-            const res = await get('global', { moduleName });
+            const res = await get(GLOBAL, { moduleName });
             return res || {};
         }
 
