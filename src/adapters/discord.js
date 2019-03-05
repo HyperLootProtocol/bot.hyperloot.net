@@ -72,6 +72,7 @@ discordAdapter.__INIT__ = function ({ process }) {
                     });
             }
         };
+        discordAdapter.handle = handle;
 
         process({
             id: msg.author.id,

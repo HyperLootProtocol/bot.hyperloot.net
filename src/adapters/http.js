@@ -3,11 +3,16 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const debug = require('debug')('bot:adapter:http');
 
+const discordAdapter = require('./discord');
 const { port } = require('../config');
 
 const server = express();
 
 const httpAdapter = () => {};
+
+const REDIRECT_MAP = {
+    google: 'http://google.com',
+};
 
 httpAdapter.__INIT__ = function ({ process }) {
     server.use('/api', (req, res) => {
@@ -16,6 +21,21 @@ httpAdapter.__INIT__ = function ({ process }) {
             from: 'http',
             handle(response, context) {
                 res.json({ response, context });
+            },
+            ...req.query,
+        });
+    });
+
+    // TODO: dirty one, move it...anywhere
+    server.get('/redirect', (req, res) => {
+        const { target } = req.query;
+        const redirectUrl = REDIRECT_MAP[target];
+
+        process({
+            from: 'http',
+            handle(response, context) {
+                res.redirect(redirectUrl);
+                discordAdapter.handle(response, context);
             },
             ...req.query,
         });

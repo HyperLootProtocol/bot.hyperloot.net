@@ -1,5 +1,4 @@
 const defaults = require('lodash/defaults');
-const filter = require('lodash/filter');
 const isEmpty = require('lodash/isEmpty');
 
 const checkers = require('./checkers');
@@ -11,7 +10,7 @@ function checkOnCooldown(missionUserData) {
     return onCooldown && (curDate < cooldownOff);
 }
 
-// todo: refactor this sh*t?
+// todo: refactor this sh*t? Unification
 async function checkAndUpdateRequirements(ctx, mission) {
     if (isEmpty(mission.requirements)) {
         return true;
@@ -79,10 +78,14 @@ module.exports = async function missionChecker(response, ctx) {
         set,
     } = ctx;
 
-    let { list: missions } = await getModuleData('missions');
+    let { list: missions = [] } = await getModuleData('missions');
 
-    missions = filter(missions, mission => mission.assignee === 'all' || mission.assignee === id);
-    missions = filter(missions, mission => !mission.closed);
+    const fitAssignee = mission => mission.assignee === 'all' || mission.assignee === id || mission.indirect;
+    const isOpened = mission => !mission.closed;
+
+    missions = missions
+        .filter(fitAssignee)
+        .filter(isOpened);
 
     // eslint-disable-next-line no-restricted-syntax
     for (const mission of missions) {
@@ -93,7 +96,7 @@ module.exports = async function missionChecker(response, ctx) {
         }
 
         if (actualChecker(ctx, mission.checkerSettings) && await checkAndUpdateRequirements(ctx, mission)) {
-            if (!mission.requirements.cooldown) {
+            if (isEmpty(mission.requirements) || !mission.requirements.cooldown) {
                 await set(
                     'global',
                     { moduleName: 'missions', 'list.id': mission.id },

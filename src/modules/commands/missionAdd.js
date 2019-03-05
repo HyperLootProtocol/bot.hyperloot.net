@@ -1,6 +1,7 @@
 const { hri } = require('human-readable-ids');
 const extend = require('lodash/extend');
 const isEmpty = require('lodash/isEmpty');
+const buildUrl = require('build-url');
 
 const isModerator = require('../isModerator');
 const command = require('../command.filter');
@@ -13,7 +14,44 @@ function getDiscordIdFromMention(mention) {
     return match && match[1];
 }
 
+// todo: move it somewhere | prbbly to checker. Unification
+function modifySettings(originalSettings, checker, missionId) {
+    if (checker === 'linkChecker') {
+        // eslint-disable-next-line no-param-reassign
+        originalSettings.missionId = missionId;
+    }
+
+    return originalSettings;
+}
+
+// todo: move it somewhere | prbbly to checker. Unification
+function modifyDescriptionValues(values, checker, missionId, assignee) {
+    if (checker === 'linkChecker') {
+        // eslint-disable-next-line no-param-reassign
+        values.url = buildUrl('http://127.0.0.1:3000', {
+            path: 'redirect',
+            queryParams: {
+                target: values.target,
+                id: assignee,
+                missionId,
+            },
+        });
+    }
+
+    return values;
+}
+
+// todo: move it somewhere | prbbly to checker. Unification
+function modifyMission(mission) {
+    if (mission.checker === 'linkChecker') {
+        extend(mission, { indirect: true });
+    }
+
+    return mission;
+}
+
 const missionAdd = async function (response, ctx) {
+    const missionId = hri.random();
     const {
         i18n,
         getModuleData,
@@ -23,8 +61,9 @@ const missionAdd = async function (response, ctx) {
     const {
         args: { options },
     } = response;
-    const [assignee, checker, description, reward, checkerSettings, requirements, iteration] = options;
+    const [assignee, checker, originalDescription, reward, checkerSettings, requirements, iteration] = options;
     const assigneeId = getDiscordIdFromMention(assignee);
+    let description = originalDescription;
 
     if (isEmpty(assignee)) {
         throw i18n('missionAdd.noUser');
@@ -42,7 +81,15 @@ const missionAdd = async function (response, ctx) {
         throw i18n('missionAdd.noReward');
     }
 
-    const missionId = hri.random();
+    try {
+        const { key, values } = JSON.parse(description.replace(/'/g, '"'));
+
+        values.user = assignee;
+        modifyDescriptionValues(values, checker, missionId, assigneeId || assignee);
+        description = i18n(key, values);
+    } catch (e) {
+        description = originalDescription;
+    }
 
     const query = {
         id: missionId,
@@ -53,14 +100,18 @@ const missionAdd = async function (response, ctx) {
     };
 
     extend(query, { iteration: iteration || false });
-
     if (checkerSettings) {
-        extend(query, { checkerSettings: JSON.parse(checkerSettings.replace(/'/g, '"')) });
+        const parsedCheckerSettings = JSON.parse(checkerSettings.replace(/'/g, '"'));
+
+        modifySettings(parsedCheckerSettings, checker, missionId);
+        extend(query, { checkerSettings: parsedCheckerSettings });
     }
 
     if (requirements) {
         extend(query, { requirements: JSON.parse(requirements.replace(/'/g, '"')) });
     }
+
+    modifyMission(query);
 
     const missionsData = await getModuleData('missions');
 
