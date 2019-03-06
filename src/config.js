@@ -8,7 +8,7 @@ module.exports = {
     discord: {
         color: '0xf9690e',
         authToken: process.env.DISCORD_AUTH_TOKEN,
-        broadcastChannelName: process.env.BROADCAST_CHANNEL_NAME,
+        broadcastChannelId: process.env.BROADCAST_CHANNEL_ID,
         userFields: ['username', 'id', 'discriminator', 'bot', 'avatar'],
     },
 };

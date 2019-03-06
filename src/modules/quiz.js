@@ -2,7 +2,7 @@ const { hri } = require('human-readable-ids');
 const isEmpty = require('lodash/isEmpty');
 const command = require('./command.filter');
 
-const { discord: { broadcastChannelName } } = require('../config');
+const { discord: { broadcastChannelId } } = require('../config');
 
 const addQuiz = async function (request, {
     getModuleData,
@@ -23,17 +23,17 @@ const addQuiz = async function (request, {
         },
     });
 
-    if (broadcastChannelName) {
-        const {
-            id,
-        } = send({
+    if (broadcastChannelId) {
+        const message = send({
             embed: {
                 title: i18n('quiz'),
                 description: i18n('quiz.info', { description, prize, quizId }),
             },
         });
 
-        broadcastMsg = ['discord', broadcastChannelName, id];
+        if (message) {
+            broadcastMsg = ['discord', broadcastChannelId, message.id];
+        }
     }
 
     const newQuiz = {
