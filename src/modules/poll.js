@@ -30,8 +30,8 @@ const addPoll = async function (request, {
         const message = send({
             to: ['discord', broadcastChannelId],
             embed: {
-                title: i18n('quiz'),
-                description: i18n('quiz.info', { description, prize, quizId }),
+                title: i18n('poll'),
+            description: i18n('poll.created', { pollId }),
             },
         });
 
