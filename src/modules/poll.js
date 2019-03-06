@@ -1,12 +1,11 @@
 const { hri } = require('human-readable-ids');
 const moment = require('moment');
 const isEmpty = require('lodash/isEmpty');
-const get = require('lodash/get');
 
 const command = require('./command.filter');
 const isModerator = require('./isModerator');
 
-const { PREFIX } = require('../config');
+const { PREFIX, discord: { broadcastChannelName } } = require('../config');
 
 const addPoll = async function (request, {
     i18n,
@@ -20,15 +19,24 @@ const addPoll = async function (request, {
 
     const { pollList = [] } = await getModuleData('poll');
 
-    const message = await send(i18n('poll.created', { pollId }));
-    const systemChannelID = get(message, 'channel.guild.systemChannelID');
+    send({
+        embed: {
+            title: i18n('poll'),
+            description: i18n('poll.created', { pollId }),
+        },
+    });
 
-    if (systemChannelID) {
+    if (broadcastChannelName) {
         const {
             id,
-        } = await send(i18n('poll.created', { pollId }));
+        } = await send({
+            embed: {
+                title: i18n('poll'),
+                description: i18n('poll.created', { pollId }),
+            },
+        });
 
-        broadcastMsg = ['discord', systemChannelID, id];
+        broadcastMsg = ['discord', broadcastChannelName, id];
     }
 
     const newPoll = {
@@ -68,7 +76,6 @@ const votePoll = async function (request, {
 
     // inline vote check case, ignore if it not parsed case of command call
     if (input.startsWith(PREFIX) && !requestedOption) {
-
         return request;
     }
 
@@ -87,25 +94,20 @@ const votePoll = async function (request, {
 
     // user input contains something in opened polls
     if (!requestedOption) {
-        filteredPollList = filteredPollList.filter(poll =>
-            poll.options.find(
-                (pollOption) => {
-                    const finded = inputLower.includes(pollOption.toLowerCase());
+        filteredPollList = filteredPollList.filter(poll => poll.options.find((pollOption) => {
+            const finded = inputLower.includes(pollOption.toLowerCase());
 
-                    if (finded) {
-                        option = pollOption;
-                    }
+            if (finded) {
+                option = pollOption;
+            }
 
-                    return finded;
-                }
-            )
-        )
+            return finded;
+        }));
     }
 
     // not direct vote and doesnt find any match in user input - silent skip
     if (!requestedOption && isEmpty(filteredPollList)) {
-
-        return;
+        return null;
     }
 
     const poll = filteredPollList.find(pollOption => pollOption.options.includes(option));
@@ -165,7 +167,7 @@ const votePoll = async function (request, {
     return request;
 };
 
-const polls = async function (request, { i18n, send, getModuleData }) {
+const showPolls = async function (request, { i18n, send, getModuleData }) {
     const { pollList = [], voteList = [] } = await getModuleData('poll');
     const { args: { requestedPollId } } = request;
     let filteredPollList = [];
@@ -177,7 +179,13 @@ const polls = async function (request, { i18n, send, getModuleData }) {
     }
 
     if (isEmpty(filteredPollList)) {
-        send(i18n('poll.none'));
+        send({
+            embed: {
+                title: i18n('poll'),
+                description: i18n('poll.none'),
+            },
+        });
+
         return request;
     }
 
@@ -204,8 +212,8 @@ const polls = async function (request, { i18n, send, getModuleData }) {
                     pollId: poll.id,
                     results: '',
                 }),
-                fields: optionResults
-            }
+                fields: optionResults,
+            },
         });
     });
 
@@ -224,7 +232,13 @@ const closePoll = async function (request, {
     const requestedPoll = pollList.find(poll => poll.id === requestedPollId);
 
     if (!requestedPoll) {
-        send(i18n('poll.notFound', { requestedPollId }));
+        send({
+            embed: {
+                title: i18n('poll'),
+                description: i18n('poll.notFound', { requestedPollId }),
+            },
+        });
+
         return request;
     }
 
@@ -241,7 +255,12 @@ const closePoll = async function (request, {
         ],
     });
 
-    send(i18n('poll.close', { requestedPollId }));
+    send({
+        embed: {
+            title: i18n('poll'),
+            description: i18n('poll.close', { requestedPollId }),
+        },
+    });
 
     return request;
 };
@@ -251,8 +270,8 @@ module.exports = [
 
     [isModerator, command('addPoll description ...options'), addPoll],
     [isModerator, command('closePoll requestedPollId'), closePoll],
-    [command('polls'), polls],
-    [command('polls requestedPollId'), polls],
+    [command('polls'), showPolls],
+    [command('polls requestedPollId'), showPolls],
     [command('votePoll requestedOption'), votePoll],
     [command('votePoll requestedPollId requestedOption'), votePoll],
 ];

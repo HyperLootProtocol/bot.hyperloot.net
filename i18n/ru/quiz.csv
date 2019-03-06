@@ -1,5 +1,5 @@
-quiz.info, "@here У нас новая викторина:\n\n{{description}}\n\nПишите ваши варианты! Победитель получит {{prize}}"
-quiz.winner, "@here НАШ ПОБЕДИТЕЛЬ <@{{userId}}>! Ответ был {{winnerAnswer}}! Награда {{winnerPrize}}! Поздравляю <3"
+quiz, "Подсистема ВАНГОВАНИЯ"
+quiz.info, "@here У нас новая викторина ({{id}}):\n\n{{description}}\n\nПишите ваши варианты! Победитель получит {{prize}}"
+quiz.winner, "@here НАШ ПОБЕДИТЕЛЬ <@{{userId}}>! Ответ был {{answer}}! Награда {{prize}}! Поздравляю <3"
 ,
 quiz.noActive, "Нет активных викторин"
-quiz.listLine, "Описание | Приз\n{{description}} | {{prize}}\n"

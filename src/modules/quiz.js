@@ -1,6 +1,8 @@
+const { hri } = require('human-readable-ids');
 const isEmpty = require('lodash/isEmpty');
 const command = require('./command.filter');
 
+const { discord: { broadcastChannelName } } = require('../config');
 
 const addQuiz = async function (request, {
     getModuleData,
@@ -9,42 +11,87 @@ const addQuiz = async function (request, {
     send,
 }) {
     const { args: { description, prize, answer } } = request;
+    const quizId = hri.random();
+    let broadcastMsg = null;
 
     const { quizList = [] } = await getModuleData('quiz');
+
+    send({
+        embed: {
+            title: i18n('quiz'),
+            description: i18n('quiz.info', { description, prize, quizId }),
+        },
+    });
+
+    if (broadcastChannelName) {
+        const {
+            id,
+        } = send({
+            embed: {
+                title: i18n('quiz'),
+                description: i18n('quiz.info', { description, prize, quizId }),
+            },
+        });
+
+        broadcastMsg = ['discord', broadcastChannelName, id];
+    }
+
     const newQuiz = {
         isOpen: true,
         description,
         prize,
         answer,
         winnerId: null,
+        broadcastMsg,
+        id: quizId,
     };
 
     updateModuleData('quiz', {
-        quizList: [...quizList,
-            newQuiz],
+        quizList: [
+            ...quizList,
+            newQuiz,
+        ],
     });
-    send(i18n('quiz.info', { description, prize }));
+
     return request;
 };
 
-const quizs = async function (request, {
+const showQuizList = async function (request, {
     getModuleData,
     i18n,
     send,
 }) {
+    const { args: { id } } = request;
     const { quizList = [] } = await getModuleData('quiz');
-    const openQuizList = quizList.filter(quizOpen => quizOpen.isOpen === true);
-    if (isEmpty(openQuizList)) {
-        send(i18n('quiz.noActive'));
+    let filteredQuizList = quizList.filter(quiz => quiz.isOpen === true);
+
+    if (id) {
+        filteredQuizList = quizList.filter(quiz => quiz.id === id);
+    }
+
+    if (isEmpty(filteredQuizList)) {
+        send({
+            embed: {
+                title: i18n('quiz'),
+                description: i18n('quiz.noActive'),
+            },
+        });
+
         return request;
     }
 
-    openQuizList.forEach((quiz) => {
-        send(i18n('quiz.listLine', {
-            description: quiz.description,
-            prize: quiz.prize,
-        }));
+    const fields = filteredQuizList.map(quiz => [
+        `(${quiz.id}) ${quiz.description}`,
+        quiz.prize,
+    ]);
+
+    send({
+        embed: {
+            title: i18n('quiz'),
+            fields,
+        },
     });
+
     return request;
 };
 
@@ -61,16 +108,22 @@ const checkQuiz = async function (request, {
 
     openQuizList.forEach((quiz) => {
         if (inputLower.includes(quiz.answer.toLowerCase())) {
-            const winnerAnswer = quiz.answer;
-            const winnerPrize = quiz.prize;
-            send(i18n('quiz.winner', { userId, winnerAnswer, winnerPrize }));
+            const { answer, prize } = quiz;
+            send({
+                embed: {
+                    title: i18n('quiz'),
+                    description: i18n('quiz.winner', { userId, answer, prize }),
+                },
+            });
 
-            const filteredQuiz = quizList.filter(filtQuiz => filtQuiz.answer !== quiz.answer);
+            const filteredQuiz = quizList.filter(elem => elem.id !== quiz.id);
+
             const closedQuiz = {
                 ...quiz,
                 isOpen: false,
                 winnerId: userId,
             };
+
             updateModuleData('quiz', {
                 quizList: [
                     ...filteredQuiz,
@@ -79,11 +132,13 @@ const checkQuiz = async function (request, {
             });
         }
     });
+
     return request;
 };
 
 module.exports = [
-    [command('quiz'), quizs],
+    [command('quiz'), showQuizList],
+    [command('quiz id'), showQuizList],
     [command('addQuiz description prize answer'), addQuiz],
     checkQuiz,
 ];
