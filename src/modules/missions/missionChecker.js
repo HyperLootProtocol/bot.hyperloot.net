@@ -108,11 +108,16 @@ module.exports = async function missionChecker(req, ctx) {
                 );
             }
 
-            send(i18n('missionChecker.success', {
-                user: `<@${userId}>`,
-                missionId: mission.id,
-                reward: mission.reward,
-            }));
+            send({
+                embed: {
+                    title: i18n('mission'),
+                    description: i18n('missionChecker.success', {
+                        user: `<@${userId}>`,
+                        missionId: mission.id,
+                        reward: mission.reward,
+                    }),
+                },
+            });
 
             req.exp += parseInt(mission.reward, 10);
         }

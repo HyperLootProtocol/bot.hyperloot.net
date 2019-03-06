@@ -2,9 +2,9 @@ const { admin } = require('../config');
 
 module.exports = async function error(request, { getModuleData }) {
     const { user } = request;
-    const { moderator, username } = await getModuleData('moderation', { user });
+    const { moderator } = await getModuleData('moderation', { user });
 
-    if (moderator || username === admin) {
+    if (moderator || user.username === admin) {
         return request;
     }
 

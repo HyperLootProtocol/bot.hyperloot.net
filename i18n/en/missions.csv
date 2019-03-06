@@ -1,2 +1,3 @@
 missions.empty, "You have no available missions now, come back later!"
 missions.list, "{{id}}\nTask: {{description}}\nReward: {{reward}}\n\n"
+mission, "Mission system"

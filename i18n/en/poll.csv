@@ -1,54 +1,12 @@
+poll, "Poll system"
 poll.created, "Poll created successfully, here's the ID for results tracking and other stuff: {{pollId}}"
-poll.alert, "Hey everyone @here, a new poll just popped up! vote by typing /vote your_answer"
+poll.notFound, "I couldn't find a poll with this ID {{requestedPollId}}, sorry, man("
 
-poll.notFound, "I couldn't find a poll with this ID ({{requestedPollId}}), sorry, man("
-
-poll.list, "Here are all the polls that are open at the moment:\n"
-poll.header, "{{date}} {{question}} | {{votesCount}} total votes | ID: {{pollId}}\n"
-poll.line, "{{option}} | {{optionVotes}} votes | ({{percentage}}%) |\n"
-poll.none, "No polls are open at the moment, come on open new one!"
-poll.closed, "(closed) "
+poll.info, "{{date}} | {{description}} | {{votesCount}} total votes | ID: {{pollId}}\n{{results}}\n"
+poll.none, "No polls are open at the moment"
 
 poll.close, "Poll {{requestedPollId}} was closed, the results are still available"
-poll.alreadyClosed, "This poll is already closed! Are you messing with me?"
 poll.alreadyVoted, "You've already voted in this poll, you're either cheating or very forgetfull"
 
-vote.cast, "<@{{id}}> voted for {{optionText}} in poll {{requestedPollId}}, hmmm which option's gonna win this this thing?"
+vote.cast, "<@{{userId}}> voted for {{option}} in poll {{requestPollId}}, hmmm which option's gonna win this thing?"
 vote.noSuchOption, "The option you're trying to vote for doesn't seem to exist"
-
-poll.noneTitle, "No Poll"
-poll.noneFieldTitle, "No polls are open at the moment"
-poll.noneFieldText, "Come on open new one!"
-
-poll.createdTitle, "Poll created successfully"
-poll.createdFieldTitle, "{{pollId}}"
-poll.createdFieldText, "Here's the ID for results tracking and other stuff"
-
-poll.notFoundTitle, "Poll not found"
-poll.notFoundFieldTitle, "I couldn't find a poll with this ID ({{requestedPollId}})"
-poll.notFoundFieldText, "Sorry, man("
-
-poll.closedTitle, "(closed) "
-poll.titleHeader, "{{date}} | {{question}} | {{votesCount}} total votes | ID: {{pollId}}"
-poll.optionFieldTitle, "{{option}}"
-poll.optionFieldText, "{{optionVotes}} votes ({{percentage}}%)"
-
-poll.alreadyClosedTitle, "ALREADY CLOSED!"
-poll.alreadyClosedFieldTitle, "This poll is already closed!"
-poll.alreadyClosedFieldText, "Are you messing with me?"
-
-poll.closeTitle, "Closed"
-poll.closeFieldTitle, "Poll {{requestedPollId}} was closed"
-poll.closeFieldText, "The results are still available"
-
-poll.alreadyVotedTitle, "Already voted!"
-poll.alreadyVotedFieldTitle, "You've already voted in this poll!"
-poll.alreadyVotedFieldText, "You're either cheating or very forgetfull"
-
-vote.castTitle, "You voted"
-vote.castFieldTitle, "Hmmm which option's gonna win this this thing?"
-vote.castFieldText, "<@{{id}}> voted for {{optionText}} in poll {{requestedPollId}}"
-
-vote.noSuchOptionTitle, "Doesn' t exist"
-vote.noSuchOptionFieldTitle, "The option you're trying to vote for doesn't seem to exist"
-vote.noSuchOptionFieldText, "Sorry."

@@ -10,7 +10,7 @@ const httpAdapter = require('./adapters/http');
 
 // const bets = require('./modules/bets');
 const quiz = require('./modules/quiz');
-// const poll = require('./modules/poll');
+const poll = require('./modules/poll');
 
 const selfReact = require('./modules/selfReact');
 const addExp = require('./modules/addExp');
@@ -56,7 +56,7 @@ instance.use([
     selfReact,
 
     quiz,
-    // poll,
+    poll,
     // bets,
 
     missionChecker,

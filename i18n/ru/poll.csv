@@ -1,54 +1,12 @@
+poll, "Подсистема ДЕМОКРАТИИ!"
 poll.created, "Опрос успешно создан, ID чтобы отслеживать результаты и делать всякое: {{pollId}}"
-poll.alert, "Привет все @here, новый опрос подъехал! Чтобы голосовать пишите /vote твой_ответ"
-
 poll.notFound, "По моим данным опроса с таким ID нет ({{requestedPollId}}), сорян("
 
-poll.list, "Вот список всех открытых вопросов, все как ты просил))) :\n"
-poll.header, "{{date}} {{question}} | {{votesCount}} всего голосов | ID: {{pollId}}\n"
-poll.line, "{{option}} | {{optionVotes}} голосов | ({{percentage}}%) |\n"
-poll.none, "В данный момент нет открытых голосований, может ты создашь новое, сэмпай?.."
-poll.closed, "(Закрыт) "
+poll.info, "{{date}} | {{description}} | {{votesCount}} всего голосов | ID: {{pollId}}\n{{results}}\n"
+poll.none, "В данный момент нет открытых голосований"
 
 poll.close, "Опрос {{requestedPollId}} был закрыт, результаты все еще доступны по ID"
-poll.alreadyClosed, "Этот опрос уже был закрыт! Ты издеваешься надо мной, сэмпай?"
 poll.alreadyVoted, "Ты уже голосовал в этом опросе, ты либо забывчивый, либо жулик!"
 
-vote.cast, "<@{{id}}> проголосовал за {{optionText}} в опросе {{requestedPollId}}, Интересно... какой вариант победит?"
+vote.cast, "<@{{userId}}> проголосовал за {{option}} в опросе {{requestPollId}}, Интересно... какой вариант победит?"
 vote.noSuchOption, "Похоже что такого варианта ответа не существует в этом опросе("
-
-poll.noneTitle, "Нет Опросов"
-poll.noneFieldTitle, "Нет открытых опросов в данный момент"
-poll.noneFieldText, "может ты создашь новое, сэмпай?.."
-
-poll.createdTitle, "Опрос успешно создан"
-poll.createdFieldTitle, "{{pollId}}"
-poll.createdFieldText, "Вот ID чтобы отслеживать результаты и делать всякое"
-
-poll.notFoundTitle, "Опрос не найден"
-poll.notFoundFieldTitle, "По моим данным опроса с таким ID нет ({{requestedPollId}})"
-poll.notFoundFieldText, "Сорян("
-
-poll.closedTitle, "(Закрыт) "
-poll.titleHeader, "{{date}} | {{question}} | {{votesCount}} Всего голосов | ID: {{pollId}}"
-poll.optionFieldTitle, "{{option}}"
-poll.optionFieldText, "{{optionVotes}} голосов ({{percentage}}%)"
-
-poll.alreadyClosedTitle, "Уже Закрыт!"
-poll.alreadyClosedFieldTitle, "Этот опрос уже был закрыт!"
-poll.alreadyClosedFieldText, "Ты издеваешься надо мной, сэмпай?"
-
-poll.closeTitle, "Закрыто!"
-poll.closeFieldTitle, "Опрос {{requestedPollId}} успешно закрыт"
-poll.closeFieldText, "результаты все еще доступны по ID"
-
-poll.alreadyVotedTitle, "Уже голосовал"
-poll.alreadyVotedFieldTitle, "Ты уже голосовал в этом опросе!"
-poll.alreadyVotedFieldText, "ты либо забывчивый, либо жулик."
-
-vote.castTitle, "Вы проголосовали"
-vote.castFieldTitle, "Интересно... какой вариант победит?"
-vote.castFieldText, "<@{{id}}> проголосовал за {{optionText}} в опросе {{requestedPollId}}"
-
-vote.noSuchOptionTitle, "Ответ не существует"
-vote.noSuchOptionFieldTitle, "Похоже что такого варианта ответа не существует в этом опросе("
-vote.noSuchOptionFieldText, "Сорян."

@@ -58,7 +58,7 @@ discordAdapter.__INIT__ = function (ctx) {
             }
 
             fields.forEach((field) => {
-                embed.addField(field);
+                embed.addField(...field);
             });
 
             return channel.send({ embed }).catch((e) => {

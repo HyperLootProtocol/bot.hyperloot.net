@@ -9,7 +9,7 @@ module.exports = pattern => function command(request) {
         .replace(/["]/g, '')
         .split('|');
 
-    if (!rawCommand.startsWith(`${PREFIX}`)) {
+    if (!rawCommand.startsWith(PREFIX)) {
         return null;
     }
 
