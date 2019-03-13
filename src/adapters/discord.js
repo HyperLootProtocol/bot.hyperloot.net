@@ -3,6 +3,7 @@ const debug = require('debug')('bot:adapter:discord');
 
 const merge = require('lodash/merge');
 const pick = require('lodash/pick');
+const isEmpty = require('lodash/isEmpty');
 
 // const { PREFIX } = require('./../config');
 const { discord: discordCfg } = require('../config');
@@ -17,11 +18,28 @@ discordAdapter.__INIT__ = function (ctx) {
     });
 
     const handler = async (output) => {
-        const { message, to, reactions } = output;
+        const { message, to, reactions, userActions = [] } = output;
         const [, channelId, msgId] = to;
         let { embed } = output;
 
         const channel = discordBot.channels.find(ch => ch.id === channelId);
+
+        if (!isEmpty(userActions)) {
+            userActions.forEach(({ username, addRole, removeRole }) => {
+                // temp solution!
+                const user = channel.guild.members.find(usr => usr.user.username === username || usr.nickname === username);
+
+                if (removeRole) {
+                    user.removeRole(removeRole);
+                }
+
+                if (addRole) {
+                    user.addRole(addRole);
+                }
+            });
+
+            return;
+        }
 
         if (msgId && reactions) {
             const msg = await channel.fetchMessage(msgId);

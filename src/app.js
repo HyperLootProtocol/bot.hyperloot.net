@@ -83,6 +83,12 @@ module.exports = class App {
             const userData = get(data, 'userData', {});
 
             user = await this.context.getUser(userId, userData);
+
+            // dirty hack! if user upd his data but our storage dont know it...
+            user = {
+                ...user,
+                ...userData,
+            }
         }
 
         // request, per "process" state

@@ -1,12 +1,13 @@
 poll, "Подсистема ДЕМОКРАТИИ!"
 poll.created, "Опрос успешно создан, ID чтобы отслеживать результаты и делать всякое: {{pollId}}"
 poll.notFound, "По моим данным опроса с таким ID нет ({{requestedPollId}}), сорян("
-
-poll.info, "{{date}} | {{description}} | {{votesCount}} всего голосов | ID: {{pollId}}\n{{results}}\n"
+,
 poll.none, "В данный момент нет открытых голосований"
-
+poll.title, "{{date}} | Всего голосов: {{allVotesCount}} | ID: `{{pollId}}`"
+poll.option, "'{{option}}', проголосовало: {{votesCount}} ({{percentage}}%)"
+,
 poll.close, "Опрос {{requestedPollId}} был закрыт, результаты все еще доступны по ID"
 poll.alreadyVoted, "Ты уже голосовал в этом опросе, ты либо забывчивый, либо жулик!"
-
-vote.cast, "<@{{userId}}> проголосовал за {{option}} в опросе {{requestPollId}}, Интересно... какой вариант победит?"
+,
+vote.cast, "<@{{userId}}> проголосовал за '{{option}}' в опросе `{{requestPollId}}`, Интересно... какой вариант победит?"
 vote.noSuchOption, "Похоже что такого варианта ответа не существует в этом опросе("
