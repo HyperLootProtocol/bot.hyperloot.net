@@ -88,7 +88,7 @@ module.exports = class App {
             user = {
                 ...user,
                 ...userData,
-            }
+            };
         }
 
         // request, per "process" state

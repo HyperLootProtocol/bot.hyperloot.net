@@ -19,13 +19,15 @@ const event = require('./modules/event');
 const updateExp = require('./modules/updateExp');
 const autoReaction = require('./modules/autoReaction');
 const log = require('./modules/log');
-const missionChecker = require('./modules/missions/missionChecker');
+const checkers = require('./modules/missions/checkers');
+// const missionChecker = require('./modules/missions/missionChecker');
 
 const ping = require('./modules/commands/ping');
 const echo = require('./modules/commands/echo');
 const status = require('./modules/commands/status');
 const moderatorAdd = require('./modules/commands/moderatorAdd');
 const missionAdd = require('./modules/commands/missionAdd');
+const missionEnd = require('./modules/commands/missionEnd');
 const missions = require('./modules/commands/missions');
 
 const instance = new App();
@@ -48,6 +50,7 @@ instance.use([
 
     moderatorAdd,
     missionAdd,
+    missionEnd,
     missions,
     ping,
     echo,
@@ -60,7 +63,8 @@ instance.use([
     wars,
     // bets,
 
-    missionChecker,
+    checkers,
+    // missionChecker,
     updateExp,
 
     error,

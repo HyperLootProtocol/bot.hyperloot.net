@@ -4,22 +4,20 @@ const filter = require('lodash/filter');
 const command = require('../command.filter');
 const isModerator = require('../isModerator');
 
-const endMission = async function (req, ctx) {
+const missionEnd = async function (req, ctx) {
     const {
         i18n,
         send,
         set,
     } = ctx;
 
-    const { targetMission, args: { options } } = req;
-    const result = options.includes('fail') ? 'fail' : 'success';
+    const { targetMission } = req;
 
     await set(
         'global',
         { moduleName: 'missions', 'list.id': targetMission.id },
         {
             'list.$.closed': true,
-            'list.$.result': result,
         },
     );
 
@@ -69,4 +67,4 @@ const getMission = async function (req, ctx) {
     return req;
 };
 
-module.exports = [isModerator, command('endMission missionId ...options'), getMission, endMission];
+module.exports = [isModerator, command('missionEnd missionId'), getMission, missionEnd];

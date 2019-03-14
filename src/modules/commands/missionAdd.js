@@ -57,6 +57,7 @@ const missionAdd = async function (req, ctx) {
         getModuleData,
         updateModuleData,
         push,
+        send,
     } = ctx;
 
     const {
@@ -130,12 +131,12 @@ const missionAdd = async function (req, ctx) {
         { list: query },
     );
 
-    req.output = i18n('missionAdd.success', {
+    send(i18n('missionAdd.success', {
         id: missionId,
         description,
         reward,
         assignee: assignee === 'all' ? 'everyone' : assignee,
-    });
+    }));
 
     return req;
 };
