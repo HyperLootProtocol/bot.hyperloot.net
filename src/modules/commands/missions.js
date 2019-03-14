@@ -2,6 +2,7 @@ const isEmpty = require('lodash/isEmpty');
 const filter = require('lodash/filter');
 
 const command = require('../command.filter');
+const isModerator = require('../isModerator');
 
 const missions = async function (req, ctx) {
     const {
@@ -14,10 +15,14 @@ const missions = async function (req, ctx) {
         send,
     } = ctx;
 
+    const { args: { all } } = req;
+
     let { list: data } = await getModuleData('missions');
 
-    data = filter(data, mission => !mission.closed);
-    data = filter(data, mission => mission.assignee === 'all' || mission.assignee === userId);
+    if (!all) {
+        data = filter(data, mission => !mission.closed);
+        data = filter(data, mission => mission.assignee === 'all' || mission.assignee === userId);
+    }
 
     if (isEmpty(data)) {
         send(i18n('missions.empty'));
@@ -44,4 +49,7 @@ const missions = async function (req, ctx) {
     return req;
 };
 
-module.exports = [command('missions'), missions];
+module.exports = [
+    [command('missions'), missions],
+    [isModerator, command('missions all'), missions],
+];
