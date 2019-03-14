@@ -1,12 +1,12 @@
 const isEmpty = require('lodash/isEmpty');
 
 const emptyChecker = require('./emptyChecker');
-// const inputChecker = require('./inputChecker');
-// const linkChecker = require('./linkChecker');
+const linkChecker = require('./linkChecker');
+const manualChecker = require('./manualChecker');
 
 const getFitMissions = async function (req, ctx) {
     const { getModuleData } = ctx;
-    const { userId } = ctx;
+    const { userId } = req;
     let { list: missions = [] } = await getModuleData('missions');
 
     // todo: may be we want to have some indirect missions
@@ -30,7 +30,7 @@ module.exports = [
     getFitMissions,
     [
         emptyChecker,
-        // inputChecker,
-        // linkChecker,
+        linkChecker,
+        manualChecker,
     ],
 ];

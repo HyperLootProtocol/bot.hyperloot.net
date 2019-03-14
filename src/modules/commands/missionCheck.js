@@ -4,31 +4,16 @@ const filter = require('lodash/filter');
 const command = require('../command.filter');
 const isModerator = require('../isModerator');
 
-const missionEnd = async function (req, ctx) {
+const missionCheck = async function (req, ctx) {
     const {
-        i18n,
-        send,
-        set,
+        updateModuleData,
     } = ctx;
 
-    const { targetMission, userId } = req;
+    const { targetMission } = req;
 
-    await set(
-        'global',
-        { moduleName: 'missions', 'list.id': targetMission.id },
-        {
-            'list.$.closed': true,
-        },
-    );
-
-    send({
-        embed: {
-            title: i18n('missionEnd.title'),
-            description: i18n('missionEnd.description', { missionId: targetMission.id, userId }),
-        },
+    updateModuleData('manualChecker', {
+        [targetMission.id]: 'checked',
     });
-
-    return req;
 };
 
 const getMission = async function (req, ctx) {
@@ -43,13 +28,13 @@ const getMission = async function (req, ctx) {
     data = filter(data, mission => mission.id === missionId);
 
     if (isEmpty(data)) {
-        send(i18n('mission.wrongId'));
+        send(i18n('mission.wrongId', { missionId }));
 
         return null;
     }
 
     if (data.length > 1) {
-        send(i18n('mission.collision'));
+        send(i18n('mission.collision', { missionId }));
 
         return null;
     }
@@ -67,4 +52,4 @@ const getMission = async function (req, ctx) {
     return req;
 };
 
-module.exports = [isModerator, command('missionEnd missionId'), getMission, missionEnd];
+module.exports = [isModerator, command('missionCheck missionId'), getMission, missionCheck];

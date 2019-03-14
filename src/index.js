@@ -27,6 +27,7 @@ const echo = require('./modules/commands/echo');
 const status = require('./modules/commands/status');
 const moderatorAdd = require('./modules/commands/moderatorAdd');
 const missionAdd = require('./modules/commands/missionAdd');
+const missionCheck = require('./modules/commands/missionCheck');
 const missionEnd = require('./modules/commands/missionEnd');
 const missions = require('./modules/commands/missions');
 
@@ -50,6 +51,7 @@ instance.use([
 
     moderatorAdd,
     missionAdd,
+    missionCheck,
     missionEnd,
     missions,
     ping,

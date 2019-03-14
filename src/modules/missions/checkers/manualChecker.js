@@ -3,16 +3,13 @@ const {
     sendSuccessMessage,
 } = require('./helpers');
 
-const CHECKER_NAME = 'linkChecker';
-const REDIRECT_MAP = {
-    google: 'http://google.com',
-};
+const CHECKER_NAME = 'manualChecker';
 
 async function check(ctx, missionId) {
     const { getModuleData } = ctx;
     const data = await getModuleData(CHECKER_NAME);
 
-    return data && data[missionId] === 'clicked';
+    return data && data[missionId] === 'checked';
 }
 
 async function linkChecker(req, ctx) {
@@ -33,23 +30,5 @@ async function linkChecker(req, ctx) {
 
     return req;
 }
-
-linkChecker.__INIT__ = function (context) {
-    const {
-        express,
-        updateModuleData,
-    } = context;
-
-    express.get('/redirect', async (req, res) => {
-        const { target, missionId } = req.query;
-        const redirectUrl = REDIRECT_MAP[target];
-
-        res.redirect(redirectUrl);
-
-        updateModuleData(CHECKER_NAME, {
-            [missionId]: 'clicked',
-        });
-    });
-};
 
 module.exports = linkChecker;

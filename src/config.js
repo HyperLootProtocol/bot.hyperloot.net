@@ -5,6 +5,7 @@ module.exports = {
     mongoURI: process.env.MONGODB_URI,
     adminDiscordId: process.env.ADMIN_DISCORD_ID || '258540630681190402',
     selfName: process.env.SELF_NAME || 'ботий',
+    url: process.env.URL || 'http://u.dcvs.ru',
     discord: {
         color: '0xf9690e',
         authToken: process.env.DISCORD_AUTH_TOKEN,

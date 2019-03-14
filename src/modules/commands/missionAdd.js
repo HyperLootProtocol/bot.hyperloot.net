@@ -3,6 +3,7 @@ const extend = require('lodash/extend');
 const isEmpty = require('lodash/isEmpty');
 const buildUrl = require('build-url');
 
+const { url } = require('../../config');
 const isModerator = require('../isModerator');
 const command = require('../command.filter');
 
@@ -28,7 +29,7 @@ function modifySettings(originalSettings, checker, missionId) {
 function modifyDescriptionValues(values, checker, missionId, assignee) {
     if (checker === 'linkChecker') {
         // eslint-disable-next-line no-param-reassign
-        values.url = buildUrl('http://127.0.0.1:3000', {
+        values.url = buildUrl(url, {
             path: 'redirect',
             queryParams: {
                 target: values.target,

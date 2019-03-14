@@ -1,3 +1,10 @@
 missions.empty, "You have no available missions now, come back later!"
 missions.list, "{{id}}\nTask: {{description}}\nReward: {{reward}}\n\n"
+,
 mission, "Mission system"
+mission.wrongId, "There is no mission with id {{missionId}}"
+mission.collision, "Finally! We met a collision: id {{missionId}}"
+mission.alreadyClosed, "Mission {{missionId}} is already closed"
+,
+missionEnd.title, 'Mission over'
+missionEnd.description, 'Mission {{missionId}} has been ended by {{userId}}'

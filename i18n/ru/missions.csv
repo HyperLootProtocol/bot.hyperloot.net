@@ -1,3 +1,10 @@
 missions.empty, "Сорян, сейчас доступных миссий нет =\\"
 missions.list, "{{id}}\nЗадание: {{description}}\nНаграда: {{reward}}\n\n"
+,
 mission, "Подсистема МОТИВАЦИИ"
+mission.wrongId, "Такой миссии нету =( {{missionId}}"
+mission.collision, "Прикинь, мы встретили коллизию. Во везунчики. {{missionId}}"
+mission.alreadyClosed, "Миссия {{missionId}} уже была закрыта"
+,
+missionEnd.title, 'Миссия завершена'
+missionEnd.description, 'Миссия {{missionId}} была завершена {{userId}}'
