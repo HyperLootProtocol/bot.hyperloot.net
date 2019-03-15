@@ -5,7 +5,6 @@ const merge = require('lodash/merge');
 const pick = require('lodash/pick');
 const isEmpty = require('lodash/isEmpty');
 
-// const { PREFIX } = require('./../config');
 const { discord: discordCfg } = require('../config');
 
 const discordAdapter = () => {};
@@ -18,7 +17,12 @@ discordAdapter.__INIT__ = function (ctx) {
     });
 
     const handler = async (output) => {
-        const { message, to, reactions, userActions = [] } = output;
+        const {
+            message,
+            to,
+            reactions,
+            userActions = [],
+        } = output;
         const [, channelId, msgId] = to;
         let { embed } = output;
 
@@ -27,7 +31,9 @@ discordAdapter.__INIT__ = function (ctx) {
         if (!isEmpty(userActions)) {
             userActions.forEach(({ username, addRole, removeRole }) => {
                 // temp solution!
-                const user = channel.guild.members.find(usr => usr.user.username === username || usr.nickname === username);
+                const user = channel.guild.members.find(
+                    usr => usr.user.username === username || usr.nickname === username,
+                );
 
                 if (removeRole) {
                     user.removeRole(removeRole);
@@ -38,7 +44,7 @@ discordAdapter.__INIT__ = function (ctx) {
                 }
             });
 
-            return;
+            return false;
         }
 
         if (msgId && reactions) {

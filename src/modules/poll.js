@@ -38,7 +38,7 @@ const addPoll = async function (request, {
             },
         });
 
-        console.log('message', message)
+        console.log('message', message);
 
         if (message) {
             broadcastMsg = ['discord', broadcastChannelId, message.id];
@@ -213,7 +213,7 @@ const showPolls = async function (request, { i18n, send, getModuleData }) {
                 i18n('poll.option', {
                     option,
                     percentage,
-                    votesCount
+                    votesCount,
                 }),
                 loadbar,
             ];

@@ -1,20 +1,17 @@
-const isEmpty = require('lodash/isEmpty');
 const command = require('./command.filter');
 
 const { discord: { warsRoleId, warsChannelId, warsBaseRoleId } } = require('../config');
 
-const prepareWar = async function (request, { i18n, send, getModuleData, updateModuleData }) {
-    const { list = [], status } = await getModuleData('wars');
-
-    updateModuleData('wars', { 
+const prepareWar = async function (request, { send, updateModuleData }) {
+    updateModuleData('wars', {
         status: 'preparing',
         list: [],
-     });
+    });
 
     send('prepare war!');
 };
 
-const joinWar = async function (request, { i18n, send, getModuleData, updateModuleData }) {
+const joinWar = async function (request, { send, getModuleData, updateModuleData }) {
     const { user: { username } } = request;
     const { list = [], status } = await getModuleData('wars');
 
@@ -28,16 +25,18 @@ const joinWar = async function (request, { i18n, send, getModuleData, updateModu
 
     updateModuleData('wars', {
         list: [...newList, username],
-     });
+    });
 
     send(`${username} was joined to war!`);
-    send({ userActions: [{
-        username,
-        addRole: warsBaseRoleId
-    }]});
+    send({
+        userActions: [{
+            username,
+            addRole: warsBaseRoleId,
+        }],
+    });
 };
 
-const leftWar = async function (request, { i18n, send, getModuleData, updateModuleData }) {
+const leftWar = async function (request, { send, getModuleData, updateModuleData }) {
     const { user: { username } } = request;
     const { list = [] } = await getModuleData('wars');
 
@@ -45,16 +44,18 @@ const leftWar = async function (request, { i18n, send, getModuleData, updateModu
 
     updateModuleData('wars', {
         list: newList,
-     });
+    });
 
     send(`${username} was left from war!`);
-    send({ userActions: [{
-        username,
-        removeRole: warsBaseRoleId
-    }]});
+    send({
+        userActions: [{
+            username,
+            removeRole: warsBaseRoleId,
+        }],
+    });
 };
 
-const startWar = async function (request, { i18n, send, getModuleData, updateModuleData }) {
+const startWar = async function (request, { send, getModuleData, updateModuleData }) {
     const { list = [], status } = await getModuleData('wars');
 
     if (status !== 'preparing') {
@@ -69,16 +70,18 @@ const startWar = async function (request, { i18n, send, getModuleData, updateMod
         return;
     }
 
-    list.forEach(username => {
-        send({ userActions: [{
-            username,
-            addRole: warsRoleId
-        }]});
-    })
+    list.forEach((username) => {
+        send({
+            userActions: [{
+                username,
+                addRole: warsRoleId,
+            }],
+        });
+    });
 
-    updateModuleData('wars', { 
+    updateModuleData('wars', {
         status: 'started',
-     });
+    });
 
     send('war started!');
     send({
@@ -87,7 +90,7 @@ const startWar = async function (request, { i18n, send, getModuleData, updateMod
     });
 };
 
-const kill = async function (request, { i18n, send, getModuleData, updateModuleData }) {
+const kill = async function (request, { send, getModuleData, updateModuleData }) {
     const { input, from } = request;
     const [, channelId] = from;
 
@@ -113,10 +116,12 @@ const kill = async function (request, { i18n, send, getModuleData, updateModuleD
             list: newList,
         });
 
-        send({ userActions: [{
-            username,
-            removeRole: warsRoleId
-        }]});
+        send({
+            userActions: [{
+                username,
+                removeRole: warsRoleId,
+            }],
+        });
 
         send(`killed ${username}`);
     } else {
@@ -124,19 +129,20 @@ const kill = async function (request, { i18n, send, getModuleData, updateModuleD
     }
 
     if (newList.length === 1) {
-        const [ winnerName ] = newList;
+        const [winnerName] = newList;
 
-        updateModuleData('wars', { 
+        updateModuleData('wars', {
             status: 'over',
         });
 
-        send({ userActions: [{
-            username: winnerName,
-            removeRole: warsRoleId
-        }]});
+        send({
+            userActions: [{
+                username: winnerName,
+                removeRole: warsRoleId,
+            }],
+        });
 
         send(`war was over... and ${winnerName} win!`);
-
     }
 };
 
