@@ -31,6 +31,6 @@ const eightball = async function (request, context) {
 };
 
 module.exports = [
-    command('8ball question'),
+    [command('8ball question'), eightball],
     eightball,
 ];
