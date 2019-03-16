@@ -6,12 +6,9 @@ const eightball = async function (request, context) {
         i18n,
         send,
     } = context;
-
     const {
         args: { question },
     } = request;
-
-    // if question contains a question mark, send the answer, else send no question response
     if (question.includes('?')) {
         send({
             embed: {
@@ -22,8 +19,6 @@ const eightball = async function (request, context) {
     } else {
         send(i18n('eighball.noquestion'));
     }
-
-    // if question is not provided, send no question response and stop processing
     if (isEmpty(question)) {
         send(i18n('eighball.noquestion'));
     }
