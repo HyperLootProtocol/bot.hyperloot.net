@@ -14,4 +14,5 @@ const selfReact = async function (request, { i18n, send }) {
     return request;
 };
 
+
 module.exports = [selfReact];
