@@ -6,5 +6,7 @@ mission.wrongId, "Такой миссии нету =( {{missionId}}"
 mission.collision, "Прикинь, мы встретили коллизию. Во везунчики. {{missionId}}"
 mission.alreadyClosed, "Миссия {{missionId}} уже была закрыта"
 ,
+missionAdd.help, "Формат: /missionAdd assignee checker description reward checkerSettings requirements\nassignee - ID дискорд-пользователя;\nchecker - имя чекера (emptyChecker, linkChecker, manualChecker)\ndescription - текст / semi-JSON объект с параметрами для описания\nreward - сколько экспы раздать по завершении\ncheckerSettings - semi-JSON объект с настройками, специфичными для чекера\nrequirements - semi-JSON объект с параметрами, общими для миссий (count, cooldown (in ms))\nsemi-JSON это когда \"{'key': 'value'}\""
+,
 missionEnd.title, 'Миссия завершена'
 missionEnd.description, 'Миссия {{missionId}} была завершена {{userId}}'

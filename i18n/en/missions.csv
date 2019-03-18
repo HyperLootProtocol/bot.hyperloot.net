@@ -6,5 +6,7 @@ mission.wrongId, "There is no mission with id {{missionId}}"
 mission.collision, "Finally! We met a collision: id {{missionId}}"
 mission.alreadyClosed, "Mission {{missionId}} is already closed"
 ,
+missionAdd.help, "Format: /missionAdd assignee checker description reward checkerSettings requirements\nassignee - discord user ID;\nchecker - name of checker (emptyChecker, linkChecker, manualChecker)\ndescription - text / semi-JSON object with params for description\nreward - number of EXP user will get for accomplishment\ncheckerSettings - semi-JSON object with checker specific params\nrequirements - semi-JSON object with common mission parameters (count, cooldown (in ms))\nsemi-JSON is \"{'key': 'value'}\""
+,
 missionEnd.title, 'Mission over'
 missionEnd.description, 'Mission {{missionId}} has been ended by {{userId}}'

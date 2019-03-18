@@ -21,11 +21,11 @@ function getDiscordIdFromMention(mention) {
     return match && match[1];
 }
 
-function getCheckerDescription(ctx, values, checker) {
+function getCheckerDescription(ctx, params, checker) {
     // eslint-disable-next-line no-dynamic-require global-require
     const { getDescription } = require(`../missions/checkers/${checker}`);
 
-    return getDescription && getDescription(ctx, values);
+    return getDescription && getDescription(ctx, params);
 }
 
 const missionAdd = async function (req, ctx) {
@@ -41,7 +41,7 @@ const missionAdd = async function (req, ctx) {
     const {
         args: { options },
     } = req;
-    const [assignee, checker, originalDescription, reward, checkerSettings, requirements, iteration] = options;
+    const [assignee, checker, originalDescription, reward, checkerSettings, requirements] = options;
     const assigneeId = getDiscordIdFromMention(assignee);
     let description = originalDescription;
 
@@ -62,11 +62,11 @@ const missionAdd = async function (req, ctx) {
     }
 
     try {
-        const { values } = parseJsonFromCli(description);
+        const descriptionParams = parseJsonFromCli(description);
 
-        values.user = assigneeId || assignee;
-        values.missionId = missionId;
-        description = getCheckerDescription(ctx, values, checker);
+        descriptionParams.user = assigneeId || assignee;
+        descriptionParams.missionId = missionId;
+        description = getCheckerDescription(ctx, descriptionParams, checker);
     } catch (e) {
         description = originalDescription;
     }
@@ -79,7 +79,6 @@ const missionAdd = async function (req, ctx) {
         reward,
     };
 
-    extend(query, { iteration: iteration || false });
     if (checkerSettings) {
         extend(query, { checkerSettings: parseJsonFromCli(checkerSettings) });
     }
@@ -104,12 +103,17 @@ const missionAdd = async function (req, ctx) {
         { list: query },
     );
 
-    send(i18n('missionAdd.success', {
-        id: missionId,
-        description,
-        reward,
-        assignee: assignee === 'all' ? 'everyone' : assignee,
-    }));
+    send({
+        embed: {
+            title: i18n('mission'),
+            description: i18n('missionAdd.success', {
+                id: missionId,
+                description,
+                reward,
+                assignee: assignee === 'all' ? 'everyone' : assignee,
+            }),
+        },
+    });
 
     return req;
 };
