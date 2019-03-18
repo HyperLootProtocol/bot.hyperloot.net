@@ -23,7 +23,6 @@ const missionChecker = require('./modules/missions/missionChecker');
 
 const ping = require('./modules/commands/ping');
 const echo = require('./modules/commands/echo');
-const eightball = require('./modules/commands/8ball');
 const status = require('./modules/commands/status');
 const moderatorAdd = require('./modules/commands/moderatorAdd');
 const missionAdd = require('./modules/commands/missionAdd');
@@ -49,7 +48,6 @@ instance.use([
 
     moderatorAdd,
     missionAdd,
-    eightball,
     missions,
     ping,
     echo,
