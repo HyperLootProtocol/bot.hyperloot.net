@@ -1,4 +1,5 @@
 const {
+    checkAndUpdateRequirements,
     closeMission,
     sendSuccessMessage,
 } = require('./helpers');
@@ -13,10 +14,12 @@ module.exports = async function missionChecker(req, ctx) {
 
     // eslint-disable-next-line no-restricted-syntax
     for (const mission of missions) {
-        closeMission(ctx, mission.id);
-        sendSuccessMessage(ctx, userId, mission);
+        if (await checkAndUpdateRequirements(req, ctx, mission)) {
+            closeMission(ctx, mission);
+            sendSuccessMessage(ctx, userId, mission);
 
-        req.exp += parseInt(mission.reward, 10);
+            req.exp += parseInt(mission.reward, 10);
+        }
     }
 
     return req;

@@ -28,6 +28,7 @@ module.exports = {
         'no-plusplus': 'off',
         'no-throw-literal': 'off',
         'no-underscore-dangle': 'off',
+        'linebreak-style': [1, 'unix'],
 
         // jest
         'jest/no-disabled-tests': 'warn',

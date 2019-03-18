@@ -1,11 +1,17 @@
 const { hri } = require('human-readable-ids');
 const extend = require('lodash/extend');
 const isEmpty = require('lodash/isEmpty');
-const buildUrl = require('build-url');
 
-const { url } = require('../../config');
 const isModerator = require('../isModerator');
 const command = require('../command.filter');
+
+function parseJsonFromCli(str, msg = 'Something\'s went wrong, while parsing CLI argument') {
+    try {
+        return JSON.parse(str.replace(/'/g, '"'));
+    } catch (e) {
+        throw msg;
+    }
+}
 
 // todo: move it somewhere
 function getDiscordIdFromMention(mention) {
@@ -15,40 +21,11 @@ function getDiscordIdFromMention(mention) {
     return match && match[1];
 }
 
-// todo: move it somewhere | prbbly to checker. Unification
-function modifySettings(originalSettings, checker, missionId) {
-    if (checker === 'linkChecker') {
-        // eslint-disable-next-line no-param-reassign
-        originalSettings.missionId = missionId;
-    }
+function getCheckerDescription(ctx, values, checker) {
+    // eslint-disable-next-line no-dynamic-require global-require
+    const { getDescription } = require(`../missions/checkers/${checker}`);
 
-    return originalSettings;
-}
-
-// todo: move it somewhere | prbbly to checker. Unification
-function modifyDescriptionValues(values, checker, missionId, assignee) {
-    if (checker === 'linkChecker') {
-        // eslint-disable-next-line no-param-reassign
-        values.url = buildUrl(url, {
-            path: 'redirect',
-            queryParams: {
-                target: values.target,
-                userId: assignee,
-                missionId,
-            },
-        });
-    }
-
-    return values;
-}
-
-// todo: move it somewhere | prbbly to checker. Unification
-function modifyMission(mission) {
-    if (mission.checker === 'linkChecker') {
-        extend(mission, { indirect: true });
-    }
-
-    return mission;
+    return getDescription && getDescription(ctx, values);
 }
 
 const missionAdd = async function (req, ctx) {
@@ -85,11 +62,11 @@ const missionAdd = async function (req, ctx) {
     }
 
     try {
-        const { key, values } = JSON.parse(description.replace(/'/g, '"'));
+        const { values } = parseJsonFromCli(description);
 
-        values.user = assignee;
-        modifyDescriptionValues(values, checker, missionId, assigneeId || assignee);
-        description = i18n(key, values);
+        values.user = assigneeId || assignee;
+        values.missionId = missionId;
+        description = getCheckerDescription(ctx, values, checker);
     } catch (e) {
         description = originalDescription;
     }
@@ -104,17 +81,12 @@ const missionAdd = async function (req, ctx) {
 
     extend(query, { iteration: iteration || false });
     if (checkerSettings) {
-        const parsedCheckerSettings = JSON.parse(checkerSettings.replace(/'/g, '"'));
-
-        modifySettings(parsedCheckerSettings, checker, missionId);
-        extend(query, { checkerSettings: parsedCheckerSettings });
+        extend(query, { checkerSettings: parseJsonFromCli(checkerSettings) });
     }
 
     if (requirements) {
-        extend(query, { requirements: JSON.parse(requirements.replace(/'/g, '"')) });
+        extend(query, { requirements: parseJsonFromCli(requirements) });
     }
-
-    modifyMission(query);
 
     const missionsData = await getModuleData('missions');
 
@@ -142,7 +114,16 @@ const missionAdd = async function (req, ctx) {
     return req;
 };
 
+const missionHelp = async function (req, ctx) {
+    const { i18n, send } = ctx;
+
+    send(i18n('missionAdd.help'));
+
+    return req;
+};
+
 module.exports = [
     isModerator,
+    [command('missionAdd'), missionHelp],
     [command('missionAdd ...options'), missionAdd],
 ];

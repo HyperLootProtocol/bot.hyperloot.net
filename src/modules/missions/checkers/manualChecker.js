@@ -1,4 +1,5 @@
 const {
+    checkAndUpdateRequirements,
     closeMission,
     sendSuccessMessage,
 } = require('./helpers');
@@ -20,8 +21,8 @@ async function linkChecker(req, ctx) {
 
     // eslint-disable-next-line no-restricted-syntax
     for (const mission of missions) {
-        if (await check(ctx, mission.id)) {
-            closeMission(ctx, mission.id);
+        if (await check(ctx, mission.id) && await checkAndUpdateRequirements(req, ctx, mission)) {
+            closeMission(ctx, mission);
             sendSuccessMessage(ctx, userId, mission);
 
             req.exp += parseInt(mission.reward, 10);

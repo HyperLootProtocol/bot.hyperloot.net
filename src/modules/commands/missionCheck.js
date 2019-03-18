@@ -42,7 +42,7 @@ const getMission = async function (req, ctx) {
     const targetMission = data[0];
 
     if (targetMission.closed) {
-        send(i18n('mission.alreadyClosed'));
+        send(i18n('mission.alreadyClosed', { missionId }));
 
         return null;
     }

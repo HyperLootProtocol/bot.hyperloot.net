@@ -1,4 +1,8 @@
+const buildUrl = require('build-url');
+
+const { url } = require('../../../config');
 const {
+    checkAndUpdateRequirements,
     closeMission,
     sendSuccessMessage,
 } = require('./helpers');
@@ -23,8 +27,8 @@ async function linkChecker(req, ctx) {
 
     // eslint-disable-next-line no-restricted-syntax
     for (const mission of missions) {
-        if (await check(ctx, mission.id)) {
-            closeMission(ctx, mission.id);
+        if (await check(ctx, mission.id) && await checkAndUpdateRequirements(req, ctx, mission)) {
+            closeMission(ctx, mission);
             sendSuccessMessage(ctx, userId, mission);
 
             req.exp += parseInt(mission.reward, 10);
@@ -50,6 +54,21 @@ linkChecker.__INIT__ = function (context) {
             [missionId]: 'clicked',
         });
     });
+};
+
+linkChecker.getDescription = function (ctx, options) {
+    const { i18n } = ctx;
+    const { target, user, missionId } = options;
+    const targetUrl = buildUrl(url, {
+        path: 'redirect',
+        queryParams: {
+            target,
+            user,
+            missionId,
+        },
+    });
+
+    return i18n('linkChecker.description', { targetUrl, user });
 };
 
 module.exports = linkChecker;
