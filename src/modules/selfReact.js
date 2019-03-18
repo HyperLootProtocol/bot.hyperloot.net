@@ -8,7 +8,7 @@ const selfReact = async function (request, { i18n, send }) {
     }
 
     if (request.input.includes('?') && request.input.includes(selfName)) {
-        send(i18n('eighball.answer', { input, id }));
+        send(i18n('selfReact.answer', { input, id }));
     }
 
     return request;
