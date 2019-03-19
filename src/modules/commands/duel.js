@@ -3,13 +3,15 @@ const command = require('../command.filter');
 
 const duelling = async function (request, context) {
     const { i18n, send, getUser } = context;
-    const { user, args: userID } = request;
+    const { user, args: userId } = request;
 
     const user1 = user;
-    const user2 = await getUser(userID);
+    const user2 = await getUser(userId);
 
     if (isEmpty(user2)) {
         send(i18n('duel.userisnotdefined', { id: user1 }));
+        
+        return request;
     }
     if (user2 === user1) {
         send(i18n('duel.cantduelauthor', { id: user1 }));
