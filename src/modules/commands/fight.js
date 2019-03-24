@@ -14,4 +14,4 @@ const fights = async function (request, context) {
     return request;
 };
 
-module.exports = [command('fight opponent'), fights];
+module.exports = [command('fight opponentId'), fights];
