@@ -1,22 +1,17 @@
 const isEmpty = require('lodash/isEmpty');
-const random = require('lodash/sample');
+const shuffle = require('lodash/shuffle');
 const command = require('../command.filter');
 
 const fights = async function (request, context) {
     const { i18n, send } = context;
-    const { args: opponent } = request;
+    const { user, args: { opponentId } } = request;
 
-    if (isEmpty(opponent)) {
-        send(i18n('fight.userisnotdefined'));
+    const fighters = [user.id, opponentId];
+    const [winner, loser] = shuffle(fighters);
 
-        return request;
-    }
-    const fighters = ['you', opponent];
-    const winner = random(fighters);
-    const loser = random(fighters);
-
-    send(i18n('fight.wins', { win: { winner }, lose: { loser } }));
+    send(i18n('fight.wins', { winner, loser }));
 
     return request;
 };
+
 module.exports = [command('fight opponent'), fights];
