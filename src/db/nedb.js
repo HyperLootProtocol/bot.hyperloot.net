@@ -73,6 +73,12 @@ dbNedb.__INIT__ = function (context) {
         return db[collection].insert(query);
     }
 
+    async function push(collection, selector, query) {
+        return update(collection, selector, {
+            $push: query,
+        });
+    }
+
     // high lvl methods
     async function getUser(userId, userData) {
         let user = await get(USERS, { discordId: userId });
@@ -131,6 +137,7 @@ dbNedb.__INIT__ = function (context) {
 
         // Unsafe be carefuly!
         get,
+        push,
         getAll,
         set,
         update,
