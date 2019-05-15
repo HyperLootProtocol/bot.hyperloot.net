@@ -12,6 +12,7 @@ const httpAdapter = require('./adapters/http');
 
 const ping = require('./commands/ping');
 const fight = require('./commands/fight');
+const duels = require('./commands/duels');
 const echo = require('./commands/echo');
 const moderatorAdd = require('./commands/moderatorAdd');
 
@@ -33,6 +34,7 @@ instance.use([
 
 instance.use([
     fight,
+    duels,
     ping,
     echo,
     moderatorAdd,
