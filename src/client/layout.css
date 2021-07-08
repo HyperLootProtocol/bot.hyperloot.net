@@ -1,0 +1,212 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700&subset=cyrillic');
+.body-bg{
+    margin: 0;
+    background: #000;
+}
+.main-block{
+    height: 100vh;
+    font-family: 'Montserrat', sans-serif;
+}
+.conversation{
+    width: 575px;
+    padding: 20px 0 20px 50px;
+
+}
+.conversation .time-period{
+    display: flex;
+    justify-content: space-between;
+}
+.conversation p{
+    margin: 0;
+    font-size: 30px;
+    line-height: 52px;
+    color: rgba(255, 255, 255, 0.5);
+}
+.conversation .border-top{
+    border: 3px solid rgba(216, 216, 216, 0.5);
+    border-top: none;
+    border-bottom: none;
+    width: 100%;
+    height: 20px;
+    box-sizing: border-box; 
+    margin-bottom: 3px;
+}
+.conversation .main-period{
+    background: rgba(255, 255, 255, 0.5);
+    height: 33px;
+}
+.conversation .bottom-bar{
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(to left, #fad961, #f9690e);
+}
+.conversation .talk-dc{
+    padding: 5px 20px 5px 10px;
+}
+.poll {
+    color: #fff;
+    width: 575px;
+    padding: 20px 0;
+}
+.poll .header-poll{
+    text-transform: uppercase;
+    font-size: 31px;
+    padding-left: 60px;
+}
+.poll ol {
+    list-style-type: none; 
+    counter-reset:  item; 
+    border-left: 18px solid rgba(255, 255, 255, 0.3);
+    padding-left: 0px;
+    margin: 0;
+}
+.poll li{
+    font-size: 34px;
+    padding: 10px 20px;
+    position: relative;
+    display: flex;
+    
+}
+.poll li:before {
+    content: counter(item) ' -  ';
+    counter-increment: item;
+    z-index: 1; 
+    padding-left: 25px;
+   } 
+.poll p{
+    font-size: 30px;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 10px 0;
+    padding-left: 60px;
+}
+.poll .list-text{
+    display: block;
+    z-index: 1;
+}
+.poll .bg-list{
+    
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    position: absolute;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    background: linear-gradient(to left, #fad961, #f9690e);
+    content: "";
+    display: block;
+    z-index: 0;
+}
+.chat-block{
+    color: #fff;
+    padding: 0 60px;
+    width: 560px;
+    font-size: 34px;
+    height: 90vh;
+    overflow-y: scroll;
+    position: fixed;
+    right: 0;
+    top: 0;
+}
+.chat-block .author-name{
+    font-weight: bold;
+    margin: 0;
+}
+.chat-block .message-text{
+    line-height: 50px;
+    padding: 10px 0;
+}
+.chat-block::before{
+    background: transparent;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.1) 20%);
+    content: "";
+    display: block;
+    height: 100vh;
+    right: 0;
+    position: fixed;
+    top: 0;
+    width: 620px;
+}
+
+
+.circles{
+    display: flex;
+    border-left: 18px solid rgba(255, 255, 255, 0.3);
+}
+figure{
+    position: relative;
+    margin: 20px;
+}
+figure span{
+    color: rgba(255, 255, 255, 0.5);
+    position: absolute;
+    top: -20px;
+    left: 0;
+    font-size: 28px;
+}
+figcaption{
+    color: #fff;
+    font-size: 40px;
+    position: absolute;
+    top: 38px;
+    left: 42px;
+}
+
+.donat-info{
+    font-size: 30px;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 20px 50px 30px;
+}
+.donat-info p{
+    margin: 0;
+    color: #fff;
+    line-height: 20px;  
+}
+
+.top-five{
+    border-left: 18px solid rgba(255, 255, 255, 0.3);
+    color: #fff; 
+    padding-left: 30px;
+    margin: 30px 0 20px;
+}
+.top-five h3{
+    font-size: 31px;
+    text-transform: uppercase;
+    font-weight: normal;
+    margin: 0;
+}
+.top-five ul{
+    padding: 0;
+}
+.top-five li{
+    list-style-type: none;
+    font-size: 34px;
+}
+
+.header{
+    border-left: 18px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    font-size: 34px;
+    margin: 25px 0;
+    padding-left: 40px;
+    width: 520px;
+}
+.title-header{
+    font-size: 31px;
+    text-transform: uppercase;
+}
+
+
+.subscribers{
+    border-left: 18px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 31px;
+    display: flex;
+    align-items: center;
+    padding-left: 40px;
+    margin: 20px 0;
+}
+.subscribers .amount{
+    padding-left: 30px;
+    letter-spacing: 5.3px;
+}
